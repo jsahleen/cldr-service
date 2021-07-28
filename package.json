@@ -1,0 +1,39 @@
+{
+  "name": "cldr-service",
+  "version": "0.1.0",
+  "description": "CLDR WEB SERVICE",
+  "repository": "git@github.com:jsahleen/cldr-service.git",
+  "author": "Joel Sahleen <joel@sahleen.net>",
+  "license": "MIT",
+  "private": false,
+  "dependencies": {
+    "argon2": "^0.28.2",
+    "cldr-core": "^39.0.0",
+    "cldr-localenames-modern": "^39.0.0",
+    "cldr-numbers-modern": "^39.0.0",
+    "cors": "^2.8.5",
+    "debug": "^4.3.2",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-winston": "^4.1.0",
+    "winston": "^3.3.3"
+  },
+  "devDependencies": {
+    "@types/argon2": "^0.15.0",
+    "@types/cors": "^2.8.10",
+    "@types/debug": "^4.1.5",
+    "@types/express": "^4.17.11",
+    "@types/mongoose": "^5.11.97",
+    "@typescript-eslint/eslint-plugin": "^4.28.2",
+    "@typescript-eslint/parser": "^4.28.2",
+    "eslint": "^7.30.0",
+    "source-map-support": "^0.5.19",
+    "typescript": "^4.2.4"
+  },
+  "scripts": {
+    "lint": "eslint src",
+    "start": "rm -rf ./built && tsc && node ./built/app.js",
+    "debug": "export DEBUG=* && yarn run start",
+    "seed": "tsc && node --unhandled-rejections=strict ./built/scripts/seed.js"
+  }
+}
