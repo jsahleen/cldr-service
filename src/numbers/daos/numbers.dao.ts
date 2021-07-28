@@ -18,7 +18,7 @@ class NumbersSystemsDAO {
 
     return NumberSystem
       .find({ tag: { $in: locales } })
-      .select(`tag _id identity moduleType ${paths.join(' ')}`)
+      .select(`tag _id identity moduleType main.name ${paths.join(' ')}`)
       .sort({tag: 'asc'})
       .exec();
   } 
@@ -62,19 +62,19 @@ class NumbersSystemsDAO {
       case 'default':
         return NumberSystem
           .find({$and: [{'main.isDefault': true},{ tag: { $in: locales } }]})
-          .select(`tag _id identity moduleType ${paths.join(' ')}`)
+          .select(`tag _id identity moduleType main.name${paths.join(' ')}`)
           .sort({tag: 'asc'})
           .exec();    
     
       case 'native':
         return NumberSystem.find({$and: [{'main.isDefault': true},{ tag: { $in: locales } }]})
-          .select(`tag _id identity moduleType ${paths.join(' ')}`)
+          .select(`tag _id identity moduleType main.name ${paths.join(' ')}`)
           .sort({tag: 'asc'})
           .exec();    
     
       default:
         return NumberSystem.find({$and: [{'main.name': system},{ tag: { $in: locales } }]})
-          .select(`_id tag identity moduleType ${paths.join(' ')}`)
+          .select(`_id tag identity moduleType main.name ${paths.join(' ')}`)
           .sort({tag: 'asc'})
           .exec();
     }

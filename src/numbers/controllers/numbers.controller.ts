@@ -8,7 +8,6 @@ const log: IDebugger = debug('app:numbersystem-controller');
 const modernLocales = availableLocales.availableLocales.modern;
 
 export const availableFilters: string[] = [
-  'name',
   'digits',
   'minimumFractionDigits',
   'displayName',
