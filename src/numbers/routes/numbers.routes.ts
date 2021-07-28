@@ -15,11 +15,8 @@ export class NumberSystemRoutes extends CommonRoutesConfig {
     this.app.route('/public/numbers')
       .get(NumberSystemController.listNumberSystems)
 
-    this.app.route('/public/numbers/category/:category')
-      .get(NumberSystemController.listNumberSystemsByCategory);
-
-    this.app.route('/public/numbers/category/:category/locale/:locale')
-      .get(NumberSystemController.getNumberSystemByCategoryAndLocale);
+    this.app.route('/public/numbers/:system')
+      .get(NumberSystemController.listNumberSystemsByNameOrType);
 
     this.app.route('/admin/numbers')
       .get(NumberSystemController.listNumberSystems)

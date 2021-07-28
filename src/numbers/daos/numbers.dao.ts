@@ -11,16 +11,15 @@ class NumbersSystemsDAO {
     log('Created new instance of NumberSystemsDAO');
   }
 
-  async listNumberSystems(locales: string[], filters: string[], limit: number, page: number): Promise<INumberSystem[]> {
+  async listNumberSystems(locales: string[], filters: string[]): Promise<INumberSystem[]> {
     const paths = filters.map(filter => {
       return `main.${filter}`;
     });
 
     return NumberSystem
-      .find({tag: {"$in": locales}})
-      .select(`tag _id moduleType ${paths.join(' ')}`)
-      .limit(limit)
-      .skip(limit * page)
+      .find({ tag: { $in: locales } })
+      .select(`tag _id identity moduleType ${paths.join(' ')}`)
+      .sort({tag: 'asc'})
       .exec();
   } 
 
@@ -54,57 +53,32 @@ class NumbersSystemsDAO {
    NumberSystem.findByIdAndRemove({_id: id});
   }
 
-  async listNumberSystemsByCategory(category: string, locales: string[], filters: string[], limit: number, page: number): Promise<INumberSystem[] | null> {
+  async listNumberSystemsByNameOrType(system: string, locales: string[], filters: string[]): Promise<INumberSystem[] | null> {
     const paths = filters.map(filter => {
       return `main.${filter}`;
     });
 
-    switch (category) {
+    switch (system) {
       case 'default':
-        return NumberSystem.find({'main.isDefault': true, tag: {"$in": locales}})
-          .select(`_id tag identity moduleType ${paths.join(' ')}`)
-          .limit(limit)
-          .skip(limit * page)
+        return NumberSystem
+          .find({$and: [{'main.isDefault': true},{ tag: { $in: locales } }]})
+          .select(`tag _id identity moduleType ${paths.join(' ')}`)
+          .sort({tag: 'asc'})
           .exec();    
     
       case 'native':
-        return NumberSystem.find({'main.isNative': true, tag: {"$in": locales}})
-          .select(`_id tag identity moduleType ${paths.join(' ')}`)
-          .limit(limit)
-          .skip(limit * page)
+        return NumberSystem.find({$and: [{'main.isDefault': true},{ tag: { $in: locales } }]})
+          .select(`tag _id identity moduleType ${paths.join(' ')}`)
+          .sort({tag: 'asc'})
           .exec();    
     
       default:
-        return NumberSystem.find({'main.name': category, tag: {"$in": locales}})
+        return NumberSystem.find({$and: [{'main.name': system},{ tag: { $in: locales } }]})
           .select(`_id tag identity moduleType ${paths.join(' ')}`)
-          .limit(limit)
-          .skip(limit * page)
+          .sort({tag: 'asc'})
           .exec();
     }
     
-  }
-
-  async getNumberSystemByCategoryAndLocale(category: string, locale: string, filters: string[]): Promise<INumberSystem | null> {
-    const paths = filters.map(filter => {
-      return `main.${filter}`;
-    });
-
-    switch (category) {
-      case 'default':
-        return NumberSystem.findOne({'main.isDefault': true, tag: locale})
-          .select(`_id identity moduleType ${paths.join(' ')}`)
-          .exec();    
-    
-      case 'native':
-        return NumberSystem.findOne({'main.isNative': true, tag: locale})
-          .select(`_id identity moduleType ${paths.join(' ')}`)
-          .exec();    
-    
-      default:
-        return NumberSystem.findOne({'main.name': category, tag:locale})
-          .select(`_id identity moduleType ${paths.join(' ')}`)
-          .exec();
-    }
   }
 
 } 

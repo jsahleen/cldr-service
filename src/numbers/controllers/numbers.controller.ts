@@ -28,8 +28,8 @@ class NumberSystemController {
 
     const localeString = req.query.locales as string | undefined;
     const locales = localeString?.split(',') || modernLocales;
-
-    const filtersString = req.query.locales as string | undefined;
+    
+    const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;
 
     const limitString = req.query.limit as string | undefined;
@@ -37,7 +37,6 @@ class NumberSystemController {
 
     const pageString = req.query.page as string | undefined;
     let page = pageString && parseInt(pageString, 10) || 1;
-
 
     if (isNaN(limit)) {
       limit = 25;
@@ -47,7 +46,7 @@ class NumberSystemController {
       page = 1;
     }
 
-    const numberSystems = await NumberSystemsService.list(locales, filters, limit, page);
+    const numberSystems = await NumberSystemsService.list(locales, filters);
     res.status(200).send({systems: numberSystems});
   }
 
@@ -76,11 +75,11 @@ class NumberSystemController {
     res.status(204).send();
   }
 
-  async listNumberSystemsByCategory(req: express.Request, res: express.Response) {
+  async listNumberSystemsByNameOrType(req: express.Request, res: express.Response) {
     const localeString = req.query.locales as string | undefined;
     const locales = localeString?.split(',') || modernLocales;
 
-    const filtersString = req.query.locales as string | undefined;
+    const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;
 
     const limitString = req.query.limit as string | undefined;
@@ -89,7 +88,7 @@ class NumberSystemController {
     const pageString = req.query.page as string | undefined;
     let page =  pageString && parseInt(pageString, 10) || 1;
 
-    const category = req.params.category;
+    const name = req.params.system;
 
     if (isNaN(limit)) {
       limit = 25;
@@ -98,14 +97,8 @@ class NumberSystemController {
     if (isNaN(page)) {
       page = 1;
     }
-    const results = await NumberSystemsService.listByCategory(category, locales, filters, limit, page);
+    const results = await NumberSystemsService.listByNameOrType(name, locales, filters);
     res.status(200).send(results);
-  }
-  async getNumberSystemByCategoryAndLocale(req: express.Request, res: express.Response) {
-    const filtersString = req.query.filters as string | undefined;
-    const filters = filtersString?.split(',') || availableFilters;
-    const record = await NumberSystemsService.getByCategoryAndLocale(req.params.category, req.params.locale, filters);
-    res.status(200).send(record);
   }
 }
 

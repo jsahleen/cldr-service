@@ -12,8 +12,8 @@ class NumberSystemsService implements IAdmin, IPublic {
     log('Created new instance of NumberSystemsService');
   }
   
-  async list(locales: string[], filters: string[], limit: number, page: number): Promise<INumberSystem[]> {
-    return NumbersSystemsDAO.listNumberSystems(locales, filters, limit, page);
+  async list(locales: string[], filters: string[]): Promise<INumberSystem[]> {
+    return NumbersSystemsDAO.listNumberSystems(locales, filters);
   }
 
   async create(fields: ICreateDTO): Promise<string> {
@@ -36,12 +36,8 @@ class NumberSystemsService implements IAdmin, IPublic {
     return NumbersSystemsDAO.removeNumberSystemById(id);
   }
 
-  async listByCategory(category: string, locales: string[], filters: string[], limit: number, page: number): Promise<INumberSystem[] | null> {
-    return NumbersSystemsDAO.listNumberSystemsByCategory(category, locales, filters, limit, page);
-  }
-
-  async getByCategoryAndLocale(category: string, locale: string, filters: string[]): Promise<INumberSystem | null> {
-    return NumbersSystemsDAO.getNumberSystemByCategoryAndLocale(category, locale, filters);
+  async listByNameOrType(category: string, locales: string[], filters: string[]): Promise<INumberSystem[] | null> {
+    return NumbersSystemsDAO.listNumberSystemsByNameOrType(category, locales, filters);
   }
 
 }
