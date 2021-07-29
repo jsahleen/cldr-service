@@ -9,7 +9,7 @@ const modernLocales = availableLocales.availableLocales.modern;
 
 export const availableFilters: string[] = [
   'digits',
-  'minimumFractionDigits',
+  'minimumGroupingDigits',
   'displayName',
   'patterns',
   'symbols',

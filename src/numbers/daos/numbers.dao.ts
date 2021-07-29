@@ -62,12 +62,12 @@ class NumbersSystemsDAO {
       case 'default':
         return NumberSystem
           .find({$and: [{'main.isDefault': true},{ tag: { $in: locales } }]})
-          .select(`tag _id identity moduleType main.name${paths.join(' ')}`)
+          .select(`tag _id identity moduleType main.name ${paths.join(' ')}`)
           .sort({tag: 'asc'})
           .exec();    
     
       case 'native':
-        return NumberSystem.find({$and: [{'main.isDefault': true},{ tag: { $in: locales } }]})
+        return NumberSystem.find({$and: [{'main.isNative': true},{ tag: { $in: locales } }]})
           .select(`tag _id identity moduleType main.name ${paths.join(' ')}`)
           .sort({tag: 'asc'})
           .exec();    
