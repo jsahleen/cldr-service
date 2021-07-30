@@ -49,9 +49,9 @@ const p = server.listen(port, () => {
 });
 
 function handleShutdownGracefully() {
-  console.info("closing server gracefully...");
+  console.info("\nClosing server gracefully...");
   p.close(() => {
-    console.info("server closed.");
+    console.info("Server closed.");
     process.exit(0);
   });
 }

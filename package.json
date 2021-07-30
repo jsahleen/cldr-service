@@ -32,7 +32,8 @@
   },
   "scripts": {
     "lint": "eslint src",
-    "start": "rm -rf ./built && tsc && node ./built/app.js",
+    "build": "rm -rf ./built && tsc",
+    "start": " yarn run build && node ./built/app.js",
     "debug": "export DEBUG=* && yarn run start",
     "seed": "tsc && node --unhandled-rejections=strict ./built/scripts/seed.js"
   }
