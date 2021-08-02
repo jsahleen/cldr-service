@@ -1,6 +1,7 @@
 import { CommonRoutesConfig } from "../../common/routes/common.routes";
 import express from 'express';
 import NumberSystemController from "../controllers/numbers.controller";
+import NumberSystemsMiddleware from "../middleware/numbers.middleware";
 
 export class NumberSystemRoutes extends CommonRoutesConfig {
 
@@ -16,11 +17,17 @@ export class NumberSystemRoutes extends CommonRoutesConfig {
       .get(NumberSystemController.listNumberSystems)
 
     this.app.route('/public/numbers/:system')
-      .get(NumberSystemController.listNumberSystemsByNameOrType);
+      .get([
+        NumberSystemsMiddleware.ensureNumberSystemExists,
+        NumberSystemController.listNumberSystemsByNameOrType
+      ]);
 
     this.app.route('/admin/numbers')
       .get(NumberSystemController.listNumberSystems)
-      .post(NumberSystemController.createNumberSystem);
+      .post([
+        NumberSystemsMiddleware.ensureSameSystemAndLocaleDoNotExist,
+        NumberSystemController.createNumberSystem
+      ]);
 
     this.app.route('/admin/numbers/:id')
       .get(NumberSystemController.getNumberSystemById)

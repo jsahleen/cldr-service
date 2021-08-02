@@ -5,6 +5,10 @@ import debug, {IDebugger } from 'debug';
 
 const log: IDebugger = debug('app:numbersystem-dao');
 
+function onlyUnique(value, index, self) {
+  return self.indexOf(value) === index;
+}
+
 class NumbersSystemsDAO {
 
   constructor() {
@@ -79,6 +83,13 @@ class NumbersSystemsDAO {
           .exec();
     }
     
+  }
+
+  async getNumberSystemNames(): Promise<string[]> {
+    const results = await NumberSystem.find().select('main.name').exec();
+    return  results.map(result => {
+      return result.main.name;
+    }).filter(onlyUnique);
   }
 
 } 
