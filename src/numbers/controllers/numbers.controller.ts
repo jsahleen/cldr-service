@@ -31,20 +31,6 @@ class NumberSystemController {
     const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;
 
-    const limitString = req.query.limit as string | undefined;
-    let limit = limitString && parseInt(limitString, 10) || 25;
-
-    const pageString = req.query.page as string | undefined;
-    let page = pageString && parseInt(pageString, 10) || 1;
-
-    if (isNaN(limit)) {
-      limit = 25;
-    }
-
-    if (isNaN(page)) {
-      page = 1;
-    }
-
     const numberSystems = await NumberSystemsService.list(locales, filters);
     res.status(200).send({systems: numberSystems});
   }
@@ -56,6 +42,9 @@ class NumberSystemController {
 
   async getNumberSystemById(req: express.Request, res: express.Response) {
     const numberSystem = await NumberSystemsService.getById(req.params.id);
+    if (!numberSystem) {
+      res.status(404).send();
+    }
     res.status(200).send(numberSystem);
   }
 
@@ -81,21 +70,8 @@ class NumberSystemController {
     const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;
 
-    const limitString = req.query.limit as string | undefined;
-    let limit =  limitString && parseInt(limitString, 10) || 25;
-
-    const pageString = req.query.page as string | undefined;
-    let page =  pageString && parseInt(pageString, 10) || 1;
-
     const name = req.params.system;
 
-    if (isNaN(limit)) {
-      limit = 25;
-    }
-
-    if (isNaN(page)) {
-      page = 1;
-    }
     const results = await NumberSystemsService.listByNameOrType(name, locales, filters);
     res.status(200).send(results);
   }

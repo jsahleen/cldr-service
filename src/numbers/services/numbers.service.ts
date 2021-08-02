@@ -40,6 +40,10 @@ class NumberSystemsService implements IAdmin, IPublic {
     return NumbersSystemsDAO.listNumberSystemsByNameOrType(category, locales, filters);
   }
 
+  async getNumberSystemNames() {
+    return NumbersSystemsDAO.getNumberSystemNames();
+  }
+
 }
 
 export default new NumberSystemsService();
