@@ -39,9 +39,9 @@ class NumbersSystemsDAO {
 
   async updateNumberSystemById(id: string, fields: IPatchDTO): Promise<void> {
     NumberSystem.findByIdAndUpdate( 
-        { _id: id },
-        { $set: fields },
-        { new: true }
+      { _id: id },
+      { $set: fields },
+      { new: true }
     ).exec();
   }
 

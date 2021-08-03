@@ -40,9 +40,9 @@ class NumberSystemsMiddleware {
       ) {
         res.status(409).send({ error: 'Record exists. Use put or patch to modify'});
       }
-
-      next();
-    })
+    });
+    
+    next();
   }
 }
 
