@@ -8,6 +8,7 @@ import { resolve } from 'path';
 import { IIdentity } from '../../common/interfaces/identity.interface';
 import { ModuleTypes } from '../../common/enums/module.enum';
 import { IPluralKeys } from '../../common/interfaces/pluralkeys.interface';
+import { IGenerate } from '../../common/interfaces/generate.interace';
 
 const log: IDebugger = debug('app:numbersystems-generator');
 
@@ -24,7 +25,7 @@ enum FormatTypes {
   CURRENCY = 'currencyFormats'
 }
 
-export default class NumberSystemGenerator {
+export default class NumberSystemGenerator implements IGenerate {
   constructor(){
     log('Created instance of NumberSystemsGenerator');
   }

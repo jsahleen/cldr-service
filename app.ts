@@ -12,6 +12,7 @@ import cors from 'cors';
 import {CommonRoutesConfig} from './src/common/routes/common.routes';
 import {NumberSystemRoutes} from './src/numbers/routes/numbers.routes';
 import debug from 'debug';
+import { UsersRoutes } from './src/users/routes/users.routes';
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
@@ -38,6 +39,7 @@ if (!process.env.DEBUG) {
 app.use(expressWinston.logger(loggerOptions));
 
 routes.push(new NumberSystemRoutes(app));
+routes.push(new UsersRoutes(app));
 
 const runningMessage = `Server running at http://localhost:${port}`;
 

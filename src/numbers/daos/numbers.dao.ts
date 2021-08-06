@@ -15,7 +15,7 @@ class NumbersSystemsDAO {
     log('Created new instance of NumberSystemsDAO');
   }
 
-  async listNumberSystems(locales: string[], filters: string[]): Promise<INumberSystem[]> {
+  async listNumberSystems(locales: string[], filters: string[], limit, page): Promise<INumberSystem[]> {
     const paths = filters.map(filter => {
       return `main.${filter}`;
     });
@@ -23,6 +23,8 @@ class NumbersSystemsDAO {
     return NumberSystem
       .find({ tag: { $in: locales } })
       .select(`tag _id identity moduleType main.name ${paths.join(' ')}`)
+      .limit(limit)
+      .skip((page - 1) * limit)
       .sort({tag: 'asc'})
       .exec();
   } 
@@ -37,16 +39,8 @@ class NumbersSystemsDAO {
     return  NumberSystem.findOne({_id: id}).exec();
   }
 
-  async updateNumberSystemById(id: string, fields: IPatchDTO): Promise<void> {
-    NumberSystem.findByIdAndUpdate( 
-      { _id: id },
-      { $set: fields },
-      { new: true }
-    ).exec();
-  }
-
-  async replaceNumberSystemById(id: string, fields: IPutDTO): Promise<void> {
-    NumberSystem.findByIdAndUpdate( 
+  async updateNumberSystemById(id: string, fields: IPatchDTO | IPutDTO): Promise<INumberSystem | null> {
+    return await NumberSystem.findByIdAndUpdate( 
       { _id: id },
       { $set: fields },
       { new: true }
@@ -54,10 +48,16 @@ class NumbersSystemsDAO {
   }
 
   async removeNumberSystemById(id: string): Promise<void> {
-   NumberSystem.findByIdAndRemove({_id: id});
+    NumberSystem.findByIdAndRemove({_id: id});
   }
 
-  async listNumberSystemsByNameOrType(system: string, locales: string[], filters: string[]): Promise<INumberSystem[] | null> {
+  async listNumberSystemsByNameOrType(
+    system: string,
+    locales: string[],
+    filters: string[],
+    limit: number,
+    page: number
+  ): Promise<INumberSystem[] | null> {
     const paths = filters.map(filter => {
       return `main.${filter}`;
     });
@@ -67,18 +67,26 @@ class NumbersSystemsDAO {
         return NumberSystem
           .find({$and: [{'main.isDefault': true},{ tag: { $in: locales } }]})
           .select(`tag _id identity moduleType main.name ${paths.join(' ')}`)
+          .limit(limit)
+          .skip((page - 1) * limit)
           .sort({tag: 'asc'})
           .exec();    
     
       case 'native':
-        return NumberSystem.find({$and: [{'main.isNative': true},{ tag: { $in: locales } }]})
+        return NumberSystem
+          .find({$and: [{'main.isNative': true},{ tag: { $in: locales } }]})
           .select(`tag _id identity moduleType main.name ${paths.join(' ')}`)
+          .limit(limit)
+          .skip((page - 1) * limit)
           .sort({tag: 'asc'})
           .exec();    
     
       default:
-        return NumberSystem.find({$and: [{'main.name': system},{ tag: { $in: locales } }]})
+        return NumberSystem
+          .find({$and: [{'main.name': system},{ tag: { $in: locales } }]})
           .select(`_id tag identity moduleType main.name ${paths.join(' ')}`)
+          .limit(limit)
+          .skip((page - 1) * limit)
           .sort({tag: 'asc'})
           .exec();
     }

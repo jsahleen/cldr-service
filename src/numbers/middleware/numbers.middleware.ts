@@ -31,7 +31,7 @@ class NumberSystemsMiddleware {
     const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;
 
-    const numberSystems = await numbersService.list(locales, filters);
+    const numberSystems = await numbersService.list(locales, filters, 1000, 1);
 
     numberSystems.map(system => {
       if (

@@ -12,8 +12,8 @@ class NumberSystemsService implements IAdmin, IPublic {
     log('Created new instance of NumberSystemsService');
   }
   
-  async list(locales: string[], filters: string[]): Promise<INumberSystem[]> {
-    return NumbersSystemsDAO.listNumberSystems(locales, filters);
+  async list(locales: string[], filters: string[], limit, page): Promise<INumberSystem[]> {
+    return NumbersSystemsDAO.listNumberSystems(locales, filters, limit, page);
   }
 
   async create(fields: ICreateDTO): Promise<string> {
@@ -24,20 +24,16 @@ class NumberSystemsService implements IAdmin, IPublic {
     return NumbersSystemsDAO.getNumberSystemById(id);
   }
 
-  async updateById(id: string, fields: IPatchDTO): Promise<void> {
+  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<INumberSystem | null> {
     return NumbersSystemsDAO.updateNumberSystemById(id, fields);
-  }
-
-  async replaceById(id: string, fields: IPutDTO): Promise<void> {
-    return NumbersSystemsDAO.replaceNumberSystemById(id, fields);
   }
 
   async removeById(id: string): Promise<void> {
     return NumbersSystemsDAO.removeNumberSystemById(id);
   }
 
-  async listByNameOrType(category: string, locales: string[], filters: string[]): Promise<INumberSystem[] | null> {
-    return NumbersSystemsDAO.listNumberSystemsByNameOrType(category, locales, filters);
+  async listByNameOrType(category: string, locales: string[], filters: string[], limit: number, page: number): Promise<INumberSystem[] | null> {
+    return NumbersSystemsDAO.listNumberSystemsByNameOrType(category, locales, filters, limit, page);
   }
 
   async getNumberSystemNames() {
