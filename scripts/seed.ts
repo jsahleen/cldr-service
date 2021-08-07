@@ -10,10 +10,6 @@ if (dotenvResult.error) {
 
 const log: IDebugger = debug('app:seed');
 
-const pageString = '';
-const page = parseInt(pageString, 10)
-log(`${page}`);
-
 async function seed() {
   const r: string[] = [];
   const n = new NumberSystemGenerator();
@@ -27,7 +23,7 @@ log('Starting database seed');
 
 function init() {
   seed().then((r) => {
-    log(`${JSON.stringify(r, null, "  ")}`);
+    log(r);
     process.exit(0);
   }).catch(e => {
     console.log(e.message);
