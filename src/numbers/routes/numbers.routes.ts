@@ -35,6 +35,6 @@ export class NumberSystemRoutes extends CommonRoutesConfig {
       .patch(NumberSystemController.updateNumberSystemById)
       .delete(NumberSystemController.removeNumberSystemById)
 
-   return this.app
+    return this.app
   }
 }

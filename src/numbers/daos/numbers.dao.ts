@@ -36,7 +36,7 @@ class NumbersSystemsDAO {
   } 
 
   async getNumberSystemById(id: string): Promise<INumberSystem | null> {
-    return  NumberSystem.findOne({_id: id}).exec();
+    return  NumberSystem.findById(id).exec();
   }
 
   async updateNumberSystemById(id: string, fields: IPatchDTO | IPutDTO): Promise<INumberSystem | null> {
