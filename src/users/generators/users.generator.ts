@@ -30,7 +30,7 @@ export default class UsersGenerator implements IGenerate {
         lastName: 'user',
         email: process.env.ROOT_USER_EMAIL,
         password: await argon2.hash(process.env.ROOT_USER_PASSWORD),
-        permissionFlag: Permissions.ADMIN_PERMISSION
+        permissionFlag: Permissions.ADMIN_PERMISSIONS
       }
       await UsersService.add(adminUserData).catch(e => {
         throw e;

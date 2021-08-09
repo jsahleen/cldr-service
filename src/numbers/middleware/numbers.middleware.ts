@@ -3,28 +3,71 @@ import numbersService from '../services/numbers.service';
 import {debug, IDebugger} from "debug"
 import availableLocales from 'cldr-core/availableLocales.json';
 import { availableFilters } from '../controllers/numbers.controller';
-
+import { IModuleMiddleware } from '../../common/interfaces/middleware.interface';
+import { body, validationResult } from 'express-validator';
 const modernLocales = availableLocales.availableLocales.modern;
 
 
 const log: IDebugger = debug('app:users-controller');
-class NumberSystemsMiddleware {
+
+class NumberSystemsMiddleware implements IModuleMiddleware {
   constructor() {
     log('Created instance of NumberSystemsMiddleware');
   }
 
-  async ensureNumberSystemExists(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
+  async validatePostBody(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
+    body('tag').isLocale();
+    body('moduleType').isString();
+    body('main').isObject();
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ errors: errors.array() });
+    }
+    next();
+  }
+
+  async validatePutBody(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
+    body('tag').isLocale();
+    body('moduleType').isString();
+    body('main').isObject();
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ errors: errors.array() });
+    }
+    next();
+  }
+
+  async validatePatchBody(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
+    body('tag').isLocale();
+    body('moduleType').isString();
+    body('main').isObject();
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json({ errors: errors.array() });
+    }
+    next();
+  }
+
+  async validateNameOrTypeParameter(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
     const systems = await numbersService.getNumberSystemNames();
     if(
       !systems.includes(req.params.system) &&
       (req.params.system !== 'default' && req.params.system !== 'native')
     ) {
-      res.status(404).send({ error: 'Record not found.'});
+      res.status(404).send({ error: 'Not found.'});
     }
     next();
   }
 
-  async ensureSameSystemAndLocaleDoNotExist(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
+  async ensureDocumentExists(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
+    const system = await numbersService.getById(req.params.id);
+    if(!system) {
+      res.status(404).send({ error: 'Not found.'});
+    }
+    next();
+  }
+
+  async ensureDocumentDoesNotExist(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
     const localeString = req.query.locales as string | undefined;
     const locales = localeString?.split(',') || modernLocales;
     
@@ -36,7 +79,7 @@ class NumberSystemsMiddleware {
     numberSystems.map(system => {
       if (
         system.main.name === req.body.main.name &&
-        system.tag === req.body.tag
+        system.identity === req.body.identity
       ) {
         res.status(409).send({ error: 'Record exists. Use put or patch to modify'});
       }

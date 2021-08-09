@@ -13,6 +13,7 @@ import {CommonRoutesConfig} from './src/common/routes/common.routes';
 import {NumberSystemRoutes} from './src/numbers/routes/numbers.routes';
 import debug from 'debug';
 import { UsersRoutes } from './src/users/routes/users.routes';
+import { AuthRoutes } from './src/auth/routes/auth.routes';
 
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
@@ -40,6 +41,7 @@ app.use(expressWinston.logger(loggerOptions));
 
 routes.push(new NumberSystemRoutes(app));
 routes.push(new UsersRoutes(app));
+routes.push(new AuthRoutes(app));
 
 const runningMessage = `Server running at http://localhost:${port}`;
 

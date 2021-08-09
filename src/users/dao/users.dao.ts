@@ -18,7 +18,7 @@ class UsersDAO {
   }
 
   async addUser(data: ICreateDTO): Promise<string> {
-    const user = new User({ ...data, permissionFlag: Permissions.USER_PERMISSION});
+    const user = new User({ ...data, permissionFlag: Permissions.USER_PERMISSIONS});
     await user.save();
     return user._id;
   }
@@ -43,7 +43,7 @@ class UsersDAO {
 
   async getUserByEmailWithPassword(email: string) {
     return User.findOne({ email: email })
-      .select('_id email permissionFlags +password')
+      .select('_id email permissionFlag +password')
       .exec();
   }
 
