@@ -6,7 +6,7 @@ const UserSchema = new Schema<IUser>({
   lastName: String,
   email: {type: String, required: true},
   password: {type: String, select: false},
-  permissionsFlag: String
+  permissionsFlag: Number
 });
 
 export default model<IUser>('User', UserSchema);

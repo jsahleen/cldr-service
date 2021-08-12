@@ -1,5 +1,6 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
+import { Jwt } from '../../common/types/jwt.type';
 import crypto from 'crypto';
 import usersService from '../../users/services/users.service';
 import debug, { IDebugger } from 'debug';
@@ -45,7 +46,7 @@ class JwtMiddleware {
       req.body = {
         _id: user?._id,
         email: user?.email,
-        permissionFlags: user?.permissionFlag,
+        permissionsFlag: user?.permissionsFlag,
       };
       return next();
     } else {
@@ -69,7 +70,7 @@ class JwtMiddleware {
           res.locals.jwt = jwt.verify(
             authorization[1],
             jwtSecret
-          )
+          ) as Jwt;
         }
         next();
       } catch (err) {

@@ -24,17 +24,15 @@ export default class UsersGenerator implements IGenerate {
       process.exit(1);
     }
     const adminUser = await usersDao.getUserByEmail(process.env.ROOT_USER_EMAIL);
-    if (!adminUser) {
+    if (!adminUser || process.env.DEBUG) {
       const adminUserData: ICreateDTO = {
         firstName: 'root',
         lastName: 'user',
         email: process.env.ROOT_USER_EMAIL,
         password: await argon2.hash(process.env.ROOT_USER_PASSWORD),
-        permissionFlag: Permissions.ADMIN_PERMISSIONS
-      }
-      await UsersService.add(adminUserData).catch(e => {
-        throw e;
-      });
+        permissionsFlag: Permissions.ALL_PERMISSIONS
+      };
+      await UsersService.add(adminUserData);
       return 'Created root user.';
     }
     return 'Root user already exists';

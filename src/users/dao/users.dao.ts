@@ -2,7 +2,6 @@ import { ICreateDTO, IPutDTO, IPatchDTO } from '../dtos/users.dtos'
 import debug, { IDebugger } from 'debug';
 import { IUser } from '../interfaces/users.interface';
 import User from '../models/users.model';
-import { Permissions } from '../../common/enums/permissions.enum';
 
 const log: IDebugger  = debug('app:users-dao');
 
@@ -18,7 +17,7 @@ class UsersDAO {
   }
 
   async addUser(data: ICreateDTO): Promise<string> {
-    const user = new User({ ...data, permissionFlag: Permissions.USER_PERMISSIONS});
+    const user = new User({ ...data});
     await user.save();
     return user._id;
   }
@@ -43,7 +42,7 @@ class UsersDAO {
 
   async getUserByEmailWithPassword(email: string) {
     return User.findOne({ email: email })
-      .select('_id email permissionFlag +password')
+      .select('_id email permissionsFlag +password')
       .exec();
   }
 

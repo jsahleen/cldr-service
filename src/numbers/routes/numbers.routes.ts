@@ -2,6 +2,9 @@ import { CommonRoutesConfig } from "../../common/routes/common.routes";
 import express from 'express';
 import NumberSystemController from "../controllers/numbers.controller";
 import NumberSystemsMiddleware from "../middleware/numbers.middleware";
+import jwtMiddleware from "../../auth/middleware/jwt.middleware";
+import commonPermissionsMiddleware from "../../common/middleware/common.permissions.middleware";
+import { Permissions } from "../../common/enums/permissions.enum";
 
 export class NumberSystemRoutes extends CommonRoutesConfig {
 
@@ -23,6 +26,12 @@ export class NumberSystemRoutes extends CommonRoutesConfig {
       ]);
 
     this.app.route('/admin/numbers')
+      .all([
+        jwtMiddleware.validJWTNeeded,
+        commonPermissionsMiddleware.permissionsFlagRequired(
+          Permissions.ADMIN_PERMISSIONS
+        )
+      ])
       .get(NumberSystemController.listNumberSystems)
       .post([
         NumberSystemsMiddleware.validatePostBody,
@@ -31,7 +40,13 @@ export class NumberSystemRoutes extends CommonRoutesConfig {
       ]);
 
     this.app.route('/admin/numbers/:id')
-      .all(NumberSystemsMiddleware.ensureDocumentExists)
+      .all([
+        jwtMiddleware.validJWTNeeded,
+        commonPermissionsMiddleware.permissionsFlagRequired(
+          Permissions.ADMIN_PERMISSIONS
+        ),
+        NumberSystemsMiddleware.ensureDocumentExists
+      ])
       .get(NumberSystemController.getNumberSystemById)
       .put([
         NumberSystemsMiddleware.validatePutBody,

@@ -15,7 +15,6 @@ export class AuthRoutes extends CommonRoutesConfig {
       authMiddleware.verifyUserPassword,
       authController.createJWT,
     ]);
-    return this.app;
 
     this.app.post(`/auth/refresh-token`, [
       jwtMiddleware.validJWTNeeded,
@@ -23,6 +22,8 @@ export class AuthRoutes extends CommonRoutesConfig {
       jwtMiddleware.validRefreshNeeded,
       authController.createJWT,
     ]);
+
+    return this.app;
     
   }
 }
