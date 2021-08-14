@@ -51,7 +51,7 @@ class NumberSystemController {
     }
 
     const numberSystems = await NumberSystemsService.list(locales, filters, limit, page);
-    res.status(200).send({systems: numberSystems});
+    res.status(200).send({numberSystems: numberSystems});
   }
 
   async createNumberSystem(req: express.Request, res: express.Response) {
@@ -68,17 +68,12 @@ class NumberSystemController {
   }
 
   async updateNumberSystemById(req: express.Request, res: express.Response) {
-    log(await NumberSystemsService.updateById(req.body.id, req.body));
-    res.status(204).send();
-  }
-
-  async replaceNumberSystemById(req: express.Request, res: express.Response) {
-    log(await NumberSystemsService.updateById(req.body.id, req.body));
+    log(await NumberSystemsService.updateById(req.params.id, req.body));
     res.status(204).send();
   }
 
   async removeNumberSystemById(req: express.Request, res: express.Response) {
-    log(await NumberSystemsService.removeById(req.body.id));
+    log(await NumberSystemsService.removeById(req.params.id));
     res.status(204).send();
   }
 
@@ -111,8 +106,8 @@ class NumberSystemController {
       res.status(400).send();
     }
 
-    const results = await NumberSystemsService.listByNameOrType(name, locales, filters, limit, page);
-    res.status(200).send(results);
+    const numberSystems = await NumberSystemsService.listByNameOrType(name, locales, filters, limit, page);
+    res.status(200).send({numberSystems: numberSystems});
   }
 }
 

@@ -17,7 +17,7 @@ class UsersDAO {
   }
 
   async addUser(data: ICreateDTO): Promise<string> {
-    const user = new User({ ...data});
+    const user = new User(data);
     await user.save();
     return user._id;
   }
@@ -31,12 +31,7 @@ class UsersDAO {
   }
 
   async updateUserById(id: string, fields: IPutDTO | IPatchDTO): Promise<IUser | null> {
-    const existingUser = await User.findOneAndUpdate(
-      { _id: id },
-      { $set: fields },
-      { new: true }
-    ).exec();
-
+    const existingUser = await User.findOneAndUpdate({_id: id}, {$set: fields}, {new: true}).exec();
     return existingUser;
   }
 
@@ -46,8 +41,8 @@ class UsersDAO {
       .exec();
   }
 
-  async removeUserById(userId: string) {
-    return User.deleteOne({ _id: userId }).exec();
+  async removeUserById(id: string) {
+    return User.deleteOne({ _id: id }).exec();
   }
 
 }

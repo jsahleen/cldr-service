@@ -30,17 +30,17 @@ class UsersController {
   }
 
   async updateUserById(req: express.Request, res: express.Response) {
-    await UsersService.updateById(req.body.id, req.body);
+    await UsersService.updateById(req.params.id, req.body);
     res.status(204).send();
   }
 
   async replaceUserById(req: express.Request, res: express.Response) {
-    log(await UsersService.updateById(req.body.id, req.body));
+    log(await UsersService.updateById(req.params.id, req.body));
     res.status(204).send();
   }
 
   async deleteUserById(req: express.Request, res: express.Response) {
-    log(await UsersService.removeById(req.body.id));
+    log(await UsersService.removeById(req.params.id));
     res.status(204).send();
   }
   

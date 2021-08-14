@@ -50,7 +50,7 @@ export class NumberSystemRoutes extends CommonRoutesConfig {
       .get(NumberSystemController.getNumberSystemById)
       .put([
         NumberSystemsMiddleware.validatePutBody,
-        NumberSystemController.replaceNumberSystemById
+        NumberSystemController.updateNumberSystemById
       ])
       .patch([
         NumberSystemsMiddleware.validatePatchBody,

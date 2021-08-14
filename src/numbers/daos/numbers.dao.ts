@@ -40,15 +40,12 @@ class NumbersSystemsDAO {
   }
 
   async updateNumberSystemById(id: string, fields: IPatchDTO | IPutDTO): Promise<INumberSystem | null> {
-    return await NumberSystem.findByIdAndUpdate( 
-      { _id: id },
-      { $set: fields },
-      { new: true }
-    ).exec();
+    const numberSystem = await NumberSystem.findByIdAndUpdate(id, fields, { new: true }).exec();
+    return numberSystem;
   }
 
   async removeNumberSystemById(id: string): Promise<void> {
-    NumberSystem.findByIdAndRemove({_id: id});
+    NumberSystem.findByIdAndRemove(id);
   }
 
   async listNumberSystemsByNameOrType(
