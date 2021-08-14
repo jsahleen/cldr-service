@@ -39,9 +39,8 @@ class NumbersSystemsDAO {
     return  NumberSystem.findById(id).exec();
   }
 
-  async updateNumberSystemById(id: string, fields: IPatchDTO | IPutDTO): Promise<INumberSystem | null> {
-    const numberSystem = await NumberSystem.findByIdAndUpdate(id, fields, { new: true }).exec();
-    return numberSystem;
+  async updateNumberSystemById(id: string, fields: IPatchDTO | IPutDTO): Promise<void> {
+    NumberSystem.findByIdAndUpdate(id, fields, { new: true }).exec();
   }
 
   async removeNumberSystemById(id: string): Promise<void> {

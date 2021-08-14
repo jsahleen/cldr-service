@@ -24,7 +24,7 @@ class NumberSystemsService implements IAdmin, IPublic {
     return NumbersSystemsDAO.getNumberSystemById(id);
   }
 
-  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<INumberSystem | null> {
+  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<void> {
     return NumbersSystemsDAO.updateNumberSystemById(id, fields);
   }
 
