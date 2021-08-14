@@ -5,5 +5,7 @@ export interface IPublic {
     name: string,
     locales: string[],
     filters: string[],
+    limit: number,
+    page: number
   ) => Promise<Module[] | null>
 }

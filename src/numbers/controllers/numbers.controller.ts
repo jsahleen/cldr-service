@@ -24,15 +24,34 @@ class NumberSystemController {
   }
 
   async listNumberSystems(req: express.Request, res: express.Response) {
+    let { 
+      limit = 25, 
+      page = 1,
+      locales = modernLocales,
+      filters = availableFilters
+    } = req.query;
 
-    const localeString = req.query.locales as string | undefined;
-    const locales = localeString?.split(',') || modernLocales;
+    if (typeof locales === 'string') {
+      locales = locales.split(',');
+    } else {
+      locales = modernLocales as string[];
+    }
+
+    if (typeof filters === 'string') {
+      filters = filters.split(',');
+    } else {
+      filters = availableFilters as string[];
+    }
     
-    const filtersString = req.query.filters as string | undefined;
-    const filters = filtersString?.split(',') || availableFilters;
+    limit = parseInt(limit as string, 10);
+    page = parseInt(page as string, 10);
 
-    const numberSystems = await NumberSystemsService.list(locales, filters);
-    res.status(200).send({systems: numberSystems});
+    if (isNaN(limit) || isNaN(page)) {
+      res.status(400).send();
+    }
+
+    const numberSystems = await NumberSystemsService.list(locales, filters, limit, page);
+    res.status(200).send({numberSystems: numberSystems});
   }
 
   async createNumberSystem(req: express.Request, res: express.Response) {
@@ -49,31 +68,46 @@ class NumberSystemController {
   }
 
   async updateNumberSystemById(req: express.Request, res: express.Response) {
-    log(await NumberSystemsService.updateById(req.body.id, req.body));
-    res.status(204).send();
-  }
-
-  async replaceNumberSystemById(req: express.Request, res: express.Response) {
-    log(await NumberSystemsService.replaceById(req.body.id, req.body));
+    log(await NumberSystemsService.updateById(req.params.id, req.body));
     res.status(204).send();
   }
 
   async removeNumberSystemById(req: express.Request, res: express.Response) {
-    log(await NumberSystemsService.removeById(req.body.id));
+    log(await NumberSystemsService.removeById(req.params.id));
     res.status(204).send();
   }
 
   async listNumberSystemsByNameOrType(req: express.Request, res: express.Response) {
-    const localeString = req.query.locales as string | undefined;
-    const locales = localeString?.split(',') || modernLocales;
-
-    const filtersString = req.query.filters as string | undefined;
-    const filters = filtersString?.split(',') || availableFilters;
-
     const name = req.params.system;
 
-    const results = await NumberSystemsService.listByNameOrType(name, locales, filters);
-    res.status(200).send(results);
+    let { 
+      limit = 25, 
+      page = 1,
+      locales = modernLocales,
+      filters = availableFilters
+    } = req.query;
+
+    if (typeof locales === 'string') {
+      locales = locales.split(',');
+    } else {
+      locales = modernLocales as string[];
+    }
+
+    if (typeof filters === 'string') {
+      filters = filters.split(',');
+    } else {
+      filters = availableFilters as string[];
+    }
+    
+    limit = parseInt(limit as string, 10);
+    page = parseInt(page as string, 10);
+
+    if (isNaN(limit) || isNaN(page)) {
+      res.status(400).send();
+    }
+
+    const numberSystems = await NumberSystemsService.listByNameOrType(name, locales, filters, limit, page);
+    res.status(200).send({numberSystems: numberSystems});
   }
 }
 

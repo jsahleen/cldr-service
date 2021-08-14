@@ -2,6 +2,9 @@ import { CommonRoutesConfig } from "../../common/routes/common.routes";
 import express from 'express';
 import NumberSystemController from "../controllers/numbers.controller";
 import NumberSystemsMiddleware from "../middleware/numbers.middleware";
+import jwtMiddleware from "../../auth/middleware/jwt.middleware";
+import commonPermissionsMiddleware from "../../common/middleware/common.permissions.middleware";
+import { Permissions } from "../../common/enums/permissions.enum";
 
 export class NumberSystemRoutes extends CommonRoutesConfig {
 
@@ -18,23 +21,43 @@ export class NumberSystemRoutes extends CommonRoutesConfig {
 
     this.app.route('/public/numbers/:system')
       .get([
-        NumberSystemsMiddleware.ensureNumberSystemExists,
+        NumberSystemsMiddleware.validateNameOrTypeParameter,
         NumberSystemController.listNumberSystemsByNameOrType
       ]);
 
     this.app.route('/admin/numbers')
+      .all([
+        jwtMiddleware.validJWTNeeded,
+        commonPermissionsMiddleware.permissionsFlagRequired(
+          Permissions.ADMIN_PERMISSIONS
+        )
+      ])
       .get(NumberSystemController.listNumberSystems)
       .post([
-        NumberSystemsMiddleware.ensureSameSystemAndLocaleDoNotExist,
+        NumberSystemsMiddleware.validatePostBody,
+        NumberSystemsMiddleware.ensureDocumentDoesNotExist,
         NumberSystemController.createNumberSystem
       ]);
 
     this.app.route('/admin/numbers/:id')
+      .all([
+        jwtMiddleware.validJWTNeeded,
+        commonPermissionsMiddleware.permissionsFlagRequired(
+          Permissions.ADMIN_PERMISSIONS
+        ),
+        NumberSystemsMiddleware.ensureDocumentExists
+      ])
       .get(NumberSystemController.getNumberSystemById)
-      .put(NumberSystemController.replaceNumberSystemById)
-      .patch(NumberSystemController.updateNumberSystemById)
+      .put([
+        NumberSystemsMiddleware.validatePutBody,
+        NumberSystemController.updateNumberSystemById
+      ])
+      .patch([
+        NumberSystemsMiddleware.validatePatchBody,
+        NumberSystemController.updateNumberSystemById
+      ])
       .delete(NumberSystemController.removeNumberSystemById)
 
-   return this.app
+    return this.app
   }
 }
