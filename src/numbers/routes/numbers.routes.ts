@@ -6,7 +6,7 @@ import jwtMiddleware from "../../auth/middleware/jwt.middleware";
 import commonPermissionsMiddleware from "../../common/middleware/common.permissions.middleware";
 import { Permissions } from "../../common/enums/permissions.enum";
 
-export class NumberSystemRoutes extends CommonRoutesConfig {
+export class NumberSystemsRoutes extends CommonRoutesConfig {
 
   constructor(app: express.Application) {
     super(app, 'NumberSystemRoutes');
