@@ -20,14 +20,16 @@ import { BlockedRoutes } from './src/common/routes/blocked.routes';
 import { AuthRoutes } from './src/auth/routes/auth.routes';
 import { UsersRoutes } from './src/users/routes/users.routes';
 import { NumberSystemsRoutes } from './src/numbers/routes/numbers.routes';
+import { CurrencyRoutes } from './src/currencies/routes/currencies.routes';
 
 // App configuration
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
 const port = process.env.PORT || 3000;
-app.use(express.json());
+
 app.use(cors());
 app.use(helmet());
+app.use(express.json());
 
 // Logging
 const log: debug.IDebugger = debug('app');
@@ -50,6 +52,7 @@ routes.push(new BlockedRoutes(app));
 routes.push(new UsersRoutes(app));
 routes.push(new AuthRoutes(app));
 routes.push(new NumberSystemsRoutes(app));
+routes.push(new CurrencyRoutes(app));
 
 // Server startup code
 const runningMessage = `Server running at http://localhost:${port}`;

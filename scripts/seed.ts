@@ -1,6 +1,7 @@
-import NumberSystemGenerator from "../src/numbers/generators/numbers.generator";
-import debug, { IDebugger} from 'debug';
 import UsersGenerator from "../src/users/generators/users.generator";
+import NumberSystemGenerator from "../src/numbers/generators/numbers.generator";
+import CurrencyGenerator from "../src/currencies/generators/currencies.generator";
+import debug, { IDebugger} from 'debug';
 
 import dotenv from 'dotenv';
 const dotenvResult = dotenv.config();
@@ -16,6 +17,8 @@ async function seed() {
   r.push(await n.generate());
   const u = new UsersGenerator();
   r.push(await u.generate()); 
+  const c = new CurrencyGenerator();
+  r.push(await c.generate());
   return r.join('\n');
 }
 
@@ -26,7 +29,7 @@ function init() {
     log(r);
     process.exit(0);
   }).catch(e => {
-    console.log(e.message);
+    log(e);
     process.exit(1)
   });
 }

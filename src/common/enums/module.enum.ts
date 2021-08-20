@@ -1,3 +1,4 @@
 export enum ModuleTypes {
-  NUMBERS = 'numbers'
+  NUMBERS = 'numbers',
+  CURRENCIES = 'currencies'
 }
