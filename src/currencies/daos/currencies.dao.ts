@@ -1,0 +1,119 @@
+import { ICurrency } from '../interfaces/currencies.interface';
+import Currency from "../models/currencies.model";
+import { ICreateDTO, IPutDTO, IPatchDTO } from '../dtos/currencies.dtos';
+import debug, {IDebugger } from 'debug';
+
+const log: IDebugger = debug('app:currencies-dao');
+
+function onlyUnique(value, index, self) {
+  return self.indexOf(value) === index;
+}
+
+class CurrenciesDAO {
+
+  constructor() {
+    log('Created new instance of CurrenciesDAO');
+  }
+
+  async listCurrencies(locales: string[], filters: string[], limit, page): Promise<ICurrency[]> {
+    const paths = filters.map(filter => {
+      return `main.${filter}`;
+    });
+
+    return Currency
+      .find({ tag: { $in: locales } })
+      .select(`tag _id identity moduleType main.code ${paths.join(' ')}`)
+      .limit(limit)
+      .skip((page - 1) * limit)
+      .sort({tag: 'asc'})
+      .exec();
+  } 
+
+  async createCurrency(fields: ICreateDTO): Promise<string> {
+    const currency = new Currency(fields);
+    const system = await currency.save();
+    return system._id;
+  } 
+
+  async getCurrencyById(id: string): Promise<ICurrency | null> {
+    return  Currency.findById(id).exec();
+  }
+
+  async updateCurrencyById(id: string, fields: IPatchDTO | IPutDTO): Promise<void> {
+    Currency.findByIdAndUpdate(id, fields, { new: true }).exec();
+  }
+
+  async removeCurrencyById(id: string): Promise<void> {
+    Currency.findByIdAndRemove(id);
+  }
+
+  async listCurrenciesByCodeOrType(
+    code: string,
+    locales: string[],
+    filters: string[],
+    limit: number,
+    page: number
+  ): Promise<ICurrency[] | null> {
+    const paths = filters.map(filter => {
+      return `main.${filter}`;
+    });
+
+    switch (code) {
+      case 'current':
+        return Currency
+          .find({$and: [{'main.isCurrent': true},{ tag: { $in: locales } }]})
+          .select(`tag _id identity moduleType main.code ${paths.join(' ')}`)
+          .limit(limit)
+          .skip((page - 1) * limit)
+          .sort({tag: 'asc'})
+          .exec();    
+    
+      case 'historical':
+        return Currency
+          .find({$and: [{'main.isCurrent': false},{ tag: { $in: locales } }]})
+          .select(`tag _id identity moduleType main.code ${paths.join(' ')}`)
+          .limit(limit)
+          .skip((page - 1) * limit)
+          .sort({tag: 'asc'})
+          .exec();    
+        
+      case 'tender':
+        return Currency
+          .find({$and: [{'main.isTender': true},{ tag: { $in: locales } }]})
+          .select(`tag _id identity moduleType main.code ${paths.join(' ')}`)
+          .limit(limit)
+          .skip((page - 1) * limit)
+          .sort({tag: 'asc'})
+          .exec();
+    
+      case 'not-tender':
+        return Currency
+          .find({$and: [{'main.isTender': false},{ tag: { $in: locales } }]})
+          .select(`tag _id identity moduleType main.code ${paths.join(' ')}`)
+          .limit(limit)
+          .skip((page - 1) * limit)
+          .sort({tag: 'asc'})
+          .exec();
+        
+      default:
+        return Currency
+          .find({$and: [{'main.code': code},{ tag: { $in: locales } }]})
+          .select(`_id tag identity moduleType main.code ${paths.join(' ')}`)
+          .limit(limit)
+          .skip((page - 1) * limit)
+          .sort({tag: 'asc'})
+          .exec();
+    }
+    
+  }
+
+  async getCurrencyCodes(): Promise<string[]> {
+    const results = await Currency.find().select('main.code').exec();
+    return  results.map(result => {
+      return result.main.code;
+    }).filter(onlyUnique);
+  }
+
+} 
+
+export default new CurrenciesDAO();

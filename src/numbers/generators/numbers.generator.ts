@@ -1,7 +1,6 @@
 import debug, { IDebugger } from 'debug';
 import availableLocales from 'cldr-core/availableLocales.json';
 import NumberSystem from '../models/numbers.model';
-import numbersService from '../services/numbers.service';
 import { ICurrencyPatterns, IDecimalPatterns, IMinimalPairs, IMiscPatterns, INSData, INumberPatterns, INumberSystem, INumberSystemPatterns } from '../interfaces/numbers.interface';
 import { readFile } from 'fs/promises';
 import { resolve } from 'path';
@@ -9,16 +8,19 @@ import { IIdentity } from '../../common/interfaces/identity.interface';
 import { ModuleTypes } from '../../common/enums/module.enum';
 import { IPluralKeys } from '../../common/interfaces/pluralkeys.interface';
 import { IGenerate } from '../../common/interfaces/generate.interace';
+import ProgressBar from 'progress';
 
 const log: IDebugger = debug('app:numbersystems-generator');
 
 const locales: string[] = availableLocales.availableLocales.modern;
 
+const bar = new ProgressBar(':module: :locale :mode :current/:total', { total: locales.length * 2})
+
 function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;
 }
 
-const NODE_MODULES = '../../../../../node_modules';
+const NODE_MODULES = '../../../../node_modules';
 
 enum FormatTypes {
   DECIMAL = 'decimalFormats',
@@ -31,25 +33,40 @@ export default class NumberSystemGenerator implements IGenerate {
   }
 
   public async generate(): Promise<string> {
-    const collection = 'numbersystems';
-    log('Seeding NumberSystem modules...');
+    const collection = 'numbers';
+
+    log('Seeding currency modules...');
     if (NumberSystem.db.collections[collection]) {
       log(`Dropping collection ${collection}`);
-      NumberSystem.db.dropCollection(collection).catch(e => log(e.message));
+      await NumberSystem.db.dropCollection(collection).catch(e => log(e.message));
     }
-    const data = await Promise.all(locales.map(async locale => {
-      const localeData = await this.generateLocaleData(locale);
-      return await this.insert(localeData);
+
+    const ids = await Promise.all(locales.map(async locale => {
+      return await this.generateLocaleData(locale)
+        .then(data => {
+          bar.tick({
+            module: collection,
+            locale: locale,
+            mode: 'generated'
+          });
+          return data;
+        }).then(data => {
+          return this.insert(data);
+        }).then(id => {
+          bar.tick({
+            module: collection,
+            locale: locale,
+            mode: 'inserted'
+          });
+          return id;
+        });
     }));
-    const inserted = data.reduce((acc, val) => acc.concat(val), []).length;
+
+    const inserted = ids.reduce((acc, val) => acc.concat(val), []).length;
     return `${inserted} documents inserted.`;
   }
-
   private async insert(localeData: INumberSystem[]) {
-    const results = await Promise.all(localeData.map(async data => {
-      return await numbersService.create(data);
-    }));
-    return results;
+    return NumberSystem.insertMany(localeData);
   }
 
   private async getData(filePath: string, locale: string) {
@@ -64,13 +81,18 @@ export default class NumberSystemGenerator implements IGenerate {
   }
 
   private getIdentity(numbersData, locale): IIdentity {
-    const identity = numbersData.main[locale].identity;
+    const identityData = numbersData.main[locale].identity;
 
-    identity.versions = {
-      cldr: identity.version._cldrVersion,
-      unicode: identity.version._unicodeVersion
-    }
-    return identity;
+    return {
+      language: identityData.language,
+      script: identityData.script,
+      territory: identityData.territory,
+      variant: identityData.variant,
+      versions: {
+        cldr: identityData.version._cldrVersion,
+        unicode: identityData.version._unicodeVersion
+      }
+    };
   }
 
   private getMinimumGroupingDigits(numbers, locale): number {
