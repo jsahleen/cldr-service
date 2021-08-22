@@ -18,6 +18,8 @@ const bar = new ProgressBar(':module: :locale :mode :current/:total', { total: l
 
 const NODE_MODULES = '../../../../node_modules';
 
+import currencyData from 'cldr-core/supplemental/currencyData.json';
+
 export default class CurrencyGenerator implements IGenerate {
   constructor(){
     log('Created instance of CurrencyGenerator');
@@ -31,34 +33,34 @@ export default class CurrencyGenerator implements IGenerate {
       log(`Dropping collection ${collection}`);
       await Currency.db.dropCollection(collection).catch(e => log(e.message));
     }
+    
+    const results: string[][] = [];
 
-    const ids = await Promise.all(locales.map(async locale => {
-      return await this.generateLocaleData(locale)
-        .then(data => {
-          bar.tick({
-            module: collection,
-            locale: locale,
-            mode: 'generated'
-          });
-          return data;
-        }).then(data => {
-          return this.insert(data);
-        }).then(id => {
-          bar.tick({
-            module: collection,
-            locale: locale,
-            mode: 'inserted'
-          });
-          return id;
-        });
-    }));
+    for (let i = 0; i < locales.length; i++) {
+      const locale = locales[i];
+      const data = await this.generateLocaleData(locale)
+      bar.tick({
+        module: collection,
+        locale: locale,
+        mode: 'generated'
+      });
+      results.push(await this.insert(data));  
+      bar.tick({
+        module: collection,
+        locale: locale,
+        mode: 'inserted'
+      });
+    }
 
-    const inserted = ids.reduce((acc, val) => acc.concat(val), []).length;
+    const inserted = results.reduce((acc, val) => acc.concat(val), []).length;
     return `${inserted} documents inserted.`;
   }
 
-  private async insert(localeData: ICurrency[]) {
-    return Currency.insertMany(localeData);
+  private async insert(localeData: ICurrency[]): Promise<string[]> {
+    const insertions = await Currency.insertMany(localeData);
+    return insertions.map(record => {
+      return record._id;
+    });
   }
 
   private async getData(filePath: string, locale: string) {
@@ -160,9 +162,8 @@ export default class CurrencyGenerator implements IGenerate {
     }
   }
 
-  private async generateLocaleData(locale: string): Promise<ICurrency[]> {
+  async generateLocaleData(locale: string): Promise<ICurrency[]> {
     const currenciesDataList = await this.getData(`${NODE_MODULES}/cldr-numbers-modern/main/{{locale}}/currencies.json`, locale);
-    const currencyData = await this.getData(`${NODE_MODULES}/cldr-core/supplemental/currencyData.json`, locale);
 
     const fractionsData = currencyData.supplemental.currencyData.fractions;
     const territoriesData = currencyData.supplemental.currencyData.region;

@@ -1,14 +1,13 @@
 import argon2 from "argon2";
 import debug, { IDebugger } from "debug";
 import { Permissions } from "../../common/enums/permissions.enum";
-import { IGenerate } from "../../common/interfaces/generate.interace";
 import usersDao from "../dao/users.dao";
 import { ICreateDTO } from "../dtos/users.dtos";
 import UsersService from "../services/users.service";
 
 const log: IDebugger = debug('app:users-generator');
 
-export default class UsersGenerator implements IGenerate {
+export default class UsersGenerator {
 
   constructor() {
     log('Created instance of UsersGenerator.');

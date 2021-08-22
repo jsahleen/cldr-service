@@ -8,5 +8,8 @@
     "resolveJsonModule": true,
     "inlineSourceMap": true,
     "noImplicitAny": false
-  }
+  },
+  "include": [
+    "src/**/*.ts"
+  ]
 }

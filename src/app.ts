@@ -15,12 +15,13 @@ import helmet from 'helmet';
 import debug from 'debug';
 
 // Import service routes
-import { CommonRoutesConfig } from './src/common/routes/common.routes';
-import { BlockedRoutes } from './src/common/routes/blocked.routes';
-import { AuthRoutes } from './src/auth/routes/auth.routes';
-import { UsersRoutes } from './src/users/routes/users.routes';
-import { NumberSystemsRoutes } from './src/numbers/routes/numbers.routes';
-import { CurrencyRoutes } from './src/currencies/routes/currencies.routes';
+import { CommonRoutesConfig } from './common/routes/common.routes';
+import { BlockedRoutes } from './common/routes/blocked.routes';
+import { AuthRoutes } from './auth/routes/auth.routes';
+import { UsersRoutes } from './users/routes/users.routes';
+import { NumberSystemsRoutes } from './numbers/routes/numbers.routes';
+import { CurrencyRoutes } from './currencies/routes/currencies.routes';
+import { LanguageRoutes } from './languages/routes/languages.routes';
 
 // App configuration
 const app: express.Application = express();
@@ -53,6 +54,7 @@ routes.push(new UsersRoutes(app));
 routes.push(new AuthRoutes(app));
 routes.push(new NumberSystemsRoutes(app));
 routes.push(new CurrencyRoutes(app));
+routes.push(new LanguageRoutes(app));
 
 // Server startup code
 const runningMessage = `Server running at http://localhost:${port}`;

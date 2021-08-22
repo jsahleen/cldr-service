@@ -39,7 +39,7 @@ export class CurrencyRoutes extends CommonRoutesConfig {
         currenciesController.createCurrency
       ]);
 
-    this.app.route('/admin/numbers/:id')
+    this.app.route('/admin/currencies/:id')
       .all([
         jwtMiddleware.validJWTNeeded,
         commonPermissionsMiddleware.permissionsFlagRequired(

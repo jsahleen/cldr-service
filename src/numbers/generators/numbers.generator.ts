@@ -22,6 +22,8 @@ function onlyUnique(value, index, self) {
 
 const NODE_MODULES = '../../../../node_modules';
 
+import numberingSystemsData from 'cldr-core/supplemental/numberingSystems.json';
+
 enum FormatTypes {
   DECIMAL = 'decimalFormats',
   CURRENCY = 'currencyFormats'
@@ -35,38 +37,39 @@ export default class NumberSystemGenerator implements IGenerate {
   public async generate(): Promise<string> {
     const collection = 'numbers';
 
-    log('Seeding currency modules...');
+    log('Seeding number system modules...');
     if (NumberSystem.db.collections[collection]) {
       log(`Dropping collection ${collection}`);
       await NumberSystem.db.dropCollection(collection).catch(e => log(e.message));
     }
+    
+    const results: string[][] = [];
 
-    const ids = await Promise.all(locales.map(async locale => {
-      return await this.generateLocaleData(locale)
-        .then(data => {
-          bar.tick({
-            module: collection,
-            locale: locale,
-            mode: 'generated'
-          });
-          return data;
-        }).then(data => {
-          return this.insert(data);
-        }).then(id => {
-          bar.tick({
-            module: collection,
-            locale: locale,
-            mode: 'inserted'
-          });
-          return id;
-        });
-    }));
+    for (let i = 0; i < locales.length; i++) {
+      const locale = locales[i];
+      const data = await this.generateLocaleData(locale)
+      bar.tick({
+        module: collection,
+        locale: locale,
+        mode: 'generated'
+      });
+      results.push(await this.insert(data));  
+      bar.tick({
+        module: collection,
+        locale: locale,
+        mode: 'inserted'
+      });
+    }
 
-    const inserted = ids.reduce((acc, val) => acc.concat(val), []).length;
+    const inserted = results.reduce((acc, val) => acc.concat(val), []).length;
     return `${inserted} documents inserted.`;
   }
-  private async insert(localeData: INumberSystem[]) {
-    return NumberSystem.insertMany(localeData);
+
+  private async insert(localeData: INumberSystem[]): Promise<string[]> {
+    const insertions = await NumberSystem.insertMany(localeData);
+    return insertions.map(record => {
+      return record._id;
+    });
   }
 
   private async getData(filePath: string, locale: string) {
@@ -259,8 +262,7 @@ export default class NumberSystemGenerator implements IGenerate {
     }
   }
 
-  private async generateLocaleData(locale: string): Promise<INumberSystem[]> {
-    const numberingSystemsData = await this.getData(`${NODE_MODULES}/cldr-core/supplemental/numberingSystems.json`, locale);
+  async generateLocaleData(locale: string): Promise<INumberSystem[]> {
     const numbersData = await this.getData(`${NODE_MODULES}/cldr-numbers-modern/main/{{locale}}/numbers.json`, locale);
     const localeNamesData = await this.getData(`${NODE_MODULES}/cldr-localenames-modern/main/{{locale}}/localeDisplayNames.json`, locale);
 

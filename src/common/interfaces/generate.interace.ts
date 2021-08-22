@@ -1,5 +1,7 @@
+import { Module } from "../types/module.type";
+
 export interface IGenerate {
 
-  generate: () => Promise<string>
+  generateLocaleData: (locale: string) => Promise<Module[]>
 
 }
