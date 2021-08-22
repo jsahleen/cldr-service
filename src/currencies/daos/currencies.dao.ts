@@ -77,24 +77,6 @@ class CurrenciesDAO {
           .sort({tag: 'asc'})
           .exec();    
         
-      case 'tender':
-        return Currency
-          .find({$and: [{'main.isTender': true},{ tag: { $in: locales } }]})
-          .select(`tag _id identity moduleType main.code ${paths.join(' ')}`)
-          .limit(limit)
-          .skip((page - 1) * limit)
-          .sort({tag: 'asc'})
-          .exec();
-    
-      case 'not-tender':
-        return Currency
-          .find({$and: [{'main.isTender': false},{ tag: { $in: locales } }]})
-          .select(`tag _id identity moduleType main.code ${paths.join(' ')}`)
-          .limit(limit)
-          .skip((page - 1) * limit)
-          .sort({tag: 'asc'})
-          .exec();
-        
       default:
         return Currency
           .find({$and: [{'main.code': code},{ tag: { $in: locales } }]})

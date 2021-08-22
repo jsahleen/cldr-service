@@ -56,7 +56,7 @@ class NumberSystemController {
 
   async createNumberSystem(req: express.Request, res: express.Response) {
     const id = await NumberSystemsService.create(req.body);
-    res.status(201).send({ id: id});
+    res.status(201).send({ _id: id});
   }
 
   async getNumberSystemById(req: express.Request, res: express.Response) {
