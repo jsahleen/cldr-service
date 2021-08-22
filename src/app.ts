@@ -22,6 +22,7 @@ import { UsersRoutes } from './users/routes/users.routes';
 import { NumberSystemsRoutes } from './numbers/routes/numbers.routes';
 import { CurrencyRoutes } from './currencies/routes/currencies.routes';
 import { LanguageRoutes } from './languages/routes/languages.routes';
+import { ScriptsRoutes } from './scripts/routes/scripts.routes';
 
 // App configuration
 const app: express.Application = express();
@@ -55,6 +56,7 @@ routes.push(new AuthRoutes(app));
 routes.push(new NumberSystemsRoutes(app));
 routes.push(new CurrencyRoutes(app));
 routes.push(new LanguageRoutes(app));
+routes.push(new ScriptsRoutes(app));
 
 // Server startup code
 const runningMessage = `Server running at http://localhost:${port}`;
