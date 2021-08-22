@@ -9,7 +9,7 @@ const log: IDebugger = debug('app:currencies-service');
 class LanguagesService implements IAdmin, IPublic {
 
   constructor() {
-    log('Created new instance of CurrencyService');
+    log('Created new instance of LanguagesService');
   }
   
   async list(locales: string[], filters: string[], limit, page): Promise<ILanguage[]> {
