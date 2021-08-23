@@ -131,7 +131,7 @@ export default class ScriptsGenerator implements IGenerate {
     return {
       rank: d.rank,
       age: {
-        m_version: d.m_version_
+        m_version: d.age.m_version_
       },
       sampleChar: d.sampleChar,
       idUsage: d.idUsage,

@@ -11,7 +11,7 @@ const ScriptLanguageSchema = new Schema<IScriptLanguage>({
 
 const ScriptAgeSchema = new Schema<IScriptAge>({
   m_version: Number
-});
+}, {_id: false});
 
 const ScriptMetadataSchema = new Schema<IScriptMetadata>({
   rank: Number,

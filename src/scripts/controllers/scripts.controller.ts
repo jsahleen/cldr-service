@@ -75,7 +75,7 @@ class ScriptsController {
   }
 
   async listScriptsByTagOrType(req: express.Request, res: express.Response) {
-    const code = req.params.code;
+    const tag = req.params.tag;
 
     let { 
       limit = 25, 
@@ -103,7 +103,7 @@ class ScriptsController {
       res.status(400).send();
     }
 
-    const scripts = await scriptsService.listByNameOrType(code, locales, filters, limit, page);
+    const scripts = await scriptsService.listByNameOrType(tag, locales, filters, limit, page);
     res.status(200).send({scripts: scripts});
   }
 }
