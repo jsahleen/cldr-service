@@ -35,7 +35,7 @@ export default class NumberSystemGenerator implements IGenerate {
   }
 
   public async generate(): Promise<string> {
-    const collection = 'numbers';
+    const collection = 'numbersystems';
 
     log('Seeding number system modules...');
     if (NumberSystem.db.collections[collection]) {
