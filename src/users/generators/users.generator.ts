@@ -23,7 +23,8 @@ export default class UsersGenerator {
       process.exit(1);
     }
     const adminUser = await usersDao.getUserByEmail(process.env.ROOT_USER_EMAIL);
-    if (!adminUser || process.env.DEBUG) {
+    log(adminUser);
+    if (!adminUser) {
       const adminUserData: ICreateDTO = {
         firstName: 'root',
         lastName: 'user',

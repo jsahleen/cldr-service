@@ -3,7 +3,7 @@ import scriptsService from '../services/scripts.service';
 import debug, { IDebugger } from 'debug';
 import availableLocales from 'cldr-core/availableLocales.json';
 
-const log: IDebugger = debug('app:currencies-controller');
+const log: IDebugger = debug('app:scripts-controller');
 
 const modernLocales = availableLocales.availableLocales.modern;
 

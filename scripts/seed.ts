@@ -3,6 +3,7 @@ import NumberSystemGenerator from "../src/numbers/generators/numbers.generator";
 import CurrencyGenerator from "../src/currencies/generators/currencies.generator";
 import LanguagesGenerator from "../src/languages/generators/languages.generator";
 import ScriptsGenerator from '../src/scripts/generators/scripts.generator';
+import TerritoriesGenerator from '../src/territories/generators/territories.generator';
 import debug, { IDebugger} from 'debug';
 
 import dotenv from 'dotenv';
@@ -20,8 +21,9 @@ async function seed(module) {
   const c = new CurrencyGenerator();
   const l = new LanguagesGenerator();
   const s = new ScriptsGenerator();
+  const t = new TerritoriesGenerator();
   switch (module) {
-    case 'user':
+    case 'users':
       r.push(await u.generate()); 
       break;
   
@@ -41,12 +43,17 @@ async function seed(module) {
       r.push(await s.generate()); 
       break;
   
+    case 'territories':
+      r.push(await t.generate()); 
+      break;
+  
     default:
       r.push(await u.generate()); 
       r.push(await n.generate());
       r.push(await c.generate());
       r.push(await l.generate());
       r.push(await s.generate());
+      r.push(await t.generate());
       break;
   }
   return r.join('\n');
@@ -56,10 +63,10 @@ log('Starting database seed');
 
 function init() {
   seed(process.argv[2]).then((r) => {
-    log(r);
+    console.log(r);
     process.exit(0);
   }).catch(e => {
-    log(e);
+    console.log(e);
     process.exit(1)
   });
 }

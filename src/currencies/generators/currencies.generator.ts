@@ -53,7 +53,7 @@ export default class CurrencyGenerator implements IGenerate {
     }
 
     const inserted = results.reduce((acc, val) => acc.concat(val), []).length;
-    return `${inserted} documents inserted.`;
+    return `Currencies: ${inserted} documents inserted.`;
   }
 
   private async insert(localeData: ICurrency[]): Promise<string[]> {
@@ -131,7 +131,7 @@ export default class CurrencyGenerator implements IGenerate {
       dataArray.map(d => {
         if (d[code]) {
           const output = {
-            territory: territory,
+            tag: territory,
             from: d[code]['_from'],
             to: d[code]['_to'],
             isTender: d[code]['_tender'] || true,
