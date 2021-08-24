@@ -62,7 +62,7 @@ export default class NumberSystemGenerator implements IGenerate {
     }
 
     const inserted = results.reduce((acc, val) => acc.concat(val), []).length;
-    return `${inserted} documents inserted.`;
+    return `Number Systems: ${inserted} documents inserted.`;
   }
 
   private async insert(localeData: INumberSystem[]): Promise<string[]> {

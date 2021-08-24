@@ -11,7 +11,7 @@ const ICurrencySymbolsSchema = new Schema<ICurrencySymbols>({
 }, {_id: false});
 
 const ICurrencyTerritorySchema = new Schema<ICurrencyTerritory>({
-  territory: String,
+  tag: String,
   from: String,
   to: String,
   isTender: Boolean

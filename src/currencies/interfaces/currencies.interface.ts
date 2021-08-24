@@ -16,7 +16,7 @@ export interface ICurrencyFractions {
 }
 
 export interface ICurrencyTerritory {
-  territory: string
+  tag: string
   from: string 
   to?: string 
   isTender?: boolean

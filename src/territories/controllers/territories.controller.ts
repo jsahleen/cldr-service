@@ -1,28 +1,33 @@
 import express from 'express';
-import languagesService from '../services/languages.service';
+import territoriesService from '../services/territories.service';
 import debug, { IDebugger } from 'debug';
 import availableLocales from 'cldr-core/availableLocales.json';
 
-const log: IDebugger = debug('app:languages-controller');
+const log: IDebugger = debug('app:territories-controller');
 
 const modernLocales = availableLocales.availableLocales.modern;
 
 export const availableFilters: string[] = [
+  'tag',
   'displayName',
-  'languageFamily',
-  'pluralRules',
-  'pluralRanges',
-  'scripts',
-  'territories'
+  'altDisplayNames',
+  'languages',
+  'gdp',
+  'population',
+  'literacyPercent',
+  'parentTerritory',
+  'contains',
+  'languages',
+  'currencies'
 ];
 
-class LanguagesController {
+class TerritoriesController {
 
   constructor() {
-    log('Created new instance of LanguagesController');
+    log('Created new instance of TerritoriesController');
   }
 
-  async listLanguages(req: express.Request, res: express.Response) {
+  async listTerritories(req: express.Request, res: express.Response) {
     let { 
       limit = 25, 
       page = 1,
@@ -49,35 +54,35 @@ class LanguagesController {
       res.status(400).send();
     }
 
-    const languages = await languagesService.list(locales, filters, limit, page);
-    res.status(200).send({languages: languages});
+    const territories = await territoriesService.list(locales, filters, limit, page);
+    res.status(200).send({territories: territories});
   }
 
-  async createLanguage(req: express.Request, res: express.Response) {
-    const id = await languagesService.create(req.body);
+  async createTerritory(req: express.Request, res: express.Response) {
+    const id = await territoriesService.create(req.body);
     res.status(201).send({ _id: id});
   }
 
-  async getLanguageById(req: express.Request, res: express.Response) {
-    const language = await languagesService.getById(req.params.id);
-    if (!language) {
+  async getTerritoryById(req: express.Request, res: express.Response) {
+    const territory = await territoriesService.getById(req.params.id);
+    if (!territory) {
       res.status(404).send();
     }
-    res.status(200).send(language);
+    res.status(200).send(territory);
   }
 
-  async updateLanguageById(req: express.Request, res: express.Response) {
-    log(await languagesService.updateById(req.params.id, req.body));
+  async updateTerritoryById(req: express.Request, res: express.Response) {
+    log(await territoriesService.updateById(req.params.id, req.body));
     res.status(204).send();
   }
 
-  async removeLanguageById(req: express.Request, res: express.Response) {
-    log(await languagesService.removeById(req.params.id));
+  async removeTerritoryById(req: express.Request, res: express.Response) {
+    log(await territoriesService.removeById(req.params.id));
     res.status(204).send();
   }
 
-  async listLanguagesByTagOrType(req: express.Request, res: express.Response) {
-    const code = req.params.code;
+  async listTerritoriesByTagOrType(req: express.Request, res: express.Response) {
+    const tag = req.params.tag;
 
     let { 
       limit = 25, 
@@ -105,9 +110,9 @@ class LanguagesController {
       res.status(400).send();
     }
 
-    const languages = await languagesService.listByNameOrType(code, locales, filters, limit, page);
-    res.status(200).send({languages: languages});
+    const territories = await territoriesService.listByNameOrType(tag, locales, filters, limit, page);
+    res.status(200).send({territories: territories});
   }
 }
 
-export default new LanguagesController()
+export default new TerritoriesController()
