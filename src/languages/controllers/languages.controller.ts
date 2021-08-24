@@ -77,7 +77,7 @@ class LanguagesController {
   }
 
   async listLanguagesByTagOrType(req: express.Request, res: express.Response) {
-    const code = req.params.code;
+    const tag = req.params.tag;
 
     let { 
       limit = 25, 
@@ -105,7 +105,7 @@ class LanguagesController {
       res.status(400).send();
     }
 
-    const languages = await languagesService.listByNameOrType(code, locales, filters, limit, page);
+    const languages = await languagesService.listByNameOrType(tag, locales, filters, limit, page);
     res.status(200).send({languages: languages});
   }
 }
