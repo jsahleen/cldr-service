@@ -4,5 +4,6 @@ export enum ModuleTypes {
   LANGUAGES = 'languages',
   SCRIPTS = 'scripts',
   TERRITORIES = 'territories',
-  VARIANTS = 'variants'
+  VARIANTS = 'variants',
+  EXTENSIONS = 'extensions'
 }
