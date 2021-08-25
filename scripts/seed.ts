@@ -5,6 +5,7 @@ import LanguagesGenerator from "../src/languages/generators/languages.generator"
 import ScriptsGenerator from '../src/scripts/generators/scripts.generator';
 import TerritoriesGenerator from '../src/territories/generators/territories.generator';
 import VariantsGenerator from "../src/variants/generators/variants.generator";
+import ExtensionsGenerator from "../src/extensions/generators/extensions.generator";
 import debug, { IDebugger} from 'debug';
 
 import dotenv from 'dotenv';
@@ -24,6 +25,7 @@ async function seed(module) {
   const s = new ScriptsGenerator();
   const t = new TerritoriesGenerator();
   const v = new VariantsGenerator();
+  const e = new ExtensionsGenerator();
   switch (module) {
     case 'users':
       r.push(await u.generate()); 
@@ -51,6 +53,10 @@ async function seed(module) {
   
     case 'variants':
       r.push(await v.generate()); 
+      break;
+  
+    case 'extensions':
+      r.push(await e.generate()); 
       break;
   
     default:

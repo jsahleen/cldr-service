@@ -25,6 +25,7 @@ import { LanguageRoutes } from './languages/routes/languages.routes';
 import { ScriptsRoutes } from './scripts/routes/scripts.routes';
 import { TerritoriesRoutes } from './territories/routes/territories.routes';
 import { VariantsRoutes} from './variants/routes/variants.routes'
+import { ExtensionsRoutes} from './extensions/routes/extensions.routes'
 
 // App configuration
 const app: express.Application = express();
@@ -61,6 +62,7 @@ routes.push(new LanguageRoutes(app));
 routes.push(new ScriptsRoutes(app));
 routes.push(new TerritoriesRoutes(app));
 routes.push(new VariantsRoutes(app));
+routes.push(new ExtensionsRoutes(app));
 
 // Server startup code
 const runningMessage = `Server running at http://localhost:${port}`;
