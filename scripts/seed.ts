@@ -67,6 +67,7 @@ async function seed(module) {
       r.push(await s.generate());
       r.push(await t.generate());
       r.push(await v.generate());
+      r.push(await e.generate());
       break;
   }
   return r.join('\n');
