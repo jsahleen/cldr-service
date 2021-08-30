@@ -8,8 +8,7 @@ class MongooseService {
     private mongooseOptions = {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        serverSelectionTimeoutMS: 60 * 5 * 1000,
-        useFindAndModify: false,
+        serverSelectionTimeoutMS: 60 * 5 * 1000
     };
 
     constructor() {
@@ -23,7 +22,7 @@ class MongooseService {
     connectWithRetry = () => {
         log('Attempting MongoDB connection (will retry if needed)');
         mongoose
-            .connect('mongodb://localhost:27017/cldr-db', this.mongooseOptions)
+            .connect('mongodb://localhost/cldr-db', this.mongooseOptions)
             .then(() => {
                 log('MongoDB is connected');
             })
