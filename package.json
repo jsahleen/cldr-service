@@ -38,8 +38,8 @@
   "scripts": {
     "lint": "eslint src",
     "build": "rm -rf ./built && tsc",
-    "start": " yarn run build && node ./built/app.js",
-    "debug": "export DEBUG=* && yarn run start",
+    "start": "yarn build && node ./built/app.js",
+    "debug": "export DEBUG=* && yarn start",
     "seed": "ts-node ./scripts/seed.ts"
   }
 }
