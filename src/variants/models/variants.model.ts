@@ -4,7 +4,7 @@ import { IVariant, IVariantData } from "../interfaces/variants.interface";
 
 const {Schema, model } = mongooseService.getMongoose();
 
-const VariantDataSchema = new Schema<IVariantData>({
+export const VariantDataSchema = new Schema<IVariantData>({
   tag: {type: String, required: true},
   displayName: String,
 }, {_id: false});

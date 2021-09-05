@@ -78,7 +78,7 @@ const NumberSystemPatternsSchema = new Schema<INumberSystemPatterns>({
   minimalPairs: {type: Map, of: String}
 }, {_id: false});
 
-const NumberSystemDataSchema = new Schema<INSData>({
+export const NumberSystemDataSchema = new Schema<INSData>({
   name: { type: String, required: true},
   displayName: String,
   digits: String,

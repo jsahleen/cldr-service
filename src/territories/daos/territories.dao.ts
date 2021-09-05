@@ -31,8 +31,8 @@ class TerritoriesDAO {
 
   async createTerritory(fields: ICreateDTO): Promise<string> {
     const territory = new Territory(fields);
-    const scr = await territory.save();
-    return scr._id;
+    const terr = await territory.save();
+    return terr._id;
   } 
 
   async getTerritoryById(id: string): Promise<ITerritory | null> {

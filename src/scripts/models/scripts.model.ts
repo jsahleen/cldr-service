@@ -28,7 +28,7 @@ const ScriptMetadataSchema = new Schema<IScriptMetadata>({
     likelyLanguage: String,
 }, {_id: false});
 
-const ScriptDataSchema = new Schema<IScriptData>({
+export const ScriptDataSchema = new Schema<IScriptData>({
   tag: {type: String, required: true},
   displayName: String,
   metadata: ScriptMetadataSchema,

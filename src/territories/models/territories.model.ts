@@ -24,17 +24,17 @@ const TerritoryAltDisplayNameSchema = new Schema<ITerritoryAltDisplayName>({
   value: String
 }, {_id: false});
 
-const TerritoryDataSchema = new Schema<ITerritoryData>({
-    tag: {type: String, required: true},
-    displayName: String,
-    altDisplayNames: [TerritoryAltDisplayNameSchema],
-    gdp: Number,
-    population: Number,
-    literacyPercent: Number,
-    parentTerritory: String,
-    contains: [String],
-    languages: [TerritoryLanguageSchema],
-    currencies: [TerritoryCurrenciesSchema]
+export const TerritoryDataSchema = new Schema<ITerritoryData>({
+  tag: {type: String, required: true},
+  displayName: String,
+  altDisplayNames: [TerritoryAltDisplayNameSchema],
+  gdp: Number,
+  population: Number,
+  literacyPercent: Number,
+  parentTerritory: String,
+  contains: [String],
+  languages: [TerritoryLanguageSchema],
+  currencies: [TerritoryCurrenciesSchema]
 }, {_id: false});
 
 const TerritorySchema = new Schema<ITerritory>({

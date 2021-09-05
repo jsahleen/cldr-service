@@ -5,33 +5,33 @@ import { PluralKeysSchema } from "../../common/schemas/pluralKeys.schema";
 
 const {Schema, model } = mongooseService.getMongoose();
 
-const ICurrencySymbolsSchema = new Schema<ICurrencySymbols>({
+const CurrencySymbolsSchema = new Schema<ICurrencySymbols>({
   standard: String,
   narrow: String
 }, {_id: false});
 
-const ICurrencyTerritorySchema = new Schema<ICurrencyTerritory>({
+const CurrencyTerritorySchema = new Schema<ICurrencyTerritory>({
   tag: String,
   from: String,
   to: String,
   isTender: Boolean
 }, {_id: false});
 
-const ICurrencyFractionsSchema = new Schema<ICurrencyFractions>({
+const CurrencyFractionsSchema = new Schema<ICurrencyFractions>({
   rounding: Number,
   digits: Number,
   cashRounding: Number,
   cashDigits: Number
 }, {_id: false});
 
-const ICurrencyDataSchema = new Schema<ICurrencyData>({
+export const CurrencyDataSchema = new Schema<ICurrencyData>({
   code: String,
   displayName: String,
   plurals: PluralKeysSchema,
-  symbols: ICurrencySymbolsSchema,
-  fractions: ICurrencyFractionsSchema,
+  symbols: CurrencySymbolsSchema,
+  fractions: CurrencyFractionsSchema,
   isCurrent: Boolean,
-  territories: [ICurrencyTerritorySchema]
+  territories: [CurrencyTerritorySchema]
 }, {_id: false});
 
 const CurrencySchema = new Schema<ICurrency>({
@@ -41,7 +41,7 @@ const CurrencySchema = new Schema<ICurrency>({
     type: String,
     required: true
   },
-  main: ICurrencyDataSchema
+  main: CurrencyDataSchema
 });
 
 export default model<ICurrency>("Currency", CurrencySchema)

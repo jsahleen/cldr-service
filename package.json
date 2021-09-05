@@ -8,6 +8,7 @@
   "private": false,
   "dependencies": {
     "argon2": "^0.28.2",
+    "bcp47": "^1.1.2",
     "cldr-core": "^39.0.0",
     "cldr-localenames-modern": "^39.0.0",
     "cldr-numbers-modern": "^39.0.0",
