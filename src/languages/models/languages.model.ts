@@ -59,7 +59,7 @@ const PluralRangesSchema = new Schema<IPluralRanges>({
   'start-other-end-other': String
 }, {_id: false})
 
-const LanguageDataSchema = new Schema<ILanguageData>({
+export const LanguageDataSchema = new Schema<ILanguageData>({
   tag: {type: String, required: true},
   displayName: String,
   languageFamily: String,

@@ -39,7 +39,7 @@ export class VariantsRoutes extends CommonRoutesConfig {
         variantsController.createVariant
       ]);
 
-    this.app.route('/admin/scripts/:id')
+    this.app.route('/admin/variants/:id')
       .all([
         jwtMiddleware.validJWTNeeded,
         commonPermissionsMiddleware.permissionsFlagRequired(

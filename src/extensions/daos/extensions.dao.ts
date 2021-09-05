@@ -30,9 +30,9 @@ class ExtensionsDAO {
   } 
 
   async createExtension(fields: ICreateDTO): Promise<string> {
-    const script = new Extension(fields);
-    const scr = await script.save();
-    return scr._id;
+    const extension = new Extension(fields);
+    const ext = await extension.save();
+    return ext._id;
   } 
 
   async getExtensionById(id: string): Promise<IExtension | null> {

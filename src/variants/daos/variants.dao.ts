@@ -30,9 +30,9 @@ class VariantsDAO {
   } 
 
   async createVariant(fields: ICreateDTO): Promise<string> {
-    const script = new Variant(fields);
-    const scr = await script.save();
-    return scr._id;
+    const variant = new Variant(fields);
+    const v = await variant.save();
+    return v._id;
   } 
 
   async getVariantById(id: string): Promise<IVariant | null> {
