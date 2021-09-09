@@ -49,7 +49,7 @@ class LocalesMiddleware implements IModuleMiddleware {
   }
 
   async validateNameOrTypeParameter(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
-    const tags = await localesService.getVariantTags();
+    const tags = await localesService.getLocaleTags();
     if(!tags.includes(req.params.tag)) {
       res.status(404).send();
     }
@@ -65,13 +65,15 @@ class LocalesMiddleware implements IModuleMiddleware {
   }
 
   async ensureDocumentDoesNotExist(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
+    const tagsString = req.query.tags as string | undefined;
     const localeString = req.query.locales as string | undefined;
+    const tags = tagsString?.split(',') || modernLocales;
     const locales = localeString?.split(',') || modernLocales;
     
     const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;
 
-    const scripts = await localesService.list(locales, filters, 1000, 1);
+    const scripts = await localesService.list(tags, locales, filters, 1000, 1);
 
     scripts.map(script => {
       if (

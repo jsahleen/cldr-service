@@ -2,6 +2,11 @@ import { ILocale } from '../interfaces/locales.interface';
 import Locale from "../models/locales.model";
 import { ICreateDTO, IPutDTO, IPatchDTO } from '../dtos/locales.dtos';
 import debug, {IDebugger } from 'debug';
+import languagesModel from '../../languages/models/languages.model';
+import * as bcp47 from 'bcp47';
+import scriptsModel from '../../scripts/models/scripts.model';
+import territoriesModel from '../../territories/models/territories.model';
+import variantsModel from '../../variants/models/variants.model';
 
 const log: IDebugger = debug('app:locales-dao');
 
@@ -9,37 +14,59 @@ function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;
 }
 
-class LocalesDTO {
+class LocalesDAO {
 
   constructor() {
-    log('Created new instance of LocalesDTO');
+    log('Created new instance of LocalesDAO');
   }
 
-  async listLocales(locales: string[], filters: string[], limit, page): Promise<ILocale[]> {
+  async listLocales(tags: string[], locales: string[], filters: string[], limit, page): Promise<ILocale[]> {
     const paths = filters.map(filter => {
       return `main.${filter}`;
     });
 
-    const query = Locale
-      .find({ tag: { $in: locales } })
+    const localeDocs = await Locale
+      .find({$and: [{tag: { $in: locales }}, {'main.tag': {$in: tags}}]})
       .select(`tag _id identity moduleType main.tag ${paths.join(' ')}`)
       .limit(limit)
       .skip((page - 1) * limit)
-      .sort({tag: 'asc'});
-    
-    if(filters.includes('language')){
-      query.populate('main.language');
-    }
-    if(filters.includes('script')){
-      query.populate('main.script');
-    }
-    if(filters.includes('territory')){
-      query.populate('main.territory');
-    }
-    if(filters.includes('variant')){
-      query.populate('main.variant');
-    }
-    return query.exec();
+      .sort({tag: 'asc', 'main.tag': 'asc'})
+      .exec();
+
+    return Promise.all(localeDocs.map(async doc => {
+      const parsed = bcp47.parse(doc.main.tag);
+
+      const langTag = parsed.langtag.language.language;
+      const scriptTag = parsed.langtag.script;
+      const territoryTag = parsed.langtag.region;
+      const variantTag = parsed.langtag.variant[0];
+
+      if (filters.includes('language') && langTag) {
+        const languageDoc = await languagesModel.findOne({$and: [{'main.tag': langTag},{tag: doc.tag}]});
+        doc.main.language = languageDoc?.main;
+      }
+
+      if (filters.includes('script') && scriptTag) {
+        const scriptDoc = await scriptsModel.findOne({$and: [{'main.tag': scriptTag},{tag: doc.tag}]});
+        doc.main.script = scriptDoc?.main;
+      }
+
+      if (filters.includes('territory') && territoryTag) {
+        const territoryDoc = await territoriesModel.findOne({$and: [{'main.tag': territoryTag},{tag: doc.tag}]});
+        doc.main.territory = territoryDoc?.main;
+      }
+
+      if (filters.includes('variant') && variantTag) {
+        const variantDoc = await variantsModel.findOne({$and: [{'main.tag': variantTag},{tag: doc.tag}]});
+        doc.main.variant = variantDoc?.main;
+      }
+
+      return doc;
+
+    })).then(arr => {
+      return arr.flat();
+    });
+
   } 
 
   async createLocale(fields: ICreateDTO): Promise<string> {
@@ -49,12 +76,7 @@ class LocalesDTO {
   } 
 
   async getLocaleById(id: string): Promise<ILocale | null> {
-    return Locale.findById(id)
-      .populate('main.language')
-      .populate('main.script')
-      .populate('main.territory')
-      .populate('main.variant')
-      .exec();
+    return Locale.findById(id).exec();
   }
 
   async updateLocaleById(id: string, fields: IPatchDTO | IPutDTO): Promise<void> {
@@ -76,26 +98,44 @@ class LocalesDTO {
       return `main.${filter}`;
     });
 
-    const query = Locale
-      .find({$and: [{'main.tag': tag},{ tag: { $in: locales } }]})
+    const localeDocs = await Locale
+      .find({$and: [{tag: { $in: locales }, 'main.tag': tag}]})
       .select(`_id tag identity moduleType main.tag ${paths.join(' ')}`)
       .limit(limit)
       .skip((page - 1) * limit)
-      .sort({tag: 'asc'});
+      .sort({tag: 'asc', 'main.tag': 'asc'})
+      .exec();
 
-    if(filters.includes('language')){
-      query.populate('main.language');
-    }
-    if(filters.includes('script')){
-      query.populate('main.script');
-    }
-    if(filters.includes('territory')){
-      query.populate('main.territory');
-    }
-    if(filters.includes('variant')){
-      query.populate('main.variant');
-    }
-    return query.exec();
+    return Promise.all(localeDocs.map(async doc => {
+      doc.main.tag = tag;
+      const parsed = bcp47.parse(tag)
+      const langTag = parsed.langtag.language.language;
+      const scriptTag = parsed.langtag.script;
+      const territoryTag = parsed.langtag.territory;
+      const variantTag = parsed.langtag.variant[0];
+
+      if (filters.includes('language') && langTag) {
+        const languageDoc = await languagesModel.findOne({$and: [{'main.tag': langTag},{tag: doc.tag}]});
+        doc.main.language = languageDoc?.main;
+      }
+
+      if (filters.includes('script') && scriptTag) {
+        const scriptDoc = await scriptsModel.findOne({$and: [{'main.tag': scriptTag},{tag: doc.tag}]});
+        doc.main.script = scriptDoc?.main;
+      }
+
+      if (filters.includes('territory') && territoryTag) {
+        const territoryDoc = await territoriesModel.findOne({$and: [{'main.tag': territoryTag},{tag: doc.tag}]});
+        doc.main.territory = territoryDoc?.main;
+      }
+
+      if (filters.includes('variant') && variantTag) {
+        const variantDoc = await variantsModel.findOne({$and: [{'main.tag': variantTag},{tag: doc.tag}]});
+        doc.main.variant = variantDoc?.main;
+      }
+
+      return doc;
+    }));
   }
 
   async getLocaleTags(): Promise<string[]> {
@@ -108,4 +148,4 @@ class LocalesDTO {
 
 } 
 
-export default new LocalesDTO();
+export default new LocalesDAO();
