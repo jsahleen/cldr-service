@@ -1,6 +1,10 @@
 import mongooseService from "../../common/services/mongoose.service";
 import { IdentitySchema } from "../../common/schemas/identity.schema";
 import { ILocale, ILocaleData, ILocalePatterns, ILocaleCodePatterns, ILocaleDisplayPattern } from "../interfaces/locales.interface";
+import { LanguageDataSchema } from "../../languages/models/languages.model";
+import { ScriptDataSchema } from "../../scripts/models/scripts.model";
+import { TerritoryDataSchema } from "../../territories/models/territories.model";
+import { VariantDataSchema } from "../../variants/models/variants.model";
 
 const {Schema, model } = mongooseService.getMongoose();
 
@@ -26,23 +30,10 @@ const LocaleDataSchema = new Schema<ILocaleData>({
   parentLocale: String,
   likelySubtags: String,
   patterns: LocalePatternsSchema,
-  language: {
-    type: 'ObjectId',
-    ref: 'Language',
-    required: true
-  },
-  script: {
-    type: 'ObjectId',
-    ref: 'Script'
-  },
-  territory: {
-    type: 'ObjectId',
-    ref: 'Territory'
-  },
-  variant: {
-    type: 'ObjectId',
-    ref: 'Variant'
-  }
+  language: LanguageDataSchema,
+  script: ScriptDataSchema,
+  territory: TerritoryDataSchema,
+  variant: VariantDataSchema
 }, {_id: false});
 
 const LocaleSchema = new Schema<ILocale>({

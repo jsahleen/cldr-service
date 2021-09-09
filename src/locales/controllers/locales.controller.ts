@@ -28,7 +28,8 @@ class LocalesController {
     let { 
       limit = 25, 
       page = 1,
-      locales = modernLocales,
+      tags = [],
+      locales = [],
       filters = availableFilters
     } = req.query;
 
@@ -51,8 +52,14 @@ class LocalesController {
       res.status(400).send();
     }
 
-    const scripts = await localesService.list(locales, filters, limit, page);
-    res.status(200).send({scripts: scripts});
+    if (typeof tags === 'string') {
+      tags = tags.split(',');
+    } else {
+      tags = locales
+    }
+
+    const loc = await localesService.list(tags, locales, filters, limit, page);
+    res.status(200).send({locales: loc});
   }
 
   async createLocale(req: express.Request, res: express.Response) {

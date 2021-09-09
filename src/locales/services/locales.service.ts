@@ -13,8 +13,8 @@ class LocalesService implements IAdmin, IPublic {
     log('Created new instance of LocalesService');
   }
   
-  async list(locales: string[], filters: string[], limit, page): Promise<ILocale[]> {
-    return localesDAO.listLocales(locales, filters, limit, page);
+  async list(tags: string[], locales: string[], filters: string[], limit, page): Promise<ILocale[]> {
+    return localesDAO.listLocales(tags, locales, filters, limit, page);
   }
 
   async create(fields: ICreateDTO): Promise<string> {
@@ -37,7 +37,7 @@ class LocalesService implements IAdmin, IPublic {
     return localesDAO.listLocalesByTagOrType(category, locales, filters, limit, page);
   }
 
-  async getVariantTags() {
+  async getLocaleTags() {
     return localesDAO.getLocaleTags();
   }
 

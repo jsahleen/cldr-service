@@ -189,10 +189,10 @@ export default class LocalesGenerator implements IGenerate {
       parentLocale: this.getParentLocale(tag),
       likelySubtags: this.getLikelySubtags(tag),
       patterns: this.getLocalePatterns(lNameData, locale),
-      language: await this.getLocaleLanguage(tag, locale),
-      script: await this.getLocaleScript(tag, locale),
-      territory: await this.getLocaleTerritory(tag, locale),
-      variant: await this.getLocaleVariant(tag, locale),
+      language: undefined,
+      script: undefined,
+      territory: undefined,
+      variant: undefined,
     }
   }
   async generateLocaleData(locale: string): Promise<ILocale[]> {

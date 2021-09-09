@@ -1,11 +1,10 @@
 import { ModuleTypes } from "../../common/enums/module.enum";
 import { IIdentity } from "../../common/interfaces/identity.interface";
 import { IModule } from "../../common/interfaces/module.interface";
-import { ILanguage } from "../../languages/interfaces/languages.interface";
-import { IScript } from "../../scripts/interfaces/scripts.interface";
-import { ITerritory } from "../../territories/interfaces/territories.interface";
-import { IVariant } from "../../variants/interfaces/variants.interface";
-import { Document, PopulatedDoc } from "mongoose";
+import { ILanguageData } from "../../languages/interfaces/languages.interface";
+import { IScriptData } from "../../scripts/interfaces/scripts.interface";
+import { ITerritoryData } from "../../territories/interfaces/territories.interface";
+import { IVariantData } from "../../variants/interfaces/variants.interface";
 
 export interface ILocaleDisplayPattern {
   standard: string
@@ -29,10 +28,10 @@ export interface ILocaleData {
   parentLocale: string
   likelySubtags: string
   patterns: ILocalePatterns
-  language: PopulatedDoc<ILanguage & Document>
-  script?: PopulatedDoc<IScript & Document>,
-  territory?: PopulatedDoc<ITerritory & Document>,
-  variant?: PopulatedDoc<IVariant & Document>
+  language: ILanguageData | undefined
+  script?: IScriptData | undefined,
+  territory?: ITerritoryData | undefined,
+  variant?: IVariantData | undefined
 }
 
 export interface ILocale extends IModule<ILocaleData> {
