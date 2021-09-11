@@ -68,11 +68,11 @@ class LocalesController {
   }
 
   async getLocaleById(req: express.Request, res: express.Response) {
-    const variant = await localesService.getById(req.params.id);
-    if (!variant) {
+    const locale = await localesService.getById(req.params.id);
+    if (!locale) {
       res.status(404).send();
     }
-    res.status(200).send(variant);
+    res.status(200).send(locale);
   }
 
   async updateLocaleById(req: express.Request, res: express.Response) {
@@ -114,8 +114,8 @@ class LocalesController {
       res.status(400).send();
     }
 
-    const variants = await localesService.listByNameOrType(tag, locales, filters, limit, page);
-    res.status(200).send({variants: variants});
+    const loc = await localesService.listByNameOrType(tag, locales, filters, limit, page);
+    res.status(200).send({locales: loc});
   }
 }
 
