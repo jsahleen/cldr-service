@@ -31,7 +31,7 @@ export interface ILocaleData {
   language: ILanguageData | undefined
   script?: IScriptData | undefined,
   territory?: ITerritoryData | undefined,
-  variant?: IVariantData | undefined
+  variants?: IVariantData[] | undefined
 }
 
 export interface ILocale extends IModule<ILocaleData> {

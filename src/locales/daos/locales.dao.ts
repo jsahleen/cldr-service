@@ -39,7 +39,7 @@ class LocalesDAO {
       const langTag = parsed.langtag.language.language;
       const scriptTag = parsed.langtag.script;
       const territoryTag = parsed.langtag.region;
-      const variantTag = parsed.langtag.variant[0];
+      const variantTags = parsed.langtag.variant;
 
       if (filters.includes('language') && langTag) {
         const languageDoc = await languagesModel.findOne({$and: [{'main.tag': langTag},{tag: doc.tag}]});
@@ -56,9 +56,9 @@ class LocalesDAO {
         doc.main.territory = territoryDoc?.main;
       }
 
-      if (filters.includes('variant') && variantTag) {
-        const variantDoc = await variantsModel.findOne({$and: [{'main.tag': variantTag},{tag: doc.tag}]});
-        doc.main.variant = variantDoc?.main;
+      if (filters.includes('variants') && variantTags) {
+        const variantDocs = await variantsModel.find({$and: [{'main.tag': {$in: variantTags}},{tag: doc.tag}]});
+        doc.main.variants = variantDocs?.map(vDoc => vDoc.main);
       }
 
       return doc;
@@ -107,12 +107,11 @@ class LocalesDAO {
       .exec();
 
     return Promise.all(localeDocs.map(async doc => {
-      doc.main.tag = tag;
       const parsed = bcp47.parse(tag)
       const langTag = parsed.langtag.language.language;
       const scriptTag = parsed.langtag.script;
-      const territoryTag = parsed.langtag.territory;
-      const variantTag = parsed.langtag.variant[0];
+      const territoryTag = parsed.langtag.region;
+      const variantTags = parsed.langtag.variant;
 
       if (filters.includes('language') && langTag) {
         const languageDoc = await languagesModel.findOne({$and: [{'main.tag': langTag},{tag: doc.tag}]});
@@ -129,9 +128,9 @@ class LocalesDAO {
         doc.main.territory = territoryDoc?.main;
       }
 
-      if (filters.includes('variant') && variantTag) {
-        const variantDoc = await variantsModel.findOne({$and: [{'main.tag': variantTag},{tag: doc.tag}]});
-        doc.main.variant = variantDoc?.main;
+      if (filters.includes('variants') && variantTags) {
+        const variantDocs = await variantsModel.find({$and: [{'main.tag': {$in: variantTags}},{tag: doc.tag}]});
+        doc.main.variants = variantDocs?.map(vDoc => vDoc.main);
       }
 
       return doc;
