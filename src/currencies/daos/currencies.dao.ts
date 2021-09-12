@@ -15,13 +15,13 @@ class CurrenciesDAO {
     log('Created new instance of CurrenciesDAO');
   }
 
-  async listCurrencies(locales: string[], filters: string[], limit, page): Promise<ICurrency[]> {
+  async listCurrencies(codes: string[], locales: string[], filters: string[], limit, page): Promise<ICurrency[]> {
     const paths = filters.map(filter => {
       return `main.${filter}`;
     });
 
     return Currency
-      .find({ tag: { $in: locales } })
+      .find({$and: [{tag: { $in: locales }},{'main.code': codes}]})
       .select(`tag _id identity moduleType main.code ${paths.join(' ')}`)
       .limit(limit)
       .skip((page - 1) * limit)

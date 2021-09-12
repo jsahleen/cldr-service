@@ -15,13 +15,13 @@ class LanguageDAO {
     log('Created new instance of LanguagesDAO');
   }
 
-  async listLanguages(locales: string[], filters: string[], limit, page): Promise<ILanguage[]> {
+  async listLanguages(tags: string[], locales: string[], filters: string[], limit, page): Promise<ILanguage[]> {
     const paths = filters.map(filter => {
       return `main.${filter}`;
     });
 
     return Language
-      .find({ tag: { $in: locales } })
+      .find({$and: [{tag: { $in: locales }},{'main.tag': tags}]})
       .select(`tag _id identity moduleType main.tag ${paths.join(' ')}`)
       .limit(limit)
       .skip((page - 1) * limit)

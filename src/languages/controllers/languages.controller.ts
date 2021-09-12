@@ -2,10 +2,12 @@ import express from 'express';
 import languagesService from '../services/languages.service';
 import debug, { IDebugger } from 'debug';
 import availableLocales from 'cldr-core/availableLocales.json';
+import rootData from 'cldr-localenames-modern/main/root/languages.json';
 
 const log: IDebugger = debug('app:languages-controller');
 
 const modernLocales = availableLocales.availableLocales.modern;
+const availableTags = Object.keys(rootData.main.root.localeDisplayNames.languages);
 
 export const availableFilters: string[] = [
   'displayName',
@@ -26,9 +28,16 @@ class LanguagesController {
     let { 
       limit = 25, 
       page = 1,
+      tags = availableTags,
       locales = modernLocales,
       filters = availableFilters
     } = req.query;
+
+    if (typeof tags === 'string') {
+      tags = tags.split(',');
+    } else {
+      tags = availableTags as string[];
+    }
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
@@ -49,7 +58,7 @@ class LanguagesController {
       res.status(400).send();
     }
 
-    const languages = await languagesService.list(locales, filters, limit, page);
+    const languages = await languagesService.list(tags, locales, filters, limit, page);
     res.status(200).send({languages: languages});
   }
 

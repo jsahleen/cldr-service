@@ -15,13 +15,13 @@ class ScriptsDAO {
     log('Created new instance of ScriptsDAO');
   }
 
-  async listScripts(locales: string[], filters: string[], limit, page): Promise<IScript[]> {
+  async listScripts(tags: string[], locales: string[], filters: string[], limit, page): Promise<IScript[]> {
     const paths = filters.map(filter => {
       return `main.${filter}`;
     });
 
     return Script
-      .find({ tag: { $in: locales } })
+      .find({$and: [{tag: { $in: locales }},{'main.tag': tags}]})
       .select(`tag _id identity moduleType main.tag ${paths.join(' ')}`)
       .limit(limit)
       .skip((page - 1) * limit)

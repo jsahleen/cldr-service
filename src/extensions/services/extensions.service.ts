@@ -12,8 +12,8 @@ class ExtensionsService implements IAdmin, IPublic {
     log('Created new instance of ExtensionsService');
   }
   
-  async list(locales: string[], filters: string[], limit, page): Promise<IExtension[]> {
-    return extensionsDAO.listExtensions(locales, filters, limit, page);
+  async list(keys: string[], locales: string[], filters: string[], limit, page): Promise<IExtension[]> {
+    return extensionsDAO.listExtensions(keys, locales, filters, limit, page);
   }
 
   async create(fields: ICreateDTO): Promise<string> {

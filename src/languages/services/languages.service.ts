@@ -12,8 +12,8 @@ class LanguagesService implements IAdmin, IPublic {
     log('Created new instance of LanguagesService');
   }
   
-  async list(locales: string[], filters: string[], limit, page): Promise<ILanguage[]> {
-    return languagesDAO.listLanguages(locales, filters, limit, page);
+  async list(tags: string[], locales: string[], filters: string[], limit, page): Promise<ILanguage[]> {
+    return languagesDAO.listLanguages(tags, locales, filters, limit, page);
   }
 
   async create(fields: ICreateDTO): Promise<string> {

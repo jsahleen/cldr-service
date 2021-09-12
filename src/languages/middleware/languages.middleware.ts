@@ -5,8 +5,10 @@ import availableLocales from 'cldr-core/availableLocales.json';
 import { availableFilters } from '../controllers/languages.controller';
 import { IModuleMiddleware } from '../../common/interfaces/middleware.interface';
 import { body, validationResult } from 'express-validator';
-const modernLocales = availableLocales.availableLocales.modern;
+import rootData from 'cldr-localenames-modern/main/root/languages.json';
 
+const modernLocales = availableLocales.availableLocales.modern;
+const availableTags = Object.keys(rootData.main.root.localeDisplayNames.languages);
 
 const log: IDebugger = debug('app:languages-middleware');
 
@@ -71,7 +73,7 @@ class LanguagesMiddleware implements IModuleMiddleware {
     const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;
 
-    const languages = await languagesService.list(locales, filters, 1000, 1);
+    const languages = await languagesService.list(availableTags, locales, filters, 1000, 1);
 
     languages.map(language => {
       if (

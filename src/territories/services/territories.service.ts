@@ -12,8 +12,8 @@ class TerritoriesService implements IAdmin, IPublic {
     log('Created new instance of TerritoriesService');
   }
   
-  async list(locales: string[], filters: string[], limit, page): Promise<ITerritory[]> {
-    return territoriesDAO.listTerritories(locales, filters, limit, page);
+  async list(tags: string[], locales: string[], filters: string[], limit, page): Promise<ITerritory[]> {
+    return territoriesDAO.listTerritories(tags, locales, filters, limit, page);
   }
 
   async create(fields: ICreateDTO): Promise<string> {

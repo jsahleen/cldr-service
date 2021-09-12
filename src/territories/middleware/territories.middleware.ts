@@ -5,8 +5,10 @@ import availableLocales from 'cldr-core/availableLocales.json';
 import { availableFilters } from '../controllers/territories.controller';
 import { IModuleMiddleware } from '../../common/interfaces/middleware.interface';
 import { body, validationResult } from 'express-validator';
+import rootData from 'cldr-localenames-modern/main/root/territories.json';
 
 const modernLocales = availableLocales.availableLocales.modern;
+const availableTags = Object.keys(rootData.main.root.localeDisplayNames.territories);
 
 const log: IDebugger = debug('app:territories-middleware');
 
@@ -71,7 +73,7 @@ class TerritoriesMiddleware implements IModuleMiddleware {
     const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;
 
-    const scripts = await territoriesService.list(locales, filters, 1000, 1);
+    const scripts = await territoriesService.list(availableTags, locales, filters, 1000, 1);
 
     scripts.map(script => {
       if (

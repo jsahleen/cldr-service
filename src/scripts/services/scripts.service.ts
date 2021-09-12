@@ -12,8 +12,8 @@ class ScriptsService implements IAdmin, IPublic {
     log('Created new instance of ScriptsService');
   }
   
-  async list(locales: string[], filters: string[], limit, page): Promise<IScript[]> {
-    return scriptsDAO.listScripts(locales, filters, limit, page);
+  async list(tags: string[], locales: string[], filters: string[], limit, page): Promise<IScript[]> {
+    return scriptsDAO.listScripts(tags, locales, filters, limit, page);
   }
 
   async create(fields: ICreateDTO): Promise<string> {

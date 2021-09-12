@@ -2,10 +2,12 @@ import express from 'express';
 import NumberSystemsService from '../services/numbers.service';
 import debug, { IDebugger } from 'debug';
 import availableLocales from 'cldr-core/availableLocales.json';
+import rootData from 'cldr-localenames-modern/main/root/localeDisplayNames.json';
 
 const log: IDebugger = debug('app:numbersystem-controller');
 
 const modernLocales = availableLocales.availableLocales.modern;
+const availableSystems = Object.keys(rootData.main.root.localeDisplayNames.types.numbers)
 
 export const availableFilters: string[] = [
   'digits',
@@ -27,9 +29,16 @@ class NumberSystemController {
     let { 
       limit = 25, 
       page = 1,
+      systems = availableSystems,
       locales = modernLocales,
       filters = availableFilters
     } = req.query;
+
+    if (typeof systems === 'string') {
+      systems = systems.split(',');
+    } else {
+      systems = availableSystems as string[];
+    }
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
@@ -50,7 +59,7 @@ class NumberSystemController {
       res.status(400).send();
     }
 
-    const numberSystems = await NumberSystemsService.list(locales, filters, limit, page);
+    const numberSystems = await NumberSystemsService.list(systems, locales, filters, limit, page);
     res.status(200).send({numberSystems: numberSystems});
   }
 

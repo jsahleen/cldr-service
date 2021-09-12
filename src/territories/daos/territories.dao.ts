@@ -15,13 +15,13 @@ class TerritoriesDAO {
     log('Created new instance of TerritoriesDAO');
   }
 
-  async listTerritories(locales: string[], filters: string[], limit, page): Promise<ITerritory[]> {
+  async listTerritories(tags: string[], locales: string[], filters: string[], limit, page): Promise<ITerritory[]> {
     const paths = filters.map(filter => {
       return `main.${filter}`;
     });
 
     return Territory
-      .find({ tag: { $in: locales } })
+      .find({$and: [{tag: { $in: locales }},{'main.tag': tags}]})
       .select(`tag _id identity moduleType main.tag ${paths.join(' ')}`)
       .limit(limit)
       .skip((page - 1) * limit)

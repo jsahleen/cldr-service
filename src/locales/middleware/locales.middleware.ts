@@ -7,6 +7,7 @@ import { IModuleMiddleware } from '../../common/interfaces/middleware.interface'
 import { body, validationResult } from 'express-validator';
 
 const modernLocales = availableLocales.availableLocales.modern;
+const availableTags = modernLocales.filter(tag => tag !== 'root');
 
 const log: IDebugger = debug('app:locales-middleware');
 
@@ -67,7 +68,7 @@ class LocalesMiddleware implements IModuleMiddleware {
   async ensureDocumentDoesNotExist(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
     const tagsString = req.query.tags as string | undefined;
     const localeString = req.query.locales as string | undefined;
-    const tags = tagsString?.split(',') || modernLocales;
+    const tags = tagsString?.split(',') || availableTags;
     const locales = localeString?.split(',') || modernLocales;
     
     const filtersString = req.query.filters as string | undefined;

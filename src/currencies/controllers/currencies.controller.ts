@@ -2,10 +2,12 @@ import express from 'express';
 import CurrenciesService from '../services/currencies.service';
 import debug, { IDebugger } from 'debug';
 import availableLocales from 'cldr-core/availableLocales.json';
+import rootCurrencies from 'cldr-numbers-modern/main/root/currencies.json';
 
 const log: IDebugger = debug('app:currencies-controller');
 
 const modernLocales = availableLocales.availableLocales.modern;
+const availableCodes = Object.keys(rootCurrencies.main.root.numbers.currencies);
 
 export const availableFilters: string[] = [
   'displayName',
@@ -26,9 +28,16 @@ class CurrenciesController {
     let { 
       limit = 25, 
       page = 1,
+      codes = availableCodes,
       locales = modernLocales,
       filters = availableFilters
     } = req.query;
+
+    if (typeof codes === 'string') {
+      codes = codes.split(',');
+    } else {
+      codes = availableCodes as string[];
+    }
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
@@ -49,7 +58,7 @@ class CurrenciesController {
       res.status(400).send();
     }
 
-    const currencies = await CurrenciesService.list(locales, filters, limit, page);
+    const currencies = await CurrenciesService.list(codes, locales, filters, limit, page);
     res.status(200).send({currencies: currencies});
   }
 

@@ -2,10 +2,12 @@ import express from 'express';
 import variantsService from '../services/variants.service';
 import debug, { IDebugger } from 'debug';
 import availableLocales from 'cldr-core/availableLocales.json';
+import rootData from 'cldr-localenames-modern/main/root/variants.json';
 
 const log: IDebugger = debug('app:variants-controller');
 
 const modernLocales = availableLocales.availableLocales.modern;
+const availableTags = Object.keys(rootData.main.root.localeDisplayNames.variants);
 
 export const availableFilters: string[] = [
   'tag',
@@ -22,9 +24,16 @@ class VariantsController {
     let { 
       limit = 25, 
       page = 1,
+      tags = availableTags,
       locales = modernLocales,
       filters = availableFilters
     } = req.query;
+
+    if (typeof tags === 'string') {
+      tags = tags.split(',');
+    } else {
+      tags = availableTags as string[];
+    }
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
@@ -45,7 +54,7 @@ class VariantsController {
       res.status(400).send();
     }
 
-    const scripts = await variantsService.list(locales, filters, limit, page);
+    const scripts = await variantsService.list(tags, locales, filters, limit, page);
     res.status(200).send({scripts: scripts});
   }
 
