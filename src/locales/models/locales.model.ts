@@ -33,7 +33,7 @@ const LocaleDataSchema = new Schema<ILocaleData>({
   language: LanguageDataSchema,
   script: ScriptDataSchema,
   territory: TerritoryDataSchema,
-  variant: VariantDataSchema
+  variants: [VariantDataSchema]
 }, {_id: false});
 
 const LocaleSchema = new Schema<ILocale>({

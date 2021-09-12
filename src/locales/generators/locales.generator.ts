@@ -153,7 +153,7 @@ export default class LocalesGenerator implements IGenerate {
       language: undefined,
       script: undefined,
       territory: undefined,
-      variant: undefined,
+      variants: undefined,
     }
   }
   async generateLocaleData(locale: string): Promise<ILocale[]> {

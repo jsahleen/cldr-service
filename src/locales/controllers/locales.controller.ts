@@ -15,7 +15,7 @@ export const availableFilters: string[] = [
   'language',
   'script',
   'territory',
-  'variant'
+  'variants'
 ];
 
 class LocalesController {
