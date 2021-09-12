@@ -29,7 +29,7 @@ export interface ITerritoryData {
     gdp: number,
     population: number,
     literacyPercent: number,
-    parentTerritory: string,
+    parentTerritories: string[],
     contains: string[]
     languages: ITerritoryLanguage[],
     currencies: ITerritoryCurrency[]

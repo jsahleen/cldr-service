@@ -111,13 +111,14 @@ export default class TerritoriesGenerator implements IGenerate {
     return altDisplayNames;
   }
 
-  private getParentTerritory(tag: string): string {
+  private getParentTerritories(tag: string): string[] {
     const containers = Object.keys(territoryContainment.supplemental.territoryContainment).filter(key => {
       return !key.includes['status-deprecated'];
     });
-    let parent = '';
+    const parents: string[] = [];
     containers.map(container => {
       const dArray = territoryContainment.supplemental.territoryContainment[container]._contains;
+      let parent: string;
       if(dArray.includes(tag)) {
         if (
           container.includes[('status-grouping')]) {
@@ -125,9 +126,10 @@ export default class TerritoriesGenerator implements IGenerate {
         } else {
           parent = container;
         }
+        parents.push(parent);
       }
     });
-    return parent;
+    return parents;
   }
 
   private getContainedTerritories(tag: string): string[] {
@@ -179,7 +181,7 @@ export default class TerritoriesGenerator implements IGenerate {
       gdp: d && d._gdp,
       population: d && d._population,
       literacyPercent: d && d._literacyPercent && (parseInt(territoryInfo.supplemental.territoryInfo[tag]?._literacyPercent,10)/100),
-      parentTerritory: this.getParentTerritory(tag),
+      parentTerritories: this.getParentTerritories(tag),
       contains: this.getContainedTerritories(tag),
       languages: this.getTerritoryLanguages(tag),
       currencies: this.getTerritoryCurrencies(tag)
