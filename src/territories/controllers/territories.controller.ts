@@ -17,7 +17,7 @@ export const availableFilters: string[] = [
   'gdp',
   'population',
   'literacyPercent',
-  'parentTerritory',
+  'parentTerritories',
   'contains',
   'languages',
   'currencies'

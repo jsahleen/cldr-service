@@ -31,7 +31,7 @@ export const TerritoryDataSchema = new Schema<ITerritoryData>({
   gdp: Number,
   population: Number,
   literacyPercent: Number,
-  parentTerritory: String,
+  parentTerritories: [String],
   contains: [String],
   languages: [TerritoryLanguageSchema],
   currencies: [TerritoryCurrenciesSchema]
