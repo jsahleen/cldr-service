@@ -16,6 +16,7 @@ import debug from 'debug';
 
 // Import service routes
 import { CommonRoutesConfig } from './common/routes/common.routes';
+import { CoreRoutes } from './core/routes/core.routes';
 import { BlockedRoutes } from './common/routes/blocked.routes';
 import { AuthRoutes } from './auth/routes/auth.routes';
 import { UsersRoutes } from './users/routes/users.routes';
@@ -54,6 +55,7 @@ app.use(expressWinston.logger(loggerOptions));
 
 // Route configuration
 const routes: Array<CommonRoutesConfig> = [];
+routes.push(new CoreRoutes(app));
 routes.push(new BlockedRoutes(app));
 routes.push(new UsersRoutes(app));
 routes.push(new AuthRoutes(app));
