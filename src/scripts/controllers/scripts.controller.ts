@@ -2,10 +2,12 @@ import express from 'express';
 import scriptsService from '../services/scripts.service';
 import debug, { IDebugger } from 'debug';
 import availableLocales from 'cldr-core/availableLocales.json';
+import rootData from 'cldr-localenames-modern/main/root/scripts.json';
 
 const log: IDebugger = debug('app:scripts-controller');
 
 const modernLocales = availableLocales.availableLocales.modern;
+const availableTags = Object.keys(rootData.main.root.localeDisplayNames.scripts);
 
 export const availableFilters: string[] = [
   'tag',
@@ -24,9 +26,16 @@ class ScriptsController {
     let { 
       limit = 25, 
       page = 1,
+      tags = availableTags,
       locales = modernLocales,
       filters = availableFilters
     } = req.query;
+
+    if (typeof tags === 'string') {
+      tags = tags.split(',');
+    } else {
+      tags = availableTags as string[];
+    }
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
@@ -47,7 +56,7 @@ class ScriptsController {
       res.status(400).send();
     }
 
-    const scripts = await scriptsService.list(locales, filters, limit, page);
+    const scripts = await scriptsService.list(tags, locales, filters, limit, page);
     res.status(200).send({scripts: scripts});
   }
 

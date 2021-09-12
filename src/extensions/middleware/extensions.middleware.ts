@@ -5,8 +5,10 @@ import availableLocales from 'cldr-core/availableLocales.json';
 import { availableFilters } from '../controllers/extensions.controller';
 import { IModuleMiddleware } from '../../common/interfaces/middleware.interface';
 import { body, validationResult } from 'express-validator';
+import rootData from 'cldr-localenames-modern/main/root/localeDisplayNames.json';
 
 const modernLocales = availableLocales.availableLocales.modern;
+const availableKeys = Object.keys(rootData.main.root.localeDisplayNames.keys);
 
 const log: IDebugger = debug('app:extensions-middleware');
 
@@ -71,7 +73,7 @@ class ExtensionsMiddleware implements IModuleMiddleware {
     const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;
 
-    const extensions = await extensionsService.list(locales, filters, 1000, 1);
+    const extensions = await extensionsService.list(availableKeys, locales, filters, 1000, 1);
 
     extensions.map(extension => {
       if (

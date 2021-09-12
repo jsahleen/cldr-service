@@ -5,8 +5,10 @@ import availableLocales from 'cldr-core/availableLocales.json';
 import { availableFilters } from '../controllers/currencies.controller';
 import { IModuleMiddleware } from '../../common/interfaces/middleware.interface';
 import { body, validationResult } from 'express-validator';
-const modernLocales = availableLocales.availableLocales.modern;
+import rootData from 'cldr-numbers-modern/main/root/currencies.json';
 
+const modernLocales = availableLocales.availableLocales.modern;
+const availableCodes = Object.keys(rootData.main.root.numbers.currencies);
 
 const log: IDebugger = debug('app:currencies-middleware');
 
@@ -74,7 +76,7 @@ class CurrenciesMiddleware implements IModuleMiddleware {
     const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;
 
-    const currencies = await currenciesService.list(locales, filters, 1000, 1);
+    const currencies = await currenciesService.list(availableCodes, locales, filters, 1000, 1);
 
     currencies.map(currency => {
       if (

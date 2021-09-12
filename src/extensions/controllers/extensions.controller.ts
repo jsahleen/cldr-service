@@ -2,10 +2,12 @@ import express from 'express';
 import extensionsService from '../services/extensions.service';
 import debug, { IDebugger } from 'debug';
 import availableLocales from 'cldr-core/availableLocales.json';
+import rootData from 'cldr-localenames-modern/main/root/localeDisplayNames.json'
 
 const log: IDebugger = debug('app:extensions-controller');
 
 const modernLocales = availableLocales.availableLocales.modern;
+const availableKeys = Object.keys(rootData.main.root.localeDisplayNames.keys);
 
 export const availableFilters: string[] = [
   'key',
@@ -23,9 +25,16 @@ class ExtensionsController {
     let { 
       limit = 25, 
       page = 1,
+      keys = availableKeys,
       locales = modernLocales,
       filters = availableFilters
     } = req.query;
+
+    if (typeof keys === 'string') {
+      keys = keys.split(',');
+    } else {
+      keys = availableKeys as string[];
+    }
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
@@ -46,7 +55,7 @@ class ExtensionsController {
       res.status(400).send();
     }
 
-    const extensions = await extensionsService.list(locales, filters, limit, page);
+    const extensions = await extensionsService.list(keys, locales, filters, limit, page);
     res.status(200).send({extensions: extensions});
   }
 

@@ -15,13 +15,13 @@ class VariantsDAO {
     log('Created new instance of VariantsDAO');
   }
 
-  async listVariants(locales: string[], filters: string[], limit, page): Promise<IVariant[]> {
+  async listVariants(tags: string[], locales: string[], filters: string[], limit, page): Promise<IVariant[]> {
     const paths = filters.map(filter => {
       return `main.${filter}`;
     });
 
     return Variant
-      .find({ tag: { $in: locales } })
+      .find({$and: [{tag: { $in: locales }},{'main.tag': tags}]})
       .select(`tag _id identity moduleType main.tag ${paths.join(' ')}`)
       .limit(limit)
       .skip((page - 1) * limit)

@@ -12,8 +12,8 @@ class NumberSystemsService implements IAdmin, IPublic {
     log('Created new instance of NumberSystemsService');
   }
   
-  async list(locales: string[], filters: string[], limit, page): Promise<INumberSystem[]> {
-    return NumbersSystemsDAO.listNumberSystems(locales, filters, limit, page);
+  async list(systems: string[], locales: string[], filters: string[], limit, page): Promise<INumberSystem[]> {
+    return NumbersSystemsDAO.listNumberSystems(systems, locales, filters, limit, page);
   }
 
   async create(fields: ICreateDTO): Promise<string> {

@@ -15,13 +15,13 @@ class ExtensionsDAO {
     log('Created new instance of ExensionsDAO');
   }
 
-  async listExtensions(locales: string[], filters: string[], limit, page): Promise<IExtension[]> {
+  async listExtensions(keys: string[], locales: string[], filters: string[], limit, page): Promise<IExtension[]> {
     const paths = filters.map(filter => {
       return `main.${filter}`;
     });
 
     return Extension
-      .find({ tag: { $in: locales } })
+      .find({$and: [{tag: { $in: locales }},{'main.key': keys}]})
       .select(`tag _id identity moduleType main.key ${paths.join(' ')}`)
       .limit(limit)
       .skip((page - 1) * limit)

@@ -12,8 +12,8 @@ class VariantsService implements IAdmin, IPublic {
     log('Created new instance of VariantsService');
   }
   
-  async list(locales: string[], filters: string[], limit, page): Promise<IVariant[]> {
-    return variantsDao.listVariants(locales, filters, limit, page);
+  async list(tags: string[], locales: string[], filters: string[], limit, page): Promise<IVariant[]> {
+    return variantsDao.listVariants(tags, locales, filters, limit, page);
   }
 
   async create(fields: ICreateDTO): Promise<string> {

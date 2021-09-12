@@ -5,8 +5,10 @@ import availableLocales from 'cldr-core/availableLocales.json';
 import { availableFilters } from '../controllers/numbers.controller';
 import { IModuleMiddleware } from '../../common/interfaces/middleware.interface';
 import { body, validationResult } from 'express-validator';
-const modernLocales = availableLocales.availableLocales.modern;
+import rootData from 'cldr-localenames-modern/main/root/localeDisplayNames.json';
 
+const modernLocales = availableLocales.availableLocales.modern;
+const availableSystems = Object.keys(rootData.main.root.localeDisplayNames.types.numbers)
 
 const log: IDebugger = debug('app:users-controller');
 
@@ -74,7 +76,7 @@ class NumberSystemsMiddleware implements IModuleMiddleware {
     const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;
 
-    const numberSystems = await numbersService.list(locales, filters, 1000, 1);
+    const numberSystems = await numbersService.list(availableSystems, locales, filters, 1000, 1);
 
     numberSystems.map(system => {
       if (

@@ -12,8 +12,8 @@ class NumberSystemsService implements IAdmin, IPublic {
     log('Created new instance of CurrencyService');
   }
   
-  async list(locales: string[], filters: string[], limit, page): Promise<ICurrency[]> {
-    return CurrenciesDAO.listCurrencies(locales, filters, limit, page);
+  async list(codes: string[], locales: string[], filters: string[], limit, page): Promise<ICurrency[]> {
+    return CurrenciesDAO.listCurrencies(codes, locales, filters, limit, page);
   }
 
   async create(fields: ICreateDTO): Promise<string> {

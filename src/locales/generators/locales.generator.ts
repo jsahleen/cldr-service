@@ -8,19 +8,12 @@ import { IIdentity } from '../../common/interfaces/identity.interface';
 import { IGenerate } from '../../common/interfaces/generate.interace';
 import { ILocale, ILocaleData, ILocalePatterns } from '../interfaces/locales.interface';
 
-import Language from '../../languages/models/languages.model';
-import Script from '../../scripts/models/scripts.model';
-import Territory from '../../territories/models/territories.model';
-import Variant from '../../variants/models/variants.model';
-
 import * as bcp47 from 'bcp47';
 
 import ProgressBar from 'progress';
 
 import parentLocalesData from 'cldr-core/supplemental/parentLocales.json';
 import likelySubtagsData from 'cldr-core/supplemental/likelySubtags.json';
-
-import { ObjectId } from 'mongoose';
 
 const log: IDebugger = debug('app:locales-generator');
 
@@ -149,38 +142,6 @@ export default class LocalesGenerator implements IGenerate {
       }
     }
     return pLocale || 'root';
-  }
-
-  private async getLocaleLanguage(tag: string, locale: string): Promise<ObjectId> {
-    const parsed = bcp47.parse(tag);
-    const langTag = parsed.langtag.language.language;
-    
-    const language = await Language.findOne({$and: [{'main.tag': langTag}, {tag: locale}]}).select('_id').exec();
-    return language?._id;
-  }
-
-  private async getLocaleScript(tag: string, locale: string): Promise<ObjectId> {
-    const parsed = bcp47.parse(tag);
-    const scriptTag = parsed.langtag.script;
-
-    const script = await Script.findOne({$and: [{'main.tag': scriptTag}, {tag: locale}]}).exec();
-    return script?._id
-  }
-
-  private async getLocaleTerritory(tag: string, locale: string): Promise<ObjectId> {
-    const parsed = bcp47.parse(tag);
-    const territoryTag = parsed.langtag.region;
-
-    const territory = await Territory.findOne({$and: [{'main.tag': territoryTag}, {tag: locale}]}).exec();
-    return territory?._id
-  }
-
-  private async getLocaleVariant(tag: string, locale: string): Promise<ObjectId> {
-    const parsed = bcp47.parse(tag);
-    const variantTag = parsed.langtag.variant;
-
-    const variant = await Variant.findOne({$and: [{'main.tag': variantTag}, {tag: locale}]}).exec();
-    return variant?._id
   }
 
   private async getMain(lNameData, tag, locale): Promise<ILocaleData> {

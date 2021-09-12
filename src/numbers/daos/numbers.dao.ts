@@ -15,13 +15,13 @@ class NumbersSystemsDAO {
     log('Created new instance of NumberSystemsDAO');
   }
 
-  async listNumberSystems(locales: string[], filters: string[], limit, page): Promise<INumberSystem[]> {
+  async listNumberSystems(systems: string[], locales: string[], filters: string[], limit, page): Promise<INumberSystem[]> {
     const paths = filters.map(filter => {
       return `main.${filter}`;
     });
 
     return NumberSystem
-      .find({ tag: { $in: locales } })
+      .find({$and: [{tag: { $in: locales }},{'main.name': systems}]})
       .select(`tag _id identity moduleType main.name ${paths.join(' ')}`)
       .limit(limit)
       .skip((page - 1) * limit)

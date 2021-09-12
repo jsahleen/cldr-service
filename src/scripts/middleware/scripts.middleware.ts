@@ -5,8 +5,10 @@ import availableLocales from 'cldr-core/availableLocales.json';
 import { availableFilters } from '../controllers/scripts.controller';
 import { IModuleMiddleware } from '../../common/interfaces/middleware.interface';
 import { body, validationResult } from 'express-validator';
+import rootData from 'cldr-localenames-modern/main/root/scripts.json';
 
 const modernLocales = availableLocales.availableLocales.modern;
+const availableTags = Object.keys(rootData.main.root.localeDisplayNames.scripts);
 
 const log: IDebugger = debug('app:scripts-middleware');
 
@@ -71,7 +73,7 @@ class ScriptsMiddleware implements IModuleMiddleware {
     const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;
 
-    const scripts = await scriptsService.list(locales, filters, 1000, 1);
+    const scripts = await scriptsService.list(availableTags, locales, filters, 1000, 1);
 
     scripts.map(script => {
       if (
