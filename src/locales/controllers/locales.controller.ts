@@ -6,6 +6,7 @@ import availableLocales from 'cldr-core/availableLocales.json';
 const log: IDebugger = debug('app:locales-controller');
 
 const modernLocales = availableLocales.availableLocales.modern;
+const availableTags = modernLocales.filter(l => l !== 'root');
 
 export const availableFilters: string[] = [
   'tag',
@@ -28,10 +29,16 @@ class LocalesController {
     let { 
       limit = 25, 
       page = 1,
-      tags = [],
-      locales = [],
+      tags = availableTags,
+      locales = modernLocales,
       filters = availableFilters
     } = req.query;
+
+    if (typeof tags === 'string') {
+      tags = tags.split(',');
+    } else {
+      tags = availableTags as string[];
+    }
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
@@ -50,12 +57,6 @@ class LocalesController {
 
     if (isNaN(limit) || isNaN(page)) {
       res.status(400).send();
-    }
-
-    if (typeof tags === 'string') {
-      tags = tags.split(',');
-    } else {
-      tags = locales
     }
 
     const loc = await localesService.list(tags, locales, filters, limit, page);
