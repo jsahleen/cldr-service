@@ -8,12 +8,7 @@ import { IIdentity } from '../../common/interfaces/identity.interface';
 import { IGenerate } from '../../common/interfaces/generate.interace';
 import { ILocale, ILocaleData, ILocalePatterns } from '../interfaces/locales.interface';
 
-import * as bcp47 from 'bcp47';
-
 import ProgressBar from 'progress';
-
-import parentLocalesData from 'cldr-core/supplemental/parentLocales.json';
-import likelySubtagsData from 'cldr-core/supplemental/likelySubtags.json';
 
 const log: IDebugger = debug('app:locales-generator');
 
@@ -103,52 +98,11 @@ export default class LocalesGenerator implements IGenerate {
     }
   }
 
-  private getLikelySubtags(tag) {
-    let lst = likelySubtagsData.supplemental.likelySubtags[tag];
-
-    if (!lst) {
-      const parsed = bcp47.parse(tag);
-      const language = parsed.langtag.language.language;
-      let script = parsed.langtag.script;
-      let territory = parsed.langtag.region;
-
-      const lst2 = likelySubtagsData.supplemental.likelySubtags[language];
-      
-      if (!script) {
-        script = bcp47.parse(lst2).langtag.script;
-      }
-
-      if (!territory) {
-        territory = bcp47.parse(lst2).langtag.region;
-      }
-
-      lst = [language, script, territory].join('-');
-    }
-
-    return lst;
-  }
-
-  private getParentLocale(tag): string {
-    let pLocale = parentLocalesData.supplemental.parentLocales.parentLocale[tag];
-    if (!pLocale) {
-      const likelySubtags = this.getLikelySubtags(tag).split('-') || [];
-      while (likelySubtags.length > 0) {
-        const candidate = likelySubtags.join('-');
-        if (parentLocalesData.supplemental.parentLocales.parentLocale[candidate]) {
-          pLocale = parentLocalesData.supplemental.parentLocales.parentLocale[candidate];
-          break;
-        }
-        likelySubtags.pop();
-      }
-    }
-    return pLocale || 'root';
-  }
-
-  private async getMain(lNameData, tag, locale): Promise<ILocaleData> {
+  private async getMain(lNameData, locale): Promise<ILocaleData> {
     return {
-      tag: tag,
-      parentLocale: this.getParentLocale(tag),
-      likelySubtags: this.getLikelySubtags(tag),
+      tag: undefined,
+      parentLocale: undefined,
+      likelySubtags: undefined,
       patterns: this.getLocalePatterns(lNameData, locale),
       language: undefined,
       script: undefined,
@@ -158,19 +112,15 @@ export default class LocalesGenerator implements IGenerate {
   }
   async generateLocaleData(locale: string): Promise<ILocale[]> {
     const localeNamesData = await this.getData(`${NODE_MODULES}/cldr-localenames-modern/main/{{locale}}/localeDisplayNames.json`, locale);
-    const tags = availableLocales.availableLocales.modern.filter(tag => tag !== 'root');
 
-    const output = tags.map(async tag => {
-      const module = {
-        tag: locale,
-        identity: this.getIdentity(localeNamesData, locale),
-        moduleType: ModuleTypes.LOCALES,
-        main: await this.getMain(localeNamesData, tag, locale)
-      };
+    const module = {
+      tag: locale,
+      identity: this.getIdentity(localeNamesData, locale),
+      moduleType: ModuleTypes.LOCALES,
+      main: await this.getMain(localeNamesData, locale)
+    };
   
-      return module;  
-    });
-
-    return Promise.all(output).then();
+    // Annoying typescript hack
+    return Promise.all([module]).then();
   }
 }

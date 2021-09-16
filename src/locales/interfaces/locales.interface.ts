@@ -24,9 +24,9 @@ export interface ILocalePatterns {
 }
 
 export interface ILocaleData {
-  tag: string
-  parentLocale: string
-  likelySubtags: string
+  tag?: string
+  parentLocale?: string
+  likelySubtags?: string
   patterns: ILocalePatterns
   language: ILanguageData | undefined
   script?: IScriptData | undefined,

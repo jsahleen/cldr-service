@@ -8,11 +8,13 @@ import scriptsModel from '../../scripts/models/scripts.model';
 import territoriesModel from '../../territories/models/territories.model';
 import variantsModel from '../../variants/models/variants.model';
 
-const log: IDebugger = debug('app:locales-dao');
+import availableLocales from 'cldr-core/availableLocales.json';
+import likelySubtagsData from 'cldr-core/supplemental/likelySubtags.json';
+import parentLocalesData from 'cldr-core/supplemental/parentLocales.json';
 
-function onlyUnique(value, index, self) {
-  return self.indexOf(value) === index;
-}
+const modernLocales = availableLocales.availableLocales.modern;
+
+const log: IDebugger = debug('app:locales-dao');
 
 class LocalesDAO {
 
@@ -23,46 +25,54 @@ class LocalesDAO {
   async listLocales(tags: string[], locales: string[], filters: string[], limit, page): Promise<ILocale[]> {
     const paths = filters.map(filter => {
       return `main.${filter}`;
-    });
+    }); 
 
     const localeDocs = await Locale
-      .find({$and: [{tag: { $in: locales }}, {'main.tag': {$in: tags}}]})
+      .find({tag: { $in: locales }})
       .select(`tag _id identity moduleType main.tag ${paths.join(' ')}`)
-      .limit(limit)
-      .skip((page - 1) * limit)
-      .sort({tag: 'asc', 'main.tag': 'asc'})
+      .limit(limit / tags.length)
+      .skip(((page - 1) * (limit / tags.length)))
+      .sort({tag: 'asc'})
       .exec();
 
     return Promise.all(localeDocs.map(async doc => {
-      const parsed = bcp47.parse(doc.main.tag);
+      return Promise.all(tags.map(async tag => {
+        const cDoc = JSON.parse(JSON.stringify(doc)); // makes a copy of the doc
 
-      const langTag = parsed.langtag.language.language;
-      const scriptTag = parsed.langtag.script;
-      const territoryTag = parsed.langtag.region;
-      const variantTags = parsed.langtag.variant;
+        const parsed = bcp47.parse(tag);
 
-      if (filters.includes('language') && langTag) {
-        const languageDoc = await languagesModel.findOne({$and: [{'main.tag': langTag},{tag: doc.tag}]});
-        doc.main.language = languageDoc?.main;
-      }
+        const langTag = parsed.langtag.language.language;
+        const scriptTag = parsed.langtag.script;
+        const territoryTag = parsed.langtag.region;
+        const variantTags = parsed.langtag.variant;
 
-      if (filters.includes('script') && scriptTag) {
-        const scriptDoc = await scriptsModel.findOne({$and: [{'main.tag': scriptTag},{tag: doc.tag}]});
-        doc.main.script = scriptDoc?.main;
-      }
+        if (filters.includes('language') && langTag) {
+          const languageDoc = await languagesModel.findOne({$and: [{'main.tag': langTag},{tag: cDoc.tag}]});
+          cDoc.main.language = languageDoc?.main;
+        }
 
-      if (filters.includes('territory') && territoryTag) {
-        const territoryDoc = await territoriesModel.findOne({$and: [{'main.tag': territoryTag},{tag: doc.tag}]});
-        doc.main.territory = territoryDoc?.main;
-      }
+        if (filters.includes('script') && scriptTag) {
+          const scriptDoc = await scriptsModel.findOne({$and: [{'main.tag': scriptTag},{tag: cDoc.tag}]});
+          cDoc.main.script = scriptDoc?.main;
+        }
 
-      if (filters.includes('variants') && variantTags) {
-        const variantDocs = await variantsModel.find({$and: [{'main.tag': {$in: variantTags}},{tag: doc.tag}]});
-        doc.main.variants = variantDocs?.map(vDoc => vDoc.main);
-      }
+        if (filters.includes('territory') && territoryTag) {
+          const territoryDoc = await territoriesModel.findOne({$and: [{'main.tag': territoryTag},{tag: cDoc.tag}]});
+          cDoc.main.territory = territoryDoc?.main;
+        }
 
-      return doc;
+        if (filters.includes('variants') && variantTags) {
+          const variantDocs = await variantsModel.find({$and: [{'main.tag': {$in: variantTags}},{tag: cDoc.tag}]});
+          cDoc.main.variants = variantDocs?.map(vDoc => vDoc.main);
+        }
 
+        cDoc.main.tag = tag;
+        cDoc.main.parentLocale = this.getParentLocale(tag);
+        cDoc.main.likelySubtags = this.getLikelySubtags(tag);
+
+        return cDoc;
+
+      }));
     })).then(arr => {
       return arr.flat();
     });
@@ -99,11 +109,11 @@ class LocalesDAO {
     });
 
     const localeDocs = await Locale
-      .find({$and: [{tag: { $in: locales }, 'main.tag': tag}]})
-      .select(`_id tag identity moduleType main.tag ${paths.join(' ')}`)
+      .find({tag: { $in: locales }})
+      .select(`tag _id identity moduleType main.tag ${paths.join(' ')}`)
       .limit(limit)
       .skip((page - 1) * limit)
-      .sort({tag: 'asc', 'main.tag': 'asc'})
+      .sort({tag: 'asc'})
       .exec();
 
     return Promise.all(localeDocs.map(async doc => {
@@ -138,11 +148,48 @@ class LocalesDAO {
   }
 
   async getLocaleTags(): Promise<string[]> {
-    const results = await Locale.find().select('main.tag')
-      .exec();
-    return  results.map(result => {
-      return result.main.tag;
-    }).filter(onlyUnique);
+    return modernLocales.filter(l => l !== 'root');
+  }
+
+  private getLikelySubtags(tag) {
+    let lst = likelySubtagsData.supplemental.likelySubtags[tag];
+
+    if (!lst) {
+      const parsed = bcp47.parse(tag);
+      const language = parsed.langtag.language.language;
+      let script = parsed.langtag.script;
+      let territory = parsed.langtag.region;
+
+      const lst2 = likelySubtagsData.supplemental.likelySubtags[language];
+      
+      if (!script) {
+        script = bcp47.parse(lst2).langtag.script;
+      }
+
+      if (!territory) {
+        territory = bcp47.parse(lst2).langtag.region;
+      }
+
+      lst = [language, script, territory].join('-');
+    }
+
+    return lst;
+  }
+
+  private getParentLocale(tag): string {
+    let pLocale = parentLocalesData.supplemental.parentLocales.parentLocale[tag];
+    if (!pLocale) {
+      const likelySubtags = this.getLikelySubtags(tag).split('-') || [];
+      while (likelySubtags.length > 0) {
+        const candidate = likelySubtags.join('-');
+        if (parentLocalesData.supplemental.parentLocales.parentLocale[candidate]) {
+          pLocale = parentLocalesData.supplemental.parentLocales.parentLocale[candidate];
+          break;
+        }
+        likelySubtags.pop();
+      }
+    }
+    return pLocale || 'root';
   }
 
 } 
