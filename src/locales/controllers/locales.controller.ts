@@ -34,12 +34,6 @@ class LocalesController {
       filters = availableFilters
     } = req.query;
 
-    if (typeof tags === 'string') {
-      tags = tags.split(',');
-    } else {
-      tags = availableTags as string[];
-    }
-
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
@@ -57,6 +51,13 @@ class LocalesController {
 
     if (isNaN(limit) || isNaN(page)) {
       res.status(400).send();
+    }
+
+    if (typeof tags === 'string') {
+      tags = tags.split(',');
+    } else {
+      const before = locales.length > limit ? limit : 1
+      tags = availableTags.slice(0, before) as string[];
     }
 
     const loc = await localesService.list(tags, locales, filters, limit, page);

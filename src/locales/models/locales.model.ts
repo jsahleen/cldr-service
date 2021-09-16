@@ -26,7 +26,7 @@ const LocalePatternsSchema = new Schema<ILocalePatterns>({
 }, {_id: false})
 
 const LocaleDataSchema = new Schema<ILocaleData>({
-  tag: {type: String, required: true},
+  tag: String,
   parentLocale: String,
   likelySubtags: String,
   patterns: LocalePatternsSchema,
