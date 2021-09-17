@@ -1,6 +1,16 @@
 version: '3'
 services:
-  mongo:
+  cldr-app:
+    container_name: cldr-app
+    image: jsahleen/cldr-app
+    restart: always
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+  cldr-db:
+    container_name: cldr-db
     image: mongo
     volumes:
       - ./data:/data/db
