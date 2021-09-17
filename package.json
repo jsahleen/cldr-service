@@ -20,6 +20,7 @@
     "express-winston": "^4.1.0",
     "helmet": "^4.6.0",
     "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.0.6",
     "progress": "^2.0.3",
     "ts-node": "^10.2.1",
     "winston": "^3.3.3"
