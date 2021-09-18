@@ -4,9 +4,8 @@ services:
     container_name: cldr-service
     image: jsahleen/cldr-service
     restart: always
-    build: .
     ports:
-      - "${CLDR_PORT}:${CLDR_PORT}"
+      - "3000:3000"
     depends_on:
       - mongo
     env_file:
