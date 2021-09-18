@@ -1,8 +1,8 @@
 version: '3'
 services:
-  cldr-app:
-    container_name: cldr-app
-    image: jsahleen/cldr-app
+  cldr-service:
+    container_name: cldr-service
+    image: jsahleen/cldr-service
     restart: always
     build: .
     ports:
