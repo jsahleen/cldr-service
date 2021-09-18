@@ -6,7 +6,7 @@ services:
     restart: always
     build: .
     ports:
-      - ${CLDR_PORT}:${CLDR_PORT}
+      - "${CLDR_PORT}:${CLDR_PORT}"
     depends_on:
       - mongo
     env_file:
