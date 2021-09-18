@@ -5,7 +5,7 @@ import crypto from 'crypto';
 
 const log: IDebugger = debug('app:auth-controller');
 
-const jwtSecret: string | undefined = process.env.JWT_SECRET;
+const jwtSecret: string = process.env.CLDR_JWT_SECRET || "b2upnzpr/XkBCpP";
 const tokenExpirationInSeconds = 36000;
 
 

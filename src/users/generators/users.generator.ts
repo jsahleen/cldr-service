@@ -18,18 +18,18 @@ export default class UsersGenerator {
     // Root user can create other users
     // Root user email and pass defined in .env filt
 
-    if (!process.env.ROOT_USER_EMAIL || !process.env.ROOT_USER_PASSWORD) {
-      log('Root user email or password not defined.');
-      process.exit(1);
-    }
-    const adminUser = await usersDao.getUserByEmail(process.env.ROOT_USER_EMAIL);
+    const rEmail = process.env.CLDR_ROOT_USER_EMAIL || 'root@example.com';
+    const rPass = process.env.CLDR_ROOT_USER_PASSWORD || 'P@$sW0rD';
+
+    const adminUser = await usersDao.getUserByEmail(rEmail);
     log(adminUser);
+
     if (!adminUser) {
       const adminUserData: ICreateDTO = {
         firstName: 'root',
         lastName: 'user',
-        email: process.env.ROOT_USER_EMAIL,
-        password: await argon2.hash(process.env.ROOT_USER_PASSWORD),
+        email: rEmail,
+        password: await argon2.hash(rPass),
         permissionsFlag: Permissions.ALL_PERMISSIONS
       };
       await UsersService.add(adminUserData);

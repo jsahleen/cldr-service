@@ -6,9 +6,11 @@ services:
     restart: always
     build: .
     ports:
-      - "3000:3000"
+      - ${CLDR_PORT}:${CLDR_PORT}
     depends_on:
       - mongo
+    env_file:
+      - .env
   cldr-db:
     container_name: cldr-db
     image: mongo

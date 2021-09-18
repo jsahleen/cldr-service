@@ -9,12 +9,6 @@ import ExtensionsGenerator from "../src/extensions/generators/extensions.generat
 import LocalesGenerator from "../src/locales/generators/locales.generator";
 import debug, { IDebugger} from 'debug';
 
-import dotenv from 'dotenv';
-const dotenvResult = dotenv.config();
-if (dotenvResult.error) {
-    throw dotenvResult.error;
-}
-
 const log: IDebugger = debug('app:seed');
 
 async function seed(module) {
