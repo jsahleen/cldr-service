@@ -52,7 +52,7 @@ Seeding the database will take some time, but it only needs to be done once.
 
 ## USAGE
 
-The following endpoints are currency implemented. The service runs on port `3000`:
+The following endpoints are currently implemented. The service runs on port `3000`:
 
 * AUTH
 
