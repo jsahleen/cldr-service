@@ -25,7 +25,7 @@ import { LocalesRoutes} from './locales/routes/locales.routes'
 // App configuration
 const app: express.Application = express();
 const server: http.Server = http.createServer(app);
-const port = process.env.CLDR_PORT || 3000;
+const port = 3000;
 
 app.use(cors());
 app.use(helmet());
