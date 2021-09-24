@@ -13,16 +13,6 @@ To use the service locally, follow these steps:
 ```YAML
 version: '3'
 services:
-  cldr-service:
-    container_name: cldr-service
-    image: jsahleen/cldr-service
-    restart: always
-    ports:
-      - "3000:3000"
-    depends_on:
-      - mongo
-    env_file:
-      - .env
   cldr-db:
     container_name: cldr-db
     image: mongo
@@ -30,6 +20,16 @@ services:
       - ./data:/data/db
     ports:
       - "27017:27017"
+  cldr-service:
+    container_name: cldr-service
+    image: jsahleen/cldr-service
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - cldr-db
+    env_file:
+      - .env
 ```
 
 3. Add a `.env` file with overrides for the following default values:
