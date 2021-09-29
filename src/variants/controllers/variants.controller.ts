@@ -54,8 +54,8 @@ class VariantsController {
       res.status(400).send();
     }
 
-    const scripts = await variantsService.list(tags, locales, filters, limit, page);
-    res.status(200).send({scripts: scripts});
+    const variants = await variantsService.list(tags, locales, filters, limit, page);
+    res.status(200).send({variants: variants});
   }
 
   async createVariant(req: express.Request, res: express.Response) {
