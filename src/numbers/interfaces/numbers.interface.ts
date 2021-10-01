@@ -1,4 +1,5 @@
 import { ModuleTypes } from "../../common/enums/module.enum";
+import { IIdentity } from "../../common/interfaces/identity.interface";
 import { IModule } from "../../common/interfaces/module.interface";
 import { IPluralKeys } from "../../common/interfaces/pluralkeys.interface";
 
@@ -94,6 +95,7 @@ export interface INSData {
 
 export interface INumberSystem extends IModule<INSData> {
   tag: string
+  identity: IIdentity
   moduleType: ModuleTypes.NUMBERS
   main: INSData
 }
