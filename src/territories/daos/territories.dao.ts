@@ -25,7 +25,7 @@ class TerritoriesDAO {
       .select(`tag _id identity moduleType main.tag ${paths.join(' ')}`)
       .limit(limit)
       .skip((page - 1) * limit)
-      .sort({tag: 'asc'})
+      .sort({tag: 'asc', 'main.tag': 'asc'})
       .exec();
   } 
 
