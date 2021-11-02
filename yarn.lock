@@ -559,21 +559,6 @@ chownr@^2.0.0:
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-2.0.0.tgz#15bfbe53d2eab4cf70f18a8cd68ebe5b3cb1dece"
   integrity sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==
 
-cldr-core@^39.0.0:
-  version "39.0.0"
-  resolved "https://registry.yarnpkg.com/cldr-core/-/cldr-core-39.0.0.tgz#e2e84f072bad6d845015d18ffece8547dc8e27fa"
-  integrity sha512-ZSElD4Ckl2W3ApP+jz8XXOWen+UqELaO76P0J1H6SKxWuwkba1zmE5gU0grNyuI1RAYwBRUhbeIV+YTsJ7yw3g==
-
-cldr-localenames-modern@^39.0.0:
-  version "39.0.0"
-  resolved "https://registry.yarnpkg.com/cldr-localenames-modern/-/cldr-localenames-modern-39.0.0.tgz#d7614e955ff3ea05de64213656327eb85136f9d8"
-  integrity sha512-6P2YaBYscJN5+yGjISBOqnjAHtcFIR+R9ss9AcHTdMR1YL84HVZRJxy9E0OCuz4/OEU3iD0VjC1n6bWxxFqumw==
-
-cldr-numbers-modern@^39.0.0:
-  version "39.0.0"
-  resolved "https://registry.yarnpkg.com/cldr-numbers-modern/-/cldr-numbers-modern-39.0.0.tgz#75a5edc607a47c22a05ad9f2fa0e691bf3b6a7df"
-  integrity sha512-Na9PUy5idpVryB+vJYuh8wJR2OzXEOFagVb3leuD38iyY8aNuADg9A+g1qM3uqab3Vm67ZL+IwavBRIdNgDvJQ==
-
 code-point-at@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/code-point-at/-/code-point-at-1.1.0.tgz#0d070b4d043a5bea33a2f1a40e2edb3d9a4ccf77"
