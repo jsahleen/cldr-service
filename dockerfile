@@ -8,15 +8,15 @@ COPY . .
 
 RUN yarn
 
-EXPOSE 3000
-
-CMD [ "yarn", "start" ]
-
 FROM node:lts-alpine as localedata
 
 WORKDIR /usr/src/app
 
 COPY --from=base /usr/src/app /usr/src/app
+
+EXPOSE 3000
+
+CMD [ "yarn", "start" ]
 
 ARG CLDR_VERSION=39
 ARG CLDR_TIER=modern
