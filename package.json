@@ -15,7 +15,7 @@
     "cors": "^2.8.5",
     "debug": "^4.3.2",
     "express": "^4.17.1",
-    "express-validator": "^6.12.1",
+    "express-validator": "^6.13.0",
     "express-winston": "^4.1.0",
     "helmet": "^4.6.0",
     "jsonwebtoken": "^8.5.1",
