@@ -1,25 +1,20 @@
 import debug, { IDebugger } from 'debug';
-import availableLocales from 'cldr-core/availableLocales.json';
 import Script from '../models/scripts.model';
-import { readFile } from 'fs/promises';
-import { resolve } from 'path';
 import { IIdentity } from '../../common/interfaces/identity.interface';
 import { ModuleTypes } from '../../common/enums/module.enum';
 import { IGenerate } from '../../common/interfaces/generate.interace';
 import { IScript, IScriptData, IScriptMetadata, IScriptLanguage } from '../interfaces/scripts.interface';
 import ProgressBar from 'progress';
+import CLDRUTIL from '../../common/util/common.util';
 
 const log: IDebugger = debug('app:scripts-generator');
 
-const locales: string[] = availableLocales.availableLocales.modern;
+const availableLocales: string[] = CLDRUTIL.getAvailableLocales();
 
-const bar = new ProgressBar(':module: :locale :mode :current/:total', { total: locales.length * 2})
-
-const NODE_MODULES = '../../../../node_modules';
+const bar = new ProgressBar(':module: :locale :mode :current/:total', { total: availableLocales.length * 2})
 
 import scriptMetadata from "cldr-core/scriptMetadata.json";
 import languageData from "cldr-core/supplemental/languageData.json";
-
 
 export default class ScriptsGenerator implements IGenerate {
   constructor(){
@@ -37,8 +32,8 @@ export default class ScriptsGenerator implements IGenerate {
     
     const results: string[][] = [];
 
-    for (let i = 0; i < locales.length; i++) {
-      const locale = locales[i];
+    for (let i = 0; i < availableLocales.length; i++) {
+      const locale = availableLocales[i];
       const data = await this.generateLocaleData(locale)
       bar.tick({
         module: collection,
@@ -62,17 +57,6 @@ export default class ScriptsGenerator implements IGenerate {
     return insertions.map(record => {
       return record._id;
     });
-  }
-
-  private async getData(filePath: string, locale: string) {
-    const localized = filePath.replace('{{locale}}', locale)
-    const resolvedPath = resolve( __filename, localized);
-    const contents = await readFile(resolvedPath, 'utf-8');
-    try {
-      return JSON.parse(contents);
-    } catch {
-      return {};
-    }
   }
 
   private getIdentity(data, locale): IIdentity {
@@ -156,7 +140,7 @@ export default class ScriptsGenerator implements IGenerate {
   }
 
   async generateLocaleData(locale: string): Promise<IScript[]> {
-    const scriptNamesData = await this.getData(`${NODE_MODULES}/cldr-localenames-modern/main/{{locale}}/scripts.json`, locale);
+    const scriptNamesData = CLDRUTIL.getLocaleData('localenames', 'scripts', locale);
     const scripts = Object.keys(scriptNamesData.main[locale].localeDisplayNames.scripts)
       .filter(l => !l.includes('alt')); // exclude alt names
 

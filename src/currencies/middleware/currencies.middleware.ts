@@ -1,14 +1,14 @@
 import express from 'express';
 import currenciesService from '../services/currencies.service';
 import {debug, IDebugger} from "debug"
-import availableLocales from 'cldr-core/availableLocales.json';
 import { availableFilters } from '../controllers/currencies.controller';
 import { IModuleMiddleware } from '../../common/interfaces/middleware.interface';
 import { body, validationResult } from 'express-validator';
-import rootData from 'cldr-numbers-modern/main/root/currencies.json';
+import CLDRUTIL from '../../common/util/common.util';
 
-const modernLocales = availableLocales.availableLocales.modern;
-const availableCodes = Object.keys(rootData.main.root.numbers.currencies);
+const availableLocales = CLDRUTIL.getAvailableLocales();
+const rootData = CLDRUTIL.getRootLocaleData('numbers', 'currencies');
+const availableCodes = Object.keys(rootData.main[CLDRUTIL.rootLocale].numbers.currencies);
 
 const log: IDebugger = debug('app:currencies-middleware');
 
@@ -71,7 +71,7 @@ class CurrenciesMiddleware implements IModuleMiddleware {
 
   async ensureDocumentDoesNotExist(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
     const localeString = req.query.locales as string | undefined;
-    const locales = localeString?.split(',') || modernLocales;
+    const locales = localeString?.split(',') || availableLocales;
     
     const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;

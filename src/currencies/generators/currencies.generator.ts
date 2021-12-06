@@ -1,5 +1,4 @@
 import debug, { IDebugger } from 'debug';
-import availableLocales from 'cldr-core/availableLocales.json';
 import Currency from '../models/currencies.model';
 import { readFile } from 'fs/promises';
 import { resolve } from 'path';
@@ -12,13 +11,14 @@ import ProgressBar from 'progress';
 
 const log: IDebugger = debug('app:currency-generator');
 
-const locales: string[] = availableLocales.availableLocales.modern;
+const availableLocales: string[] = CLDRUTIL.getAvailableLocales();
 
-const bar = new ProgressBar(':module: :locale :mode :current/:total', { total: locales.length * 2})
+const bar = new ProgressBar(':module: :locale :mode :current/:total', { total: availableLocales.length * 2})
 
 const NODE_MODULES = '../../../../node_modules';
 
 import currencyData from 'cldr-core/supplemental/currencyData.json';
+import CLDRUTIL from '../../common/util/common.util';
 
 export default class CurrencyGenerator implements IGenerate {
   constructor(){
@@ -36,8 +36,8 @@ export default class CurrencyGenerator implements IGenerate {
     
     const results: string[][] = [];
 
-    for (let i = 0; i < locales.length; i++) {
-      const locale = locales[i];
+    for (let i = 0; i < availableLocales.length; i++) {
+      const locale = availableLocales[i];
       const data = await this.generateLocaleData(locale)
       bar.tick({
         module: collection,
@@ -61,17 +61,6 @@ export default class CurrencyGenerator implements IGenerate {
     return insertions.map(record => {
       return record._id;
     });
-  }
-
-  private async getData(filePath: string, locale: string) {
-    const localized = filePath.replace('{{locale}}', locale)
-    const resolvedPath = resolve( __filename, localized);
-    const contents = await readFile(resolvedPath, 'utf-8');
-    try {
-      return JSON.parse(contents);
-    } catch {
-      return {};
-    }
   }
 
   private getIdentity(data, locale): IIdentity {
@@ -163,7 +152,7 @@ export default class CurrencyGenerator implements IGenerate {
   }
 
   async generateLocaleData(locale: string): Promise<ICurrency[]> {
-    const currenciesDataList = await this.getData(`${NODE_MODULES}/cldr-numbers-modern/main/{{locale}}/currencies.json`, locale);
+    const currenciesDataList = CLDRUTIL.getLocaleData('numbers', 'currencies', locale);
 
     const fractionsData = currencyData.supplemental.currencyData.fractions;
     const territoriesData = currencyData.supplemental.currencyData.region;

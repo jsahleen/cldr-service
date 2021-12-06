@@ -1,13 +1,13 @@
 import express from 'express';
 import CurrenciesService from '../services/currencies.service';
 import debug, { IDebugger } from 'debug';
-import availableLocales from 'cldr-core/availableLocales.json';
-import rootCurrencies from 'cldr-numbers-modern/main/root/currencies.json';
+import CLDRUTIL from '../../common/util/common.util';
 
 const log: IDebugger = debug('app:currencies-controller');
 
-const modernLocales = availableLocales.availableLocales.modern;
-const availableCodes = Object.keys(rootCurrencies.main.root.numbers.currencies);
+const availableLocales = CLDRUTIL.getAvailableLocales();
+const rootData = CLDRUTIL.getRootLocaleData('numbers', 'currencies');
+const availableCodes = Object.keys(rootData.main[CLDRUTIL.rootLocale].numbers.currencies);
 
 export const availableFilters: string[] = [
   'displayName',
@@ -29,7 +29,7 @@ class CurrenciesController {
       limit = 25, 
       page = 1,
       codes = availableCodes,
-      locales = modernLocales,
+      locales = availableLocales,
       filters = availableFilters
     } = req.query;
 
@@ -42,7 +42,7 @@ class CurrenciesController {
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = modernLocales as string[];
+      locales = availableLocales as string[];
     }
 
     if (typeof filters === 'string') {
@@ -91,14 +91,14 @@ class CurrenciesController {
     let { 
       limit = 25, 
       page = 1,
-      locales = modernLocales,
+      locales = availableLocales,
       filters = availableFilters
     } = req.query;
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = modernLocales as string[];
+      locales = availableLocales as string[];
     }
 
     if (typeof filters === 'string') {

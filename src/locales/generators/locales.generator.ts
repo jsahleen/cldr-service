@@ -1,22 +1,18 @@
 import debug, { IDebugger } from 'debug';
-import availableLocales from 'cldr-core/availableLocales.json';
 import Locale from '../models/locales.model';
 import { ModuleTypes } from '../../common/enums/module.enum';
-import { readFile } from 'fs/promises';
-import { resolve } from 'path';
 import { IIdentity } from '../../common/interfaces/identity.interface';
 import { IGenerate } from '../../common/interfaces/generate.interace';
 import { ILocale, ILocaleData, ILocalePatterns } from '../interfaces/locales.interface';
 
 import ProgressBar from 'progress';
+import CLDRUTIL from '../../common/util/common.util';
 
 const log: IDebugger = debug('app:locales-generator');
 
-const locales: string[] = availableLocales.availableLocales.modern;
+const availableLocales: string[] = CLDRUTIL.getAvailableLocales();
 
-const bar = new ProgressBar(':module: :locale :mode :current/:total', { total: locales.length * 2})
-
-const NODE_MODULES = '../../../../node_modules';
+const bar = new ProgressBar(':module: :locale :mode :current/:total', { total: availableLocales.length * 2})
 
 export default class LocalesGenerator implements IGenerate {
   constructor(){
@@ -34,8 +30,8 @@ export default class LocalesGenerator implements IGenerate {
     
     const results: string[][] = [];
 
-    for (let i = 0; i < locales.length; i++) {
-      const locale = locales[i];
+    for (let i = 0; i < availableLocales.length; i++) {
+      const locale = availableLocales[i];
       const data = await this.generateLocaleData(locale)
       bar.tick({
         module: collection,
@@ -59,17 +55,6 @@ export default class LocalesGenerator implements IGenerate {
     return insertions.map(record => {
       return record._id;
     });
-  }
-
-  private async getData(filePath: string, locale: string) {
-    const localized = filePath.replace('{{locale}}', locale)
-    const resolvedPath = resolve( __filename, localized);
-    const contents = await readFile(resolvedPath, 'utf-8');
-    try {
-      return JSON.parse(contents);
-    } catch {
-      return {};
-    }
   }
 
   private getIdentity(data, tag): IIdentity {
@@ -111,7 +96,7 @@ export default class LocalesGenerator implements IGenerate {
     }
   }
   async generateLocaleData(locale: string): Promise<ILocale[]> {
-    const localeNamesData = await this.getData(`${NODE_MODULES}/cldr-localenames-modern/main/{{locale}}/localeDisplayNames.json`, locale);
+    const localeNamesData = CLDRUTIL.getLocaleData('localenames', 'localeDisplayNames', locale);
 
     const module = {
       tag: locale,

@@ -1,14 +1,14 @@
 import express from 'express';
 import {debug, IDebugger} from "debug"
 import territoriesService from '../services/territories.service';
-import availableLocales from 'cldr-core/availableLocales.json';
 import { availableFilters } from '../controllers/territories.controller';
 import { IModuleMiddleware } from '../../common/interfaces/middleware.interface';
 import { body, validationResult } from 'express-validator';
-import rootData from 'cldr-localenames-modern/main/root/territories.json';
+import CLDRUTIL from '../../common/util/common.util';
 
-const modernLocales = availableLocales.availableLocales.modern;
-const availableTags = Object.keys(rootData.main.root.localeDisplayNames.territories);
+const availableLocales = CLDRUTIL.getAvailableLocales();
+const rootData = CLDRUTIL.getRootLocaleData('localenames', 'territories')
+const availableTags = Object.keys(rootData.main[CLDRUTIL.rootLocale].localeDisplayNames.territories);
 
 const log: IDebugger = debug('app:territories-middleware');
 
@@ -68,7 +68,7 @@ class TerritoriesMiddleware implements IModuleMiddleware {
 
   async ensureDocumentDoesNotExist(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
     const localeString = req.query.locales as string | undefined;
-    const locales = localeString?.split(',') || modernLocales;
+    const locales = localeString?.split(',') || availableLocales;
     
     const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;

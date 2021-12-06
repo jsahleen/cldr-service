@@ -1,12 +1,12 @@
 import express from 'express';
 import localesService from '../services/locales.service';
 import debug, { IDebugger } from 'debug';
-import availableLocales from 'cldr-core/availableLocales.json';
+import CLDRUTIL from '../../common/util/common.util';
 
 const log: IDebugger = debug('app:locales-controller');
 
-const modernLocales = availableLocales.availableLocales.modern;
-const availableTags = modernLocales.filter(l => l !== 'root');
+const availableLocales = CLDRUTIL.getAvailableLocales();
+const availableTags = availableLocales.filter(l => l !== CLDRUTIL.rootLocale);
 
 export const availableFilters: string[] = [
   'tag',
@@ -30,14 +30,14 @@ class LocalesController {
       limit = 25, 
       page = 1,
       tags = availableTags,
-      locales = modernLocales,
+      locales = availableLocales,
       filters = availableFilters
     } = req.query;
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = modernLocales as string[];
+      locales = availableLocales as string[];
     }
 
     if (typeof filters === 'string') {
@@ -93,14 +93,14 @@ class LocalesController {
     let { 
       limit = 25, 
       page = 1,
-      locales = modernLocales,
+      locales = availableLocales,
       filters = availableFilters
     } = req.query;
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = modernLocales as string[];
+      locales = availableLocales as string[];
     }
 
     if (typeof filters === 'string') {
