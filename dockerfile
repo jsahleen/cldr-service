@@ -8,8 +8,8 @@ COPY . .
 
 RUN yarn
 
-ARG CLDR_VERSION=39
-ARG CLDR_TIER=modern
+ARG CLDR_VERSION="40.0.0"
+ARG CLDR_TIER="modern"
 
 RUN yarn add cldr-core@${CLDR_VERSION} cldr-localenames-${CLDR_TIER}@${CLDR_VERSION} cldr-numbers-${CLDR_TIER}@${CLDR_VERSION}
 

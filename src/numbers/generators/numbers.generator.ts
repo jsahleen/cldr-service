@@ -6,6 +6,7 @@ import { ModuleTypes } from '../../common/enums/module.enum';
 import { IPluralKeys } from '../../common/interfaces/pluralkeys.interface';
 import { IGenerate } from '../../common/interfaces/generate.interace';
 import ProgressBar from 'progress';
+import CLDRUTIL from '../../common/util/common.util';
 
 const log: IDebugger = debug('app:numbersystems-generator');
 
@@ -18,7 +19,6 @@ function onlyUnique(value, index, self) {
 }
 
 import numberingSystemsData from 'cldr-core/supplemental/numberingSystems.json';
-import CLDRUTIL from '../../common/util/common.util';
 
 enum FormatTypes {
   DECIMAL = 'decimalFormats',

@@ -1,13 +1,12 @@
 import debug, { IDebugger } from 'debug';
 import Currency from '../models/currencies.model';
-import { readFile } from 'fs/promises';
-import { resolve } from 'path';
 import { IIdentity } from '../../common/interfaces/identity.interface';
 import { ModuleTypes } from '../../common/enums/module.enum';
 import { IPluralKeys } from '../../common/interfaces/pluralkeys.interface';
 import { IGenerate } from '../../common/interfaces/generate.interace';
 import { ICurrency, ICurrencyData, ICurrencySymbols, ICurrencyFractions, ICurrencyTerritory } from '../interfaces/currencies.interface';
 import ProgressBar from 'progress';
+import CLDRUTIL from '../../common/util/common.util';
 
 const log: IDebugger = debug('app:currency-generator');
 
@@ -15,10 +14,7 @@ const availableLocales: string[] = CLDRUTIL.getAvailableLocales();
 
 const bar = new ProgressBar(':module: :locale :mode :current/:total', { total: availableLocales.length * 2})
 
-const NODE_MODULES = '../../../../node_modules';
-
 import currencyData from 'cldr-core/supplemental/currencyData.json';
-import CLDRUTIL from '../../common/util/common.util';
 
 export default class CurrencyGenerator implements IGenerate {
   constructor(){

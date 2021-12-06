@@ -84,7 +84,7 @@ export default class ExtensionsGenerator implements IGenerate {
   }
 
   async generateLocaleData(locale: string): Promise<IExtension[]> {
-    const extensionsNameData = CLDRUTIL.getLocaleData('localenames', 'localeDisplayNames');
+    const extensionsNameData = CLDRUTIL.getLocaleData('localenames', 'localeDisplayNames', locale);
     const keys = Object.keys(extensionsNameData.main[locale].localeDisplayNames.keys)
       .filter(l => !l.includes('alt')); // exclude alt names
 
