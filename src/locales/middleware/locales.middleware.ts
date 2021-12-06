@@ -1,13 +1,13 @@
 import express from 'express';
 import {debug, IDebugger} from "debug"
 import localesService from '../services/locales.service';
-import availableLocales from 'cldr-core/availableLocales.json';
 import { availableFilters } from '../controllers/locales.controller';
 import { IModuleMiddleware } from '../../common/interfaces/middleware.interface';
 import { body, validationResult } from 'express-validator';
+import CLDRUTIL from '../../common/util/common.util';
 
-const modernLocales = availableLocales.availableLocales.modern;
-const availableTags = modernLocales.filter(tag => tag !== 'root');
+const availableLocales = CLDRUTIL.getAvailableLocales();
+const availableTags = availableLocales.filter(tag => tag !== CLDRUTIL.rootLocale);
 
 const log: IDebugger = debug('app:locales-middleware');
 
@@ -69,7 +69,7 @@ class LocalesMiddleware implements IModuleMiddleware {
     const tagsString = req.query.tags as string | undefined;
     const localeString = req.query.locales as string | undefined;
     const tags = tagsString?.split(',') || availableTags;
-    const locales = localeString?.split(',') || modernLocales;
+    const locales = localeString?.split(',') || availableLocales;
     
     const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;

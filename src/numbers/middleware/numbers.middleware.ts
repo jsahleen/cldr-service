@@ -1,14 +1,14 @@
 import express from 'express';
 import numbersService from '../services/numbers.service';
 import {debug, IDebugger} from "debug"
-import availableLocales from 'cldr-core/availableLocales.json';
 import { availableFilters } from '../controllers/numbers.controller';
 import { IModuleMiddleware } from '../../common/interfaces/middleware.interface';
 import { body, validationResult } from 'express-validator';
-import rootData from 'cldr-localenames-modern/main/root/localeDisplayNames.json';
+import CLDRUTIL from '../../common/util/common.util';
 
-const modernLocales = availableLocales.availableLocales.modern;
-const availableSystems = Object.keys(rootData.main.root.localeDisplayNames.types.numbers)
+const availableLocales = CLDRUTIL.getAvailableLocales();
+const rootData = CLDRUTIL.getRootLocaleData('localenames', 'localeDisplayNames');
+const availableSystems = Object.keys(rootData.main[CLDRUTIL.rootLocale].localeDisplayNames.types.numbers)
 
 const log: IDebugger = debug('app:users-controller');
 
@@ -71,7 +71,7 @@ class NumberSystemsMiddleware implements IModuleMiddleware {
 
   async ensureDocumentDoesNotExist(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
     const localeString = req.query.locales as string | undefined;
-    const locales = localeString?.split(',') || modernLocales;
+    const locales = localeString?.split(',') || availableLocales;
     
     const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;

@@ -1,13 +1,13 @@
 import express from 'express';
 import extensionsService from '../services/extensions.service';
 import debug, { IDebugger } from 'debug';
-import availableLocales from 'cldr-core/availableLocales.json';
-import rootData from 'cldr-localenames-modern/main/root/localeDisplayNames.json'
+import CLDRUTIL from '../../common/util/common.util';
 
 const log: IDebugger = debug('app:extensions-controller');
 
-const modernLocales = availableLocales.availableLocales.modern;
-const availableKeys = Object.keys(rootData.main.root.localeDisplayNames.keys);
+const availableLocales = CLDRUTIL.getAvailableLocales();
+const rootData = CLDRUTIL.getRootLocaleData('localenames', 'localeDisplayNames');
+const availableKeys = Object.keys(rootData.main[CLDRUTIL.rootLocale].localeDisplayNames.keys);
 
 export const availableFilters: string[] = [
   'key',
@@ -26,7 +26,7 @@ class ExtensionsController {
       limit = 25, 
       page = 1,
       keys = availableKeys,
-      locales = modernLocales,
+      locales = availableLocales,
       filters = availableFilters
     } = req.query;
 
@@ -39,7 +39,7 @@ class ExtensionsController {
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = modernLocales as string[];
+      locales = availableLocales as string[];
     }
 
     if (typeof filters === 'string') {
@@ -88,14 +88,14 @@ class ExtensionsController {
     let { 
       limit = 25, 
       page = 1,
-      locales = modernLocales,
+      locales = availableLocales,
       filters = availableFilters
     } = req.query;
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = modernLocales as string[];
+      locales = availableLocales as string[];
     }
 
     if (typeof filters === 'string') {

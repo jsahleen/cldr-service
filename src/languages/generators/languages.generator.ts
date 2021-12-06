@@ -1,27 +1,22 @@
 import debug, { IDebugger } from 'debug';
-import availableLocales from 'cldr-core/availableLocales.json';
 import Language from '../models/languages.model';
-import { readFile } from 'fs/promises';
-import { resolve } from 'path';
 import { IIdentity } from '../../common/interfaces/identity.interface';
 import { ModuleTypes } from '../../common/enums/module.enum';
 import { IGenerate } from '../../common/interfaces/generate.interace';
 import { ILanguage, ILanguageData, ILanguageScript, ILanguageTerritory, IPluralRanges, IPluralRules } from '../interfaces/languages.interface';
 import ProgressBar from 'progress';
-
-const log: IDebugger = debug('app:language-generator');
-
-const locales: string[] = availableLocales.availableLocales.modern;
-
-const bar = new ProgressBar(':module: :locale :mode :current/:total', { total: locales.length * 2})
-
-const NODE_MODULES = '../../../../node_modules';
-
+import CLDRUTIL from '../../common/util/common.util';
 import languageFamilyData from 'cldr-core/supplemental/languageGroups.json';
 import pluralRulesData from 'cldr-core/supplemental/plurals.json'
 import pluralRangesData from 'cldr-core/supplemental/pluralRanges.json'
 import ordinalRulesData from 'cldr-core/supplemental/ordinals.json'
 import languagesData from 'cldr-core/supplemental/languageData.json'
+
+const log: IDebugger = debug('app:language-generator');
+
+const availableLocales: string[] = CLDRUTIL.getAvailableLocales();
+
+const bar = new ProgressBar(':module: :locale :mode :current/:total', { total: availableLocales.length * 2})
 
 export default class LanguagesGenerator implements IGenerate {
   constructor(){
@@ -39,8 +34,8 @@ export default class LanguagesGenerator implements IGenerate {
     
     const results: string[][] = [];
 
-    for (let i = 0; i < locales.length; i++) {
-      const locale = locales[i];
+    for (let i = 0; i < availableLocales.length; i++) {
+      const locale = availableLocales[i];
       const data = await this.generateLocaleData(locale)
       bar.tick({
         module: collection,
@@ -64,17 +59,6 @@ export default class LanguagesGenerator implements IGenerate {
     return insertions.map(record => {
       return record._id;
     });
-  }
-
-  private async getData(filePath: string, locale: string) {
-    const localized = filePath.replace('{{locale}}', locale)
-    const resolvedPath = resolve( __filename, localized);
-    const contents = await readFile(resolvedPath, 'utf-8');
-    try {
-      return JSON.parse(contents);
-    } catch {
-      return {};
-    }
   }
 
   private getIdentity(data, locale): IIdentity {
@@ -247,7 +231,7 @@ export default class LanguagesGenerator implements IGenerate {
   }
 
   async generateLocaleData(locale: string): Promise<ILanguage[]> {
-    const languageNamesData = await this.getData(`${NODE_MODULES}/cldr-localenames-modern/main/{{locale}}/languages.json`, locale);
+    const languageNamesData = CLDRUTIL.getLocaleData('localenames', 'languages', locale)
     const languages = Object.keys(languageNamesData.main[locale].localeDisplayNames.languages)
       .filter(l => !l.includes('alt'));
 

@@ -1,13 +1,13 @@
 import express from 'express';
 import NumberSystemsService from '../services/numbers.service';
 import debug, { IDebugger } from 'debug';
-import availableLocales from 'cldr-core/availableLocales.json';
-import rootData from 'cldr-localenames-modern/main/root/localeDisplayNames.json';
+import CLDRUTIL from '../../common/util/common.util';
 
 const log: IDebugger = debug('app:numbersystem-controller');
 
-const modernLocales = availableLocales.availableLocales.modern;
-const availableSystems = Object.keys(rootData.main.root.localeDisplayNames.types.numbers)
+const availableLocales = CLDRUTIL.getAvailableLocales();
+const rootData = CLDRUTIL.getRootLocaleData('localenames', 'localeDisplayNames');
+const availableSystems = Object.keys(rootData.main[CLDRUTIL.rootLocale].localeDisplayNames.types.numbers)
 
 export const availableFilters: string[] = [
   'digits',
@@ -30,7 +30,7 @@ class NumberSystemController {
       limit = 25, 
       page = 1,
       systems = availableSystems,
-      locales = modernLocales,
+      locales = availableLocales,
       filters = availableFilters
     } = req.query;
 
@@ -43,7 +43,7 @@ class NumberSystemController {
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = modernLocales as string[];
+      locales = availableLocales as string[];
     }
 
     if (typeof filters === 'string') {
@@ -92,14 +92,14 @@ class NumberSystemController {
     let { 
       limit = 25, 
       page = 1,
-      locales = modernLocales,
+      locales = availableLocales,
       filters = availableFilters
     } = req.query;
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = modernLocales as string[];
+      locales = availableLocales as string[];
     }
 
     if (typeof filters === 'string') {

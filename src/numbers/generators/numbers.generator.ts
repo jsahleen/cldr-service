@@ -1,26 +1,22 @@
 import debug, { IDebugger } from 'debug';
-import availableLocales from 'cldr-core/availableLocales.json';
 import NumberSystem from '../models/numbers.model';
 import { ICurrencyPatterns, IDecimalPatterns, IMinimalPairs, IMiscPatterns, INSData, INumberPatterns, INumberSystem, INumberSystemPatterns } from '../interfaces/numbers.interface';
-import { readFile } from 'fs/promises';
-import { resolve } from 'path';
 import { IIdentity } from '../../common/interfaces/identity.interface';
 import { ModuleTypes } from '../../common/enums/module.enum';
 import { IPluralKeys } from '../../common/interfaces/pluralkeys.interface';
 import { IGenerate } from '../../common/interfaces/generate.interace';
 import ProgressBar from 'progress';
+import CLDRUTIL from '../../common/util/common.util';
 
 const log: IDebugger = debug('app:numbersystems-generator');
 
-const locales: string[] = availableLocales.availableLocales.modern;
+const availableLocales: string[] = CLDRUTIL.getAvailableLocales();
 
-const bar = new ProgressBar(':module: :locale :mode :current/:total', { total: locales.length * 2})
+const bar = new ProgressBar(':module: :locale :mode :current/:total', { total: availableLocales.length * 2})
 
 function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;
 }
-
-const NODE_MODULES = '../../../../node_modules';
 
 import numberingSystemsData from 'cldr-core/supplemental/numberingSystems.json';
 
@@ -45,8 +41,8 @@ export default class NumberSystemGenerator implements IGenerate {
     
     const results: string[][] = [];
 
-    for (let i = 0; i < locales.length; i++) {
-      const locale = locales[i];
+    for (let i = 0; i < availableLocales.length; i++) {
+      const locale = availableLocales[i];
       const data = await this.generateLocaleData(locale)
       bar.tick({
         module: collection,
@@ -70,17 +66,6 @@ export default class NumberSystemGenerator implements IGenerate {
     return insertions.map(record => {
       return record._id;
     });
-  }
-
-  private async getData(filePath: string, locale: string) {
-    const localized = filePath.replace('{{locale}}', locale)
-    const resolvedPath = resolve( __filename, localized);
-    const contents = await readFile(resolvedPath, 'utf-8');
-    try {
-      return JSON.parse(contents);
-    } catch {
-      return {};
-    }
   }
 
   private getIdentity(numbersData, locale): IIdentity {
@@ -263,8 +248,8 @@ export default class NumberSystemGenerator implements IGenerate {
   }
 
   async generateLocaleData(locale: string): Promise<INumberSystem[]> {
-    const numbersData = await this.getData(`${NODE_MODULES}/cldr-numbers-modern/main/{{locale}}/numbers.json`, locale);
-    const localeNamesData = await this.getData(`${NODE_MODULES}/cldr-localenames-modern/main/{{locale}}/localeDisplayNames.json`, locale);
+    const numbersData = CLDRUTIL.getLocaleData('numbers', 'numbers', locale);
+    const localeNamesData = CLDRUTIL.getLocaleData('localenames', 'localeDisplayNames', locale);
 
     const defaultNumberingSystem: string = numbersData.main[locale].numbers.defaultNumberingSystem;
     const nativeNumberingSystem: string = numbersData.main[locale].numbers.otherNumberingSystems?.native || defaultNumberingSystem;

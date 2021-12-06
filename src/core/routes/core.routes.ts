@@ -1,9 +1,8 @@
 import { CommonRoutesConfig } from '../../common/routes/common.routes'
 import express from 'express';
+import CLDRUTIL from '../../common/util/common.util';
 
-import availableLocales from 'cldr-core/availableLocales.json';
-
-const modernLocales = availableLocales.availableLocales.modern;
+const availableLocales = CLDRUTIL.getAvailableLocales();
 
 export class CoreRoutes extends CommonRoutesConfig {
 
@@ -15,7 +14,7 @@ export class CoreRoutes extends CommonRoutesConfig {
     this.app.route('/public/core/locales')
       .get((req: express.Request, res: express.Response) => {
         res.status(200);
-        res.send({availableLocales: modernLocales});
+        res.send({availableLocales: availableLocales});
       });
     
     this.app.route('/public/core')
