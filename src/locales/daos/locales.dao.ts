@@ -8,11 +8,12 @@ import scriptsModel from '../../scripts/models/scripts.model';
 import territoriesModel from '../../territories/models/territories.model';
 import variantsModel from '../../variants/models/variants.model';
 
-import availableLocales from 'cldr-core/availableLocales.json';
+import CLDRUtil from '../../common/util/common.util';
+
+const availableLocales = CLDRUtil.getAvailableLocales();
+
 import likelySubtagsData from 'cldr-core/supplemental/likelySubtags.json';
 import parentLocalesData from 'cldr-core/supplemental/parentLocales.json';
-
-const modernLocales = availableLocales.availableLocales.modern;
 
 const log: IDebugger = debug('app:locales-dao');
 
@@ -148,7 +149,7 @@ class LocalesDAO {
   }
 
   async getLocaleTags(): Promise<string[]> {
-    return modernLocales.filter(l => l !== 'root');
+    return availableLocales.filter(l => (l !== 'root') && (l !== 'und'));
   }
 
   private getLikelySubtags(tag) {
@@ -189,7 +190,7 @@ class LocalesDAO {
         likelySubtags.pop();
       }
     }
-    return pLocale || 'root';
+    return pLocale || CLDRUtil.rootLocale;
   }
 
 } 
