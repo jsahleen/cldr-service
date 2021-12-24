@@ -6,14 +6,16 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-RUN yarn
+RUN yarn --production
 
-ARG CLDR_VERSION="40.0.0"
 ARG CLDR_TIER="modern"
+ARG CLDR_VERSION="40.0.0"
 
-RUN yarn add cldr-core@${CLDR_VERSION} cldr-localenames-${CLDR_TIER}@${CLDR_VERSION} cldr-numbers-${CLDR_TIER}@${CLDR_VERSION}
+ENV CLDR_TIER=${CLDR_TIER}
+ENV CLDR_VERSION=${CLDR_VERSION}
+
+RUN yarn setup
 
 EXPOSE 3000
 
 CMD [ "yarn", "start" ]
-

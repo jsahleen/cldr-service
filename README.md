@@ -38,6 +38,8 @@ services:
 CLDR_ROOT_USER_EMAIL="root@example.com"
 CLDR_ROOT_USER_PASSWORD="P@$sW0rD"
 CLDR_JWT_SECRET="b2upnzpr/XkBCpP"
+CLDR_TIER="modern"
+CLDR_VERSION="40.0.0"
 ```
 
 4. Run `docker compose up -d` to start the service
