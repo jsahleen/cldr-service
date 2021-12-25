@@ -157,7 +157,7 @@ The following endpoints are currently implemented. The service runs on port `300
     * PATCH admin/locales/:id
     * DELETE admin/locales/:id
 
-* LOCALES
+* CALENDARS
 
     * GET public/calendars?locales={locales}&calendars={calendars}&filters={filters}&page={page}&limit={limit}
     * GET public/calendars/:calendar?locales={locales}&filters={filters}&page={page}&limit={limit}
