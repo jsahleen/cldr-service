@@ -39,8 +39,9 @@ CLDR_ROOT_USER_EMAIL="root@example.com"
 CLDR_ROOT_USER_PASSWORD="P@$sW0rD"
 CLDR_JWT_SECRET="b2upnzpr/XkBCpP"
 ```
+(If you want to change the CLDR version and tier you need to clone the repository and pass `CLDR_VERSION` and `CLDR_TIER` as arguments to `docker build`.)
 
-4. Run `docker compose up -d` to start the service
+4. Run `docker compose up -d` to start the service. 
 
 5. The first time you use the service you will need to seed the database with data taken from `cldr-json`. To do this, run:
 
@@ -48,7 +49,7 @@ CLDR_JWT_SECRET="b2upnzpr/XkBCpP"
 docker compose exec cldr-service yarn seed
 ```
 
-Seeding the database will take some time, but it only needs to be done once.
+Seeding the database will take some time, but it only needs to be done once. If you want to re-seed the data for just one service, you can do so by using `docker compose exec cldr-service yarn seed [service]`.
 
 ## USAGE
 
@@ -156,4 +157,15 @@ The following endpoints are currently implemented. The service runs on port `300
     * PATCH admin/locales/:id
     * DELETE admin/locales/:id
 
-For the all query parameters except `page` and `limit`, the expected value is a comma-separated list of elements (e.g., `?locales=en,fr,de`). The locales, tags, systems and codes parameters support the corresponding lists of elements in cldr-json. Locales are limited to modern locales. Filters can be any set of paths inside the `main` element of a data module. Only paths specified in filters are returned. By default, all paths are returned. For number systems, there are additional systems keywords `default` and `native` that can be passed. For currencies, there is an additional keyword `current`. Data returned is taken from `cldr-core`, `cldr-numbers-modern` and `cldr-localenames-modern`.
+* LOCALES
+
+    * GET public/calendars?locales={locales}&calendars={calendars}&filters={filters}&page={page}&limit={limit}
+    * GET public/calendars/:calendar?locales={locales}&filters={filters}&page={page}&limit={limit}
+    * GET admin/calendars?locales={locales}&calendars={calendars}&filters={filters}&page={page}&limit={limit}
+    * POST admin/calendars
+    * GET admin/calendars/:id
+    * PUT admin/calendars/:id
+    * PATCH admin/calendars/:id
+    * DELETE admin/calendars/:id
+
+For the all query parameters except `page` and `limit`, the expected value is a comma-separated list of elements (e.g., `?locales=en,fr,de`). The locales, tags, systems and codes parameters support the corresponding lists of elements in cldr-json. Locales are limited to modern locales. Filters can be any set of paths inside the `main` element of a data module. Only paths specified in filters are returned. By default, all paths are returned. For number systems, there are additional systems keywords `default` and `native` that can be passed. For currencies, there is an additional keyword `current`. For calendars, there is an additional keyword `preferred`. Data returned is taken from `cldr-core`, `cldr-numbers-modern`, `cldr-localenames-modern`, `cldr-dates` and the `cldr-cal-*` packages.

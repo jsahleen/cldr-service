@@ -559,20 +559,80 @@ chownr@^2.0.0:
   resolved "https://registry.yarnpkg.com/chownr/-/chownr-2.0.0.tgz#15bfbe53d2eab4cf70f18a8cd68ebe5b3cb1dece"
   integrity sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==
 
-cldr-core@^39.0.0:
-  version "39.0.0"
-  resolved "https://registry.yarnpkg.com/cldr-core/-/cldr-core-39.0.0.tgz#e2e84f072bad6d845015d18ffece8547dc8e27fa"
-  integrity sha512-ZSElD4Ckl2W3ApP+jz8XXOWen+UqELaO76P0J1H6SKxWuwkba1zmE5gU0grNyuI1RAYwBRUhbeIV+YTsJ7yw3g==
+cldr-cal-buddhist-modern@40.0.0:
+  version "40.0.0"
+  resolved "https://registry.yarnpkg.com/cldr-cal-buddhist-modern/-/cldr-cal-buddhist-modern-40.0.0.tgz#38c5916ad544aed14883938ca6ae8b1ed1924a0e"
+  integrity sha512-0PjfRd2K3/p0J/2XCvVpSINd7sN4voosvh1ZCJ46rIyeJtHwzmeycyKhhbPLc7Wtw9eEaywQkiwg0Y4+Q5HAQg==
 
-cldr-localenames-modern@^39.0.0:
-  version "39.0.0"
-  resolved "https://registry.yarnpkg.com/cldr-localenames-modern/-/cldr-localenames-modern-39.0.0.tgz#d7614e955ff3ea05de64213656327eb85136f9d8"
-  integrity sha512-6P2YaBYscJN5+yGjISBOqnjAHtcFIR+R9ss9AcHTdMR1YL84HVZRJxy9E0OCuz4/OEU3iD0VjC1n6bWxxFqumw==
+cldr-cal-chinese-modern@40.0.0:
+  version "40.0.0"
+  resolved "https://registry.yarnpkg.com/cldr-cal-chinese-modern/-/cldr-cal-chinese-modern-40.0.0.tgz#0ff656d23c6b0fc7ee98591cb039d28ce933d546"
+  integrity sha512-PZNKUXbIeaOP2xxGTfRIFU8Znesf5IbZdPgp1uCEScGhPe4mdUfYVS4/5VAC/GiBKVZEHQKoQqqi8kujLjtwqg==
 
-cldr-numbers-modern@^39.0.0:
-  version "39.0.0"
-  resolved "https://registry.yarnpkg.com/cldr-numbers-modern/-/cldr-numbers-modern-39.0.0.tgz#75a5edc607a47c22a05ad9f2fa0e691bf3b6a7df"
-  integrity sha512-Na9PUy5idpVryB+vJYuh8wJR2OzXEOFagVb3leuD38iyY8aNuADg9A+g1qM3uqab3Vm67ZL+IwavBRIdNgDvJQ==
+cldr-cal-coptic-modern@40.0.0:
+  version "40.0.0"
+  resolved "https://registry.yarnpkg.com/cldr-cal-coptic-modern/-/cldr-cal-coptic-modern-40.0.0.tgz#222785e10850cee1ce9833f4a44c9240a0fc4e66"
+  integrity sha512-CM5GzpA3cChRsPO9mekzHM7juNsQ97+DQKzT5T3MJdGAlsK7PJ6XG+UHbycl6dESkKOM92eGrdrWD7Dt7LgOiA==
+
+cldr-cal-dangi-modern@40.0.0:
+  version "40.0.0"
+  resolved "https://registry.yarnpkg.com/cldr-cal-dangi-modern/-/cldr-cal-dangi-modern-40.0.0.tgz#2069cd7958656911d1203ccb973e9a305ea86cbe"
+  integrity sha512-bY5qDVWKA8uWmLp7kumAOY3W2C4fff9qbJFDW71R8T/CjO8d8ZhwWRUyiQVtX16JDfFvm58oG4zj9rjVbP5WEw==
+
+cldr-cal-ethiopic-modern@40.0.0:
+  version "40.0.0"
+  resolved "https://registry.yarnpkg.com/cldr-cal-ethiopic-modern/-/cldr-cal-ethiopic-modern-40.0.0.tgz#39111697d04bbb337c8dc005b03bbeff65a7997f"
+  integrity sha512-mcDCeNK8MGNKyQJmxJVlj96Hcul1jnmLuyK81poDBiWnunmvwT1dEVeA55Xh811S1CSvSsNOdLj58XnpUNWchg==
+
+cldr-cal-hebrew-modern@40.0.0:
+  version "40.0.0"
+  resolved "https://registry.yarnpkg.com/cldr-cal-hebrew-modern/-/cldr-cal-hebrew-modern-40.0.0.tgz#317b54ad245becf15bb449e7fb69ab58a8f812d7"
+  integrity sha512-nNT3jqXOHdDIPnUmZdX7NmLohIwDQJxI9i0PXQPgWId6emJUigg6M3WwpQlrN6xov5X8LF9TPCiR5g5gFkNAJA==
+
+cldr-cal-indian-modern@40.0.0:
+  version "40.0.0"
+  resolved "https://registry.yarnpkg.com/cldr-cal-indian-modern/-/cldr-cal-indian-modern-40.0.0.tgz#293f5ba97ced4e10f0afea6e162e83438e5e696b"
+  integrity sha512-EiWulbPdAWMaff5OSbXkziRGU2KXm+Tq4n4kx4jtpLNDszpJU2RW2LbRznGsBLDD7RTaG7ZZ7oFy0J0cVwAApA==
+
+cldr-cal-islamic-modern@40.0.0:
+  version "40.0.0"
+  resolved "https://registry.yarnpkg.com/cldr-cal-islamic-modern/-/cldr-cal-islamic-modern-40.0.0.tgz#a6c5542923ef671c24592c87f5f4d3fa3d68ed37"
+  integrity sha512-hHyzDRb86iuyVhFCn5goy7MO6Hos/IA7yropbU/kaVVzjpKJCRHbSXKXP2PUw/K9d4UzMNM+IAysL39YVaa4Cw==
+
+cldr-cal-japanese-modern@40.0.0:
+  version "40.0.0"
+  resolved "https://registry.yarnpkg.com/cldr-cal-japanese-modern/-/cldr-cal-japanese-modern-40.0.0.tgz#605e602f84712a20557515d0fb0dd612cf72bc32"
+  integrity sha512-sgyGwV02M9SLBQDONDL02AIwYCwj0HEK8UFiJ3MLXvF9I+vgyD3Inj84CBzcEeM0wa+o3GmvWo/JbWOubLMFNQ==
+
+cldr-cal-persian-modern@40.0.0:
+  version "40.0.0"
+  resolved "https://registry.yarnpkg.com/cldr-cal-persian-modern/-/cldr-cal-persian-modern-40.0.0.tgz#7320b68380f2bd02f9c23a05549117ea7f9c716a"
+  integrity sha512-QZjq8uxzaG4r6bMbYjpFDoi40RbEB/Eq6sjp9zBRFpLJaIBJhFLrqaZoOBZJCp3V5seAbeNnS5ilGHhPADse3Q==
+
+cldr-cal-roc-modern@40.0.0:
+  version "40.0.0"
+  resolved "https://registry.yarnpkg.com/cldr-cal-roc-modern/-/cldr-cal-roc-modern-40.0.0.tgz#cf980e1cdbc41dc7cb6c1ab7f7e0f7e721691ef7"
+  integrity sha512-MYvpQde8aFhav9s1h1NxrFKL2BlzmLnM4Bj7/M8CD7Vpz+ZK3Fj23Mfoct6PMjeiu6VkG4VeRJW6TRHJPW+eJg==
+
+cldr-core@40.0.0:
+  version "40.0.0"
+  resolved "https://registry.yarnpkg.com/cldr-core/-/cldr-core-40.0.0.tgz#ec8c187fbd483796a30b25aedf37d8a504e937c5"
+  integrity sha512-0nmiOR9I2ImfspRTvFhzF7uXYtVCnHMYULrIncArrsnICUxNnZVEJ6pHPRUtB3J8i4VkwQQMRcs9yl4+wxVP4g==
+
+cldr-dates-modern@40.0.0:
+  version "40.0.0"
+  resolved "https://registry.yarnpkg.com/cldr-dates-modern/-/cldr-dates-modern-40.0.0.tgz#3b698d091322e097b30f68257b376bc7d25f23e1"
+  integrity sha512-O7D2yCSIdn5Ui/R1OdFP0OsgvCdn00GEQq1GzEDevME8O85k/yR6TNux8Kgmt9v2rU4wXhyv2k3EUErpHl54Bg==
+
+cldr-localenames-modern@40.0.0:
+  version "40.0.0"
+  resolved "https://registry.yarnpkg.com/cldr-localenames-modern/-/cldr-localenames-modern-40.0.0.tgz#a1a033a84bd3db1f8c698d3635b7a5289ac67103"
+  integrity sha512-nrpP9pyRQPsIzgshg4UXzaLGJsw/+q5ElkzVvO51+Wt4eFFV+tNRfghDXr7DaoVCn3bBBa+qeRHXaKnd6aAE+w==
+
+cldr-numbers-modern@40.0.0:
+  version "40.0.0"
+  resolved "https://registry.yarnpkg.com/cldr-numbers-modern/-/cldr-numbers-modern-40.0.0.tgz#1b75c9af5e228f334b59409c6cd80661f9625861"
+  integrity sha512-yOgq/bpZczT4tmYYpwSt2RRbUT9sJLsebct/F3g/0QsILEhoMp4yIYzVRt4Ze4FujVR5O9qROBomDOKuHi8kXQ==
 
 code-point-at@^1.0.0:
   version "1.1.0"

@@ -7,6 +7,7 @@ import TerritoriesGenerator from '../src/territories/generators/territories.gene
 import VariantsGenerator from "../src/variants/generators/variants.generator";
 import ExtensionsGenerator from "../src/extensions/generators/extensions.generator";
 import LocalesGenerator from "../src/locales/generators/locales.generator";
+import CalendarsGenerator from "../src/calendars/generators/calendars.generator";
 import debug, { IDebugger} from 'debug';
 
 const log: IDebugger = debug('app:seed');
@@ -22,6 +23,7 @@ async function seed(module) {
   const v = new VariantsGenerator();
   const e = new ExtensionsGenerator();
   const loc = new LocalesGenerator();
+  const cal = new CalendarsGenerator();
   switch (module) {
     case 'users':
       r.push(await u.generate()); 
@@ -58,6 +60,10 @@ async function seed(module) {
     case 'locales':
       r.push(await loc.generate()); 
       break;
+ 
+    case 'calendars':
+      r.push(await cal.generate()); 
+      break;
   
     default:
       r.push(await u.generate()); 
@@ -69,6 +75,7 @@ async function seed(module) {
       r.push(await v.generate());
       r.push(await e.generate());
       r.push(await loc.generate());
+      r.push(await cal.generate());
       break;
   }
   return r.join('\n');
