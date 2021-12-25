@@ -247,8 +247,18 @@ export default class CalendarGenerator implements IGenerate {
     };
   }
 
-  private getCalendarPatterns(calendarData, calendar, locale): ICalendarPatterns {
-    return calendarData.main[locale].monthPatterns;
+  private getCalendarPatterns(calendarData, calendar, locale): ICalendarPatterns | undefined {
+    const patternsData = calendarData.main[locale].dates.calendars[calendar].monthPatterns;
+    if (!patternsData) {
+      return undefined;
+    }
+    return {
+      months: {
+        format: patternsData.format,
+        standAlone: patternsData['stand-alone'],
+        numeric: patternsData.numeric
+      }
+    };
   }
 
   private getDateSkeletons(calendarData, calendar, locale): ISkeletons {

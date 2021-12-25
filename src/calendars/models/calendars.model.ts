@@ -4,7 +4,7 @@ import { IAppendItems, IBranches, ICalendar, ICalendarData, ICalendarFormats, IS
   ICalendarNames, ICalendarSkeletons, ICyclical, ICyclicalDayParts, ICyclicalSolarTerms, 
   ICyclicalSolarTermsNames, ICyclicalZodiac, IDayNames, IDayPeriodNames, IDayPeriods, IDays, 
   IEntries, IEraNames, IEraEntry, IFormats, IIntervals, IMonthNames, IMonths, IQuarterNames, 
-  IQuarters, ISkeletons, ICyclicalYears, ICyclicalMonths, ICyclicalDays, ICalendarPatterns, ICalendarPatternsEntry } from "../interfaces/calendars.interface";
+  IQuarters, ISkeletons, ICyclicalYears, ICyclicalMonths, ICyclicalDays, ICalendarPatterns, ICalendarPatternsEntry, ICalendarPatternsCategories, INumericCalendarPatternsEntries, ICalendarPatternsEntries } from "../interfaces/calendars.interface";
 
 const {Schema, model } = mongooseService.getMongoose();
 
@@ -346,16 +346,24 @@ export const CalendarPatternsEntrySchema = new Schema<ICalendarPatternsEntry>({
   leap: String
 }, {_id: false});
 
-export const CalendarPatternsEntriesSchema = new Schema<IEntries<ICalendarPatternsEntry>>({
+export const CalendarPatternsEntriesSchema = new Schema<ICalendarPatternsEntries<ICalendarPatternsEntry>>({
   wide: CalendarPatternsEntrySchema,
   abbreviated: CalendarPatternsEntrySchema,
   narrow: CalendarPatternsEntrySchema
+}, {_id: false});
+
+export const CalendarNumericPatternsEntriesSchema = new Schema<INumericCalendarPatternsEntries>({
+  all: CalendarPatternsEntrySchema
+}, {_id: false})
+
+export const CalendarPatternsEntriesCategoriesSchema = new Schema<ICalendarPatternsCategories<ICalendarPatternsEntry>>({
+  format: CalendarPatternsEntriesSchema,
+  standAlone: CalendarPatternsEntriesSchema,
+  numeric: CalendarNumericPatternsEntriesSchema
 }, {_id: false})
 
 export const CalendarPatternsSchema = new Schema<ICalendarPatterns>({
-  format: CalendarPatternsEntriesSchema,
-  standAlone: CalendarPatternsEntriesSchema,
-  all: String
+  months: CalendarPatternsEntriesCategoriesSchema
 }, {_id: false})
 
 export const SkeletonsSchema = new Schema<ISkeletons>({

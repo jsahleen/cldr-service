@@ -3,7 +3,7 @@ import Calendar from "../models/calendars.model";
 import { ICreateDTO, IPutDTO, IPatchDTO } from '../dtos/calendars.dtos';
 import debug, {IDebugger } from 'debug';
 
-const log: IDebugger = debug('app:currencies-dao');
+const log: IDebugger = debug('app:calendars-dao');
 
 function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;

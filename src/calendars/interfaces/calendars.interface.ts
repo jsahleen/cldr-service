@@ -333,10 +333,22 @@ export interface ICalendarPatternsEntry {
   leap: string
 }
 
+export interface INumericCalendarPatternsEntries {
+  all: ICalendarPatternsEntry
+}
+
+export interface ICalendarPatternsEntries<T> {
+  abbreviated: T
+  narrow: T
+  wide: T
+}
+export interface ICalendarPatternsCategories<T> {
+  format: ICalendarPatternsEntries<T>
+  standAlone: ICalendarPatternsEntries<T>
+  numeric: INumericCalendarPatternsEntries
+}
 export interface ICalendarPatterns {
-  format: IEntries<ICalendarPatternsEntry>
-  standAlone: IEntries<ICalendarPatternsEntry>
-  all?: ICalendarPatternsEntry
+  months: ICalendarPatternsCategories<ICalendarPatternsEntry>
 }
 
 export interface ICalendarSkeletons {
@@ -350,7 +362,7 @@ export interface ICalendarData {
   dateNumberSystem: string
   names: ICalendarNames
   formats: ICalendarFormats
-  patterns: ICalendarPatterns
+  patterns?: ICalendarPatterns
   skeletons: ICalendarSkeletons
   isPreferred: boolean
   calendarSystem: string
