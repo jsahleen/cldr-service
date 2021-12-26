@@ -6,7 +6,7 @@ WORKDIR /usr/src/app
 
 COPY . .
 
-RUN yarn --production
+RUN yarn install --production
 
 ARG CLDR_TIER="modern"
 ARG CLDR_VERSION="40.0.0"
