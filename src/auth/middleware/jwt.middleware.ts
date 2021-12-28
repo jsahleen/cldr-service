@@ -5,7 +5,7 @@ import crypto from 'crypto';
 import usersService from '../../users/services/users.service';
 import debug, { IDebugger } from 'debug';
 
-const jwtSecret: string | undefined = process.env.JWT_SECRET;
+const jwtSecret: string | undefined = process.env.CLDR_JWT_SECRET;
 
 const log: IDebugger = debug('app:jwt-middleware');
 
