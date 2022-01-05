@@ -29,9 +29,9 @@ class NumberSystemController {
     let { 
       limit = 25, 
       page = 1,
-      systems = availableSystems,
-      locales = availableLocales,
-      filters = availableFilters
+      systems,
+      locales,
+      filters
     } = req.query;
 
     if (typeof systems === 'string') {
@@ -78,6 +78,11 @@ class NumberSystemController {
 
   async updateNumberSystemById(req: express.Request, res: express.Response) {
     log(await NumberSystemsService.updateById(req.params.id, req.body));
+    res.status(204).send();
+  }
+
+  async replaceNumberSystemById(req: express.Request, res: express.Response) {
+    log(await NumberSystemsService.replaceById(req.params.id, req.body));
     res.status(204).send();
   }
 

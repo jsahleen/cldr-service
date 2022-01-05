@@ -51,7 +51,7 @@ class ExtensionsMiddleware implements IModuleMiddleware {
   }
 
   async validateNameOrTypeParameter(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
-    const keys = await extensionsService.getExtensionKeys();
+    const keys = await extensionsService.getTags();
     if(!keys.includes(req.params.key)) {
       res.status(404).send();
     }

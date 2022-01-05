@@ -24,7 +24,11 @@ class NumberSystemsService implements IAdmin, IPublic {
     return NumbersSystemsDAO.getNumberSystemById(id);
   }
 
-  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<void> {
+  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<INumberSystem | null> {
+    return NumbersSystemsDAO.updateNumberSystemById(id, fields, true);
+  }
+
+  async replaceById(id: string, fields: IPutDTO): Promise<INumberSystem | null> {
     return NumbersSystemsDAO.updateNumberSystemById(id, fields);
   }
 
@@ -36,8 +40,12 @@ class NumberSystemsService implements IAdmin, IPublic {
     return NumbersSystemsDAO.listNumberSystemsByNameOrType(category, locales, filters, limit, page);
   }
 
-  async getNumberSystemNames() {
-    return NumbersSystemsDAO.getNumberSystemNames();
+  async getTags() {
+    return NumbersSystemsDAO.getTags();
+  }
+
+  async getLocales() {
+    return NumbersSystemsDAO.getLocales();
   }
 
 }

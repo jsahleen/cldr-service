@@ -25,6 +25,10 @@ class UsersService implements ICRUD {
   }
 
   async updateById(id: string, fields): Promise<IUser | null> {
+    return UsersDAO.updateUserById(id, fields, true);
+  }
+
+  async replaceById(id: string, fields): Promise<IUser | null> {
     return UsersDAO.updateUserById(id, fields);
   }
 

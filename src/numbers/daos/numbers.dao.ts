@@ -1,6 +1,7 @@
 import { INumberSystem } from '../interfaces/numbers.interface';
 import NumberSystem from "../models/numbers.model";
 import { ICreateDTO, IPutDTO, IPatchDTO } from '../dtos/numbers.dtos';
+import { merge } from 'lodash';
 import debug, {IDebugger } from 'debug';
 
 const log: IDebugger = debug('app:numbersystem-dao');
@@ -39,8 +40,15 @@ class NumbersSystemsDAO {
     return  NumberSystem.findById(id).exec();
   }
 
-  async updateNumberSystemById(id: string, fields: IPatchDTO | IPutDTO): Promise<void> {
-    NumberSystem.findByIdAndUpdate(id, fields, { new: true }).exec();
+  async updateNumberSystemById(id: string, fields: IPatchDTO | IPutDTO, mergeFields = false): Promise<INumberSystem | null> {
+    let input: IPatchDTO | IPutDTO;
+    if (mergeFields === true) {
+      const existing = await NumberSystem.findById(id);
+      input = merge({}, existing, fields);
+    } else {
+      input = fields;
+    }
+    return NumberSystem.findByIdAndUpdate(id, input, { new: true }).exec();
   }
 
   async removeNumberSystemById(id: string): Promise<void> {
@@ -89,10 +97,17 @@ class NumbersSystemsDAO {
     
   }
 
-  async getNumberSystemNames(): Promise<string[]> {
+  async getTags(): Promise<string[]> {
     const results = await NumberSystem.find().select('main.name').exec();
     return  results.map(result => {
       return result.main.name;
+    }).filter(onlyUnique);
+  }
+
+  async getLocales(): Promise<string[]> {
+    const results = await NumberSystem.find().select('tag').exec();
+    return  results.map(result => {
+      return result.tag;
     }).filter(onlyUnique);
   }
 

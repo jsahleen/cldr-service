@@ -1,6 +1,7 @@
 import { ILanguage } from '../interfaces/languages.interface';
 import Language from "../models/languages.model";
 import { ICreateDTO, IPutDTO, IPatchDTO } from '../dtos/languages.dtos';
+import { merge } from 'lodash';
 import debug, {IDebugger } from 'debug';
 
 const log: IDebugger = debug('app:languages-dao');
@@ -39,8 +40,15 @@ class LanguageDAO {
     return  Language.findById(id).exec();
   }
 
-  async updateLanguageById(id: string, fields: IPatchDTO | IPutDTO): Promise<void> {
-    Language.findByIdAndUpdate(id, fields, { new: true }).exec();
+  async updateLanguageById(id: string, fields: IPatchDTO | IPutDTO, mergeFields = false): Promise<ILanguage | null> {
+    let input: IPatchDTO | IPutDTO;
+    if (mergeFields === true) {
+      const existing = await Language.findById(id);
+      input = merge({}, existing, fields);
+    } else {
+      input = fields;
+    }
+    return Language.findByIdAndUpdate(id, input, { new: true }).exec();
   }
 
   async removeLanguageById(id: string): Promise<void> {
@@ -67,10 +75,17 @@ class LanguageDAO {
       .exec();    
   }
 
-  async getLanguageTags(): Promise<string[]> {
+  async getTags(): Promise<string[]> {
     const results = await Language.find().select('main.tag').exec();
     return  results.map(result => {
       return result.main.tag;
+    }).filter(onlyUnique);
+  }
+
+  async getLocales(): Promise<string[]> {
+    const results = await Language.find().select('tag').exec();
+    return  results.map(result => {
+      return result.tag;
     }).filter(onlyUnique);
   }
 

@@ -11,7 +11,10 @@ export JWT=$(curl -H -X POST 'localhost:3000/auth' \
     "password":"'$password'"
 }')
 
-CLDR_ACCESS_TOKEN=$(echo $JWT | python3 -c "import sys, json; print(json.load(sys.stdin)['accessToken'])")
-CLDR_REFRESH_TOKEN=$(echo $JWT | python3 -c "import sys, json; print(json.load(sys.stdin)['refreshToken'])")
+ACCESS="var fs = require('fs');process.stdout.write(JSON.parse(fs.readFileSync(0, 'utf-8'))['accessToken'])"
+REFRESH="var fs = require('fs');process.stdout.write(JSON.parse(fs.readFileSync(0, 'utf-8'))['refreshToken'])"
+
+export CLDR_ACCESS_TOKEN=$(echo $JWT | node -e "${ACCESS}")
+export CLDR_REFRESH_TOKEN=$(echo $JWT | node -e "${REFRESH}")
 
 echo "Logged in as ${email}."

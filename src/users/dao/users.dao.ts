@@ -2,6 +2,7 @@ import { ICreateDTO, IPutDTO, IPatchDTO } from '../dtos/users.dtos'
 import debug, { IDebugger } from 'debug';
 import { IUser } from '../interfaces/users.interface';
 import User from '../models/users.model';
+import { merge } from 'lodash';
 
 const log: IDebugger  = debug('app:users-dao');
 
@@ -30,9 +31,15 @@ class UsersDAO {
     return User.findOne({ email: email }).exec();
   }
 
-  async updateUserById(id: string, fields: IPutDTO | IPatchDTO): Promise<IUser | null> {
-    const existingUser = await User.findOneAndUpdate({_id: id}, {$set: fields}, {new: true}).exec();
-    return existingUser;
+  async updateUserById(id: string, fields: IPutDTO | IPatchDTO, mergeFields = false): Promise<IUser | null> {
+    let input: IPatchDTO | IPutDTO;
+    if (mergeFields === true) {
+      const existing = await User.findById(id);
+      input = merge({}, existing, fields);
+    } else {
+      input = fields;
+    }
+    return User.findByIdAndUpdate(id, input, { new: true }).exec();
   }
 
   async getUserByEmailWithPassword(email: string) {

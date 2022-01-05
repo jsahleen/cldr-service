@@ -2,6 +2,7 @@ import { IExtension } from '../interfaces/extensions.interface';
 import Extension from "../models/extensions.model";
 import { ICreateDTO, IPutDTO, IPatchDTO } from '../dtos/extensions.dtos';
 import debug, {IDebugger } from 'debug';
+import { merge } from 'lodash'; 
 
 const log: IDebugger = debug('app:scripts-dao');
 
@@ -39,8 +40,15 @@ class ExtensionsDAO {
     return  Extension.findById(id).exec();
   }
 
-  async updateExtensionById(id: string, fields: IPatchDTO | IPutDTO): Promise<void> {
-    Extension.findByIdAndUpdate(id, fields, { new: true }).exec();
+  async updateExtensionById(id: string, fields: IPatchDTO | IPutDTO, mergeFields = false): Promise<IExtension | null> {
+    let input: IPatchDTO | IPutDTO;
+    if (mergeFields === true) {
+      const existing = await Extension.findById(id);
+      input = merge({}, existing, fields);
+    } else {
+      input = fields;
+    }
+    return Extension.findByIdAndUpdate(id, input, { new: true }).exec();
   }
 
   async removeExtensionById(id: string): Promise<void> {
@@ -67,10 +75,17 @@ class ExtensionsDAO {
       .exec();    
   }
 
-  async getExtensionKeys(): Promise<string[]> {
+  async getTags(): Promise<string[]> {
     const results = await Extension.find().select('main.key').exec();
     return  results.map(result => {
       return result.main.key;
+    }).filter(onlyUnique);
+  }
+
+  async getLocales(): Promise<string[]> {
+    const results = await Extension.find().select('tag').exec();
+    return  results.map(result => {
+      return result.tag;
     }).filter(onlyUnique);
   }
 

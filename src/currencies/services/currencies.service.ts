@@ -24,8 +24,12 @@ class NumberSystemsService implements IAdmin, IPublic {
     return CurrenciesDAO.getCurrencyById(id);
   }
 
-  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<void> {
+  async replaceById (id: string, fields: IPutDTO | IPatchDTO): Promise<ICurrency | null> {
     return CurrenciesDAO.updateCurrencyById(id, fields);
+  }
+
+  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<ICurrency | null> {
+    return CurrenciesDAO.updateCurrencyById(id, fields, true);
   }
 
   async removeById(id: string): Promise<void> {
@@ -36,8 +40,12 @@ class NumberSystemsService implements IAdmin, IPublic {
     return CurrenciesDAO.listCurrenciesByCodeOrType(category, locales, filters, limit, page);
   }
 
-  async getCurrencyCodes() {
-    return CurrenciesDAO.getCurrencyCodes();
+  async getTags() {
+    return CurrenciesDAO.getTags();
+  }
+
+  async getLocales() {
+    return CurrenciesDAO.getLocales();
   }
 
 }

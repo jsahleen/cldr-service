@@ -51,7 +51,7 @@ class CurrenciesMiddleware implements IModuleMiddleware {
   }
 
   async validateNameOrTypeParameter(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
-    const codes = await currenciesService.getCurrencyCodes();
+    const codes = await currenciesService.getTags();
     if(
       !codes.includes(req.params.code) &&
       (req.params.code !== 'current' && req.params.code !== 'historical')

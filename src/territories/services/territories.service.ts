@@ -24,7 +24,11 @@ class TerritoriesService implements IAdmin, IPublic {
     return territoriesDAO.getTerritoryById(id);
   }
 
-  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<void> {
+  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<ITerritory | null> {
+    return territoriesDAO.updateTerritoryById(id, fields, true);
+  }
+
+  async replaceById(id: string, fields: IPutDTO | IPatchDTO): Promise<ITerritory | null> {
     return territoriesDAO.updateTerritoryById(id, fields);
   }
 
@@ -36,8 +40,12 @@ class TerritoriesService implements IAdmin, IPublic {
     return territoriesDAO.listTerritoriesByTagOrType(category, locales, filters, limit, page);
   }
 
-  async getScriptTags() {
-    return territoriesDAO.getTerritoryTags();
+  async getTags() {
+    return territoriesDAO.getTags();
+  }
+
+  async getLocales() {
+    return territoriesDAO.getLocales();
   }
 
 }

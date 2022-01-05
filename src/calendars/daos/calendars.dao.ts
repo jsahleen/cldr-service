@@ -2,6 +2,7 @@ import { ICalendar } from '../interfaces/calendars.interface';
 import Calendar from "../models/calendars.model";
 import { ICreateDTO, IPutDTO, IPatchDTO } from '../dtos/calendars.dtos';
 import debug, {IDebugger } from 'debug';
+import { merge } from 'lodash';
 
 const log: IDebugger = debug('app:calendars-dao');
 
@@ -39,8 +40,15 @@ class CalendarsDAO {
     return Calendar.findById(id).exec();
   }
 
-  async updateCalendarById(id: string, fields: IPatchDTO | IPutDTO): Promise<void> {
-    Calendar.findByIdAndUpdate(id, fields, { new: true }).exec();
+  async updateCalendarById(id: string, fields: IPatchDTO | IPutDTO, mergeFields = false): Promise<ICalendar | null> {
+    let input: IPatchDTO | IPutDTO;
+    if (mergeFields === true) {
+      const existing = await Calendar.findById(id);
+      input = merge({}, existing, fields);
+    } else {
+      input = fields;
+    }
+    return Calendar.findByIdAndUpdate(id, input, { new: true }).exec();
   }
 
   async removeCalendarById(id: string): Promise<void> {
@@ -80,10 +88,17 @@ class CalendarsDAO {
     
   }
 
-  async getCalendarTags(): Promise<string[]> {
+  async getTags(): Promise<string[]> {
     const results = await Calendar.find().select('main.tag').exec();
     return  results.map(result => {
       return result.main.tag;
+    }).filter(onlyUnique);
+  }
+
+  async getLocales(): Promise<string[]> {
+    const results = await Calendar.find().select('tag').exec();
+    return  results.map(result => {
+      return result.tag;
     }).filter(onlyUnique);
   }
 

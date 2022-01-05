@@ -1,12 +1,8 @@
 import express from 'express';
 import localesService from '../services/locales.service';
 import debug, { IDebugger } from 'debug';
-import CLDRUTIL from '../../common/util/common.util';
 
 const log: IDebugger = debug('app:locales-controller');
-
-const availableLocales = CLDRUTIL.getAvailableLocales();
-const availableTags = availableLocales.filter(l => l !== CLDRUTIL.rootLocale);
 
 export const availableFilters: string[] = [
   'tag',
@@ -29,15 +25,15 @@ class LocalesController {
     let { 
       limit = 25, 
       page = 1,
-      tags = availableTags,
-      locales = availableLocales,
-      filters = availableFilters
+      tags,
+      locales,
+      filters
     } = req.query;
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = availableLocales as string[];
+      locales = await localesService.getLocales();
     }
 
     if (typeof filters === 'string') {
@@ -57,6 +53,7 @@ class LocalesController {
       tags = tags.split(',');
     } else {
       const before = locales.length > limit ? limit : 1
+      const availableTags = await localesService.getTags();
       tags = availableTags.slice(0, before) as string[];
     }
 
@@ -82,6 +79,11 @@ class LocalesController {
     res.status(204).send();
   }
 
+  async replaceLocaleById(req: express.Request, res: express.Response) {
+    log(await localesService.replaceById(req.params.id, req.body));
+    res.status(204).send();
+  }
+
   async removeLocaleById(req: express.Request, res: express.Response) {
     log(await localesService.removeById(req.params.id));
     res.status(204).send();
@@ -93,14 +95,14 @@ class LocalesController {
     let { 
       limit = 25, 
       page = 1,
-      locales = availableLocales,
-      filters = availableFilters
+      locales,
+      filters
     } = req.query;
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = availableLocales as string[];
+      locales = await localesService.getLocales();
     }
 
     if (typeof filters === 'string') {

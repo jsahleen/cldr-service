@@ -1,13 +1,8 @@
 import express from 'express';
 import territoriesService from '../services/territories.service';
 import debug, { IDebugger } from 'debug';
-import CLDRUTIL from '../../common/util/common.util';
 
 const log: IDebugger = debug('app:territories-controller');
-
-const availableLocales = CLDRUTIL.getAvailableLocales();
-const rootData = CLDRUTIL.getRootLocaleData('localenames', 'territories');
-const availableTags = Object.keys(rootData.main[CLDRUTIL.rootLocale].localeDisplayNames.territories);
 
 export const availableFilters: string[] = [
   'tag',
@@ -33,21 +28,21 @@ class TerritoriesController {
     let { 
       limit = 25, 
       page = 1,
-      tags = availableTags,
-      locales = availableLocales,
+      tags,
+      locales,
       filters = availableFilters
     } = req.query;
 
     if (typeof tags === 'string') {
       tags = tags.split(',');
     } else {
-      tags = availableTags as string[];
+      tags = await territoriesService.getTags();
     }
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = availableLocales as string[];
+      locales = await territoriesService.getLocales();
     }
 
     if (typeof filters === 'string') {
@@ -85,6 +80,11 @@ class TerritoriesController {
     res.status(204).send();
   }
 
+  async replaceTerritoryById(req: express.Request, res: express.Response) {
+    log(await territoriesService.replaceById(req.params.id, req.body));
+    res.status(204).send();
+  }
+
   async removeTerritoryById(req: express.Request, res: express.Response) {
     log(await territoriesService.removeById(req.params.id));
     res.status(204).send();
@@ -96,14 +96,14 @@ class TerritoriesController {
     let { 
       limit = 25, 
       page = 1,
-      locales = availableLocales,
-      filters = availableFilters
+      locales,
+      filters
     } = req.query;
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = availableLocales as string[];
+      locales = await territoriesService.getLocales();
     }
 
     if (typeof filters === 'string') {

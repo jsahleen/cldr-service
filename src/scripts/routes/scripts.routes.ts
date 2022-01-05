@@ -50,7 +50,7 @@ export class ScriptsRoutes extends CommonRoutesConfig {
       .get(scriptsController.getScriptById)
       .put([
         scriptsMiddleware.validatePutBody,
-        scriptsController.updateScriptById
+        scriptsController.replaceScriptById
       ])
       .patch([
         scriptsMiddleware.validatePatchBody,

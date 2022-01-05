@@ -50,7 +50,7 @@ export class TerritoriesRoutes extends CommonRoutesConfig {
       .get(territoriesController.getTerritoryById)
       .put([
         territoriesMiddleware.validatePutBody,
-        territoriesController.updateTerritoryById
+        territoriesController.replaceTerritoryById
       ])
       .patch([
         territoriesMiddleware.validatePatchBody,

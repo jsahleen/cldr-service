@@ -51,7 +51,7 @@ class NumberSystemsMiddleware implements IModuleMiddleware {
   }
 
   async validateNameOrTypeParameter(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
-    const systems = await numbersService.getNumberSystemNames();
+    const systems = await numbersService.getTags();
     if(
       !systems.includes(req.params.system) &&
       (req.params.system !== 'default' && req.params.system !== 'native')

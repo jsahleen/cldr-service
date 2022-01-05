@@ -50,7 +50,7 @@ export class CurrencyRoutes extends CommonRoutesConfig {
       .get(currenciesController.getCurrencyById)
       .put([
         currenciesMiddleware.validatePutBody,
-        currenciesController.updateCurrencyById
+        currenciesController.replaceCurrencyById
       ])
       .patch([
         currenciesMiddleware.validatePatchBody,

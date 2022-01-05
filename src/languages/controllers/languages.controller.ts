@@ -80,6 +80,11 @@ class LanguagesController {
     res.status(204).send();
   }
 
+  async replaceLanguageById(req: express.Request, res: express.Response) {
+    log(await languagesService.replaceById(req.params.id, req.body));
+    res.status(204).send();
+  }
+
   async removeLanguageById(req: express.Request, res: express.Response) {
     log(await languagesService.removeById(req.params.id));
     res.status(204).send();

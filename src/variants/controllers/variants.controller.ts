@@ -1,13 +1,8 @@
 import express from 'express';
 import variantsService from '../services/variants.service';
 import debug, { IDebugger } from 'debug';
-import CLDRUTIL from '../../common/util/common.util';
 
 const log: IDebugger = debug('app:variants-controller');
-
-const availableLocales = CLDRUTIL.getAvailableLocales();
-const rootData = CLDRUTIL.getRootLocaleData('localenames', 'variants');
-const availableTags = Object.keys(rootData.main[CLDRUTIL.rootLocale].localeDisplayNames.variants);
 
 export const availableFilters: string[] = [
   'tag',
@@ -24,21 +19,21 @@ class VariantsController {
     let { 
       limit = 25, 
       page = 1,
-      tags = availableTags,
-      locales = availableLocales,
-      filters = availableFilters
+      tags,
+      locales,
+      filters
     } = req.query;
 
     if (typeof tags === 'string') {
       tags = tags.split(',');
     } else {
-      tags = availableTags as string[];
+      tags = await variantsService.getTags();
     }
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = availableLocales as string[];
+      locales = await variantsService.getLocales();
     }
 
     if (typeof filters === 'string') {
@@ -76,6 +71,11 @@ class VariantsController {
     res.status(204).send();
   }
 
+  async replaceVariantById(req: express.Request, res: express.Response) {
+    log(await variantsService.replaceById(req.params.id, req.body));
+    res.status(204).send();
+  }
+
   async removeVariantById(req: express.Request, res: express.Response) {
     log(await variantsService.removeById(req.params.id));
     res.status(204).send();
@@ -87,14 +87,14 @@ class VariantsController {
     let { 
       limit = 25, 
       page = 1,
-      locales = availableLocales,
-      filters = availableFilters
+      locales,
+      filters
     } = req.query;
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = availableLocales as string[];
+      locales = await variantsService.getLocales();
     }
 
     if (typeof filters === 'string') {

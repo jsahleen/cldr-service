@@ -2,6 +2,7 @@ import { ICurrency } from '../interfaces/currencies.interface';
 import Currency from "../models/currencies.model";
 import { ICreateDTO, IPutDTO, IPatchDTO } from '../dtos/currencies.dtos';
 import debug, {IDebugger } from 'debug';
+import { merge } from 'lodash';
 
 const log: IDebugger = debug('app:currencies-dao');
 
@@ -39,8 +40,15 @@ class CurrenciesDAO {
     return  Currency.findById(id).exec();
   }
 
-  async updateCurrencyById(id: string, fields: IPatchDTO | IPutDTO): Promise<void> {
-    Currency.findByIdAndUpdate(id, fields, { new: true }).exec();
+  async updateCurrencyById(id: string, fields: IPatchDTO | IPutDTO, mergeFields = false): Promise<ICurrency | null> {
+    let input: IPatchDTO | IPutDTO;
+    if (mergeFields === true) {
+      const existing = await Currency.findById(id);
+      input = merge({}, existing, fields);
+    } else {
+      input = fields;
+    }
+    return Currency.findByIdAndUpdate(id, input, { new: true }).exec();
   }
 
   async removeCurrencyById(id: string): Promise<void> {
@@ -89,10 +97,17 @@ class CurrenciesDAO {
     
   }
 
-  async getCurrencyCodes(): Promise<string[]> {
+  async getTags(): Promise<string[]> {
     const results = await Currency.find().select('main.code').exec();
     return  results.map(result => {
       return result.main.code;
+    }).filter(onlyUnique);
+  }
+
+  async getLocales(): Promise<string[]> {
+    const results = await Currency.find().select('tag').exec();
+    return  results.map(result => {
+      return result.tag;
     }).filter(onlyUnique);
   }
 

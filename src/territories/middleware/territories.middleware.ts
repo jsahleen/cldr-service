@@ -51,7 +51,7 @@ class TerritoriesMiddleware implements IModuleMiddleware {
   }
 
   async validateNameOrTypeParameter(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
-    const tags = await territoriesService.getScriptTags();
+    const tags = await territoriesService.getTags();
     if(!tags.includes(req.params.tag)) {
       res.status(404).send();
     }

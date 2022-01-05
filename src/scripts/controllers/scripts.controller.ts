@@ -1,13 +1,8 @@
 import express from 'express';
 import scriptsService from '../services/scripts.service';
 import debug, { IDebugger } from 'debug';
-import CLDRUTIL from '../../common/util/common.util';
 
 const log: IDebugger = debug('app:scripts-controller');
-
-const availableLocales = CLDRUTIL.getAvailableLocales();
-const rootData = CLDRUTIL.getRootLocaleData('localenames', 'scripts')
-const availableTags = Object.keys(rootData.main[CLDRUTIL.rootLocale].localeDisplayNames.scripts);
 
 export const availableFilters: string[] = [
   'tag',
@@ -26,21 +21,21 @@ class ScriptsController {
     let { 
       limit = 25, 
       page = 1,
-      tags = availableTags,
-      locales = availableLocales,
-      filters = availableFilters
+      tags,
+      locales,
+      filters
     } = req.query;
 
     if (typeof tags === 'string') {
       tags = tags.split(',');
     } else {
-      tags = availableTags as string[];
+      tags = await scriptsService.getTags();
     }
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = availableLocales as string[];
+      locales = await scriptsService.getLocales();
     }
 
     if (typeof filters === 'string') {
@@ -78,6 +73,11 @@ class ScriptsController {
     res.status(204).send();
   }
 
+  async replaceScriptById(req: express.Request, res: express.Response) {
+    log(await scriptsService.replaceById(req.params.id, req.body));
+    res.status(204).send();
+  }
+
   async removeScriptById(req: express.Request, res: express.Response) {
     log(await scriptsService.removeById(req.params.id));
     res.status(204).send();
@@ -89,14 +89,14 @@ class ScriptsController {
     let { 
       limit = 25, 
       page = 1,
-      locales = availableLocales,
-      filters = availableFilters
+      locales,
+      filters
     } = req.query;
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = availableLocales as string[];
+      locales = await scriptsService.getLocales();
     }
 
     if (typeof filters === 'string') {
