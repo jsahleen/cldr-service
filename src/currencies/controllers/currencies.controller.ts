@@ -21,6 +21,8 @@ class CurrenciesController {
 
   constructor() {
     log('Created new instance of CurrenciesController');
+    this.getTags();
+    this.getLocales();
   }
 
   async getTags(): Promise<string[]> {
@@ -31,13 +33,13 @@ class CurrenciesController {
   }
 
   async getLocales(): Promise<string[]> {
-    if (Array.isArray(this.tags) && this.tags.length === 0) {
+    if (Array.isArray(this.locales) && this.locales.length === 0) {
       this.locales = await CurrenciesService.getLocales();
     }
     return this.locales;
   }
 
-  async listCurrencies(req: express.Request, res: express.Response) {
+  listCurrencies = async (req: express.Request, res: express.Response) => {
     let { 
       limit = 25, 
       page = 1,
@@ -77,9 +79,9 @@ class CurrenciesController {
 
   async createCurrency(req: express.Request, res: express.Response) {
     const id = await CurrenciesService.create(req.body);
-    this.tags = await this.getTags();
-    this.locales = await this.getLocales();
     res.status(201).send({ _id: id});
+    this.tags = await CurrenciesService.getTags();
+    this.locales = await CurrenciesService.getLocales();
   }
 
   async getCurrencyById(req: express.Request, res: express.Response) {
@@ -92,26 +94,26 @@ class CurrenciesController {
 
   async replaceCurrencyById(req: express.Request, res: express.Response) {
     log(await CurrenciesService.replaceById(req.params.id, req.body));
-    this.tags = await this.getTags();
-    this.locales = await this.getLocales();
     res.status(204).send();
+    this.tags = await CurrenciesService.getTags();
+    this.locales = await CurrenciesService.getLocales();
   }
 
   async updateCurrencyById(req: express.Request, res: express.Response) {
     log(await CurrenciesService.updateById(req.params.id, req.body));
-    this.tags = await this.getTags();
-    this.locales = await this.getLocales();
     res.status(204).send();
+    this.tags = await CurrenciesService.getTags();
+    this.locales = await CurrenciesService.getLocales();
   }
 
   async removeCurrencyById(req: express.Request, res: express.Response) {
     log(await CurrenciesService.removeById(req.params.id));
-    this.tags = await this.getTags();
-    this.locales = await this.getLocales();
     res.status(204).send();
+    this.tags = await CurrenciesService.getTags();
+    this.locales = await CurrenciesService.getLocales();
   }
 
-  async listCurrenciesByNameOrType(req: express.Request, res: express.Response) {
+  listCurrenciesByNameOrType = async (req: express.Request, res: express.Response) => {
     const code = req.params.code;
 
     let { 

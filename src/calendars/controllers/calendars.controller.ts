@@ -23,6 +23,8 @@ class CalendarsController {
 
   constructor() {
     log('Created new instance of CalendarsController');
+    this.getLocales();
+    this.getTags();
   }
 
   async getTags(): Promise<string[]> {
@@ -33,13 +35,13 @@ class CalendarsController {
   }
 
   async getLocales(): Promise<string[]> {
-    if (Array.isArray(this.tags) && this.tags.length === 0) {
+    if (Array.isArray(this.locales) && this.locales.length === 0) {
       this.locales = await CalendarsService.getLocales();
     }
     return this.locales;
   }
 
-  async listCalendars(req: express.Request, res: express.Response) {
+   listCalendars = async (req: express.Request, res: express.Response) => {
     let { 
       limit = 25, 
       page = 1,
@@ -94,26 +96,26 @@ class CalendarsController {
 
   async replaceById(req: express.Request, res: express.Response) {
     log(await CalendarsService.replaceById(req.params.id, req.body));
-    this.tags = await CalendarsService.getTags()
-    this.locales = await CalendarsService.getLocales()
+    this.tags = await CalendarsService.getTags();
+    this.locales = await CalendarsService.getLocales();
     res.status(204).send();
   }
 
   async updateCalendarById(req: express.Request, res: express.Response) {
     log(await CalendarsService.updateById(req.params.id, req.body));
-    this.tags = await CalendarsService.getTags()
-    this.locales = await CalendarsService.getLocales()
+    this.tags = await CalendarsService.getTags();
+    this.locales = await CalendarsService.getLocales();
     res.status(204).send();
   }
 
   async removeCalendarById(req: express.Request, res: express.Response) {
     log(await CalendarsService.removeById(req.params.id));
-    this.tags = await CalendarsService.getTags()
-    this.locales = await CalendarsService.getLocales()
+    this.tags = await CalendarsService.getTags();
+    this.locales = await CalendarsService.getLocales();
     res.status(204).send();
   }
 
-  async listCalendarsByNameOrType(req: express.Request, res: express.Response) {
+  listCalendarsByNameOrType = async (req: express.Request, res: express.Response) => {
     const calendar = req.params.calendar;
 
     let { 

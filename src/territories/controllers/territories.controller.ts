@@ -20,11 +20,31 @@ export const availableFilters: string[] = [
 
 class TerritoriesController {
 
+  tags: string[] = [];
+
+  locales: string[] = [];
+
   constructor() {
     log('Created new instance of TerritoriesController');
+    this.getTags();
+    this.getLocales();
   }
 
-  async listTerritories(req: express.Request, res: express.Response) {
+  async getTags(): Promise<string[]> {
+    if (Array.isArray(this.tags) && this.tags.length === 0) {
+      this.tags = await territoriesService.getTags();
+    }
+    return this.tags;
+  }
+
+  async getLocales(): Promise<string[]> {
+    if (Array.isArray(this.locales) && this.locales.length === 0) {
+      this.locales = await territoriesService.getLocales();
+    }
+    return this.locales;
+  }
+
+  listTerritories = async (req: express.Request, res: express.Response) => {
     let { 
       limit = 25, 
       page = 1,
@@ -36,13 +56,13 @@ class TerritoriesController {
     if (typeof tags === 'string') {
       tags = tags.split(',');
     } else {
-      tags = await territoriesService.getTags();
+      tags = await this.getTags();
     }
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = await territoriesService.getLocales();
+      locales = await this.getLocales();
     }
 
     if (typeof filters === 'string') {
@@ -65,6 +85,8 @@ class TerritoriesController {
   async createTerritory(req: express.Request, res: express.Response) {
     const id = await territoriesService.create(req.body);
     res.status(201).send({ _id: id});
+    this.tags = await territoriesService.getTags();
+    this.locales = await territoriesService.getLocales();
   }
 
   async getTerritoryById(req: express.Request, res: express.Response) {
@@ -78,19 +100,25 @@ class TerritoriesController {
   async updateTerritoryById(req: express.Request, res: express.Response) {
     log(await territoriesService.updateById(req.params.id, req.body));
     res.status(204).send();
+    this.tags = await territoriesService.getTags();
+    this.locales = await territoriesService.getLocales();
   }
 
   async replaceTerritoryById(req: express.Request, res: express.Response) {
     log(await territoriesService.replaceById(req.params.id, req.body));
     res.status(204).send();
+    this.tags = await territoriesService.getTags();
+    this.locales = await territoriesService.getLocales();
   }
 
   async removeTerritoryById(req: express.Request, res: express.Response) {
     log(await territoriesService.removeById(req.params.id));
     res.status(204).send();
+    this.tags = await territoriesService.getTags();
+    this.locales = await territoriesService.getLocales();
   }
 
-  async listTerritoriesByTagOrType(req: express.Request, res: express.Response) {
+  listTerritoriesByTagOrType = async (req: express.Request, res: express.Response) => {
     const tag = req.params.tag;
 
     let { 
@@ -103,7 +131,7 @@ class TerritoriesController {
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = await territoriesService.getLocales();
+      locales = await this.getLocales();
     }
 
     if (typeof filters === 'string') {

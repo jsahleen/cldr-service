@@ -11,11 +11,31 @@ export const availableFilters: string[] = [
 
 class VariantsController {
 
+  tags: string[] = [];
+
+  locales: string[] = [];
+
   constructor() {
     log('Created new instance of VariantsController');
+    this.getTags();
+    this.getLocales();
   }
 
-  async listVariants(req: express.Request, res: express.Response) {
+  async getTags(): Promise<string[]> {
+    if (Array.isArray(this.tags) && this.tags.length === 0) {
+      this.tags = await variantsService.getTags();
+    }
+    return this.tags;
+  }
+
+  async getLocales(): Promise<string[]> {
+    if (Array.isArray(this.locales) && this.locales.length === 0) {
+      this.locales = await variantsService.getLocales();
+    }
+    return this.locales;
+  }
+  
+  listVariants = async (req: express.Request, res: express.Response) => {
     let { 
       limit = 25, 
       page = 1,
@@ -27,13 +47,13 @@ class VariantsController {
     if (typeof tags === 'string') {
       tags = tags.split(',');
     } else {
-      tags = await variantsService.getTags();
+      tags = await this.getTags();
     }
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = await variantsService.getLocales();
+      locales = await this.getLocales();
     }
 
     if (typeof filters === 'string') {
@@ -56,6 +76,8 @@ class VariantsController {
   async createVariant(req: express.Request, res: express.Response) {
     const id = await variantsService.create(req.body);
     res.status(201).send({ _id: id});
+    this.tags = await variantsService.getTags();
+    this.locales = await variantsService.getLocales();
   }
 
   async getVariantById(req: express.Request, res: express.Response) {
@@ -69,19 +91,25 @@ class VariantsController {
   async updateVariantById(req: express.Request, res: express.Response) {
     log(await variantsService.updateById(req.params.id, req.body));
     res.status(204).send();
+    this.tags = await variantsService.getTags();
+    this.locales = await variantsService.getLocales();
   }
 
   async replaceVariantById(req: express.Request, res: express.Response) {
     log(await variantsService.replaceById(req.params.id, req.body));
     res.status(204).send();
+    this.tags = await variantsService.getTags();
+    this.locales = await variantsService.getLocales();
   }
 
   async removeVariantById(req: express.Request, res: express.Response) {
     log(await variantsService.removeById(req.params.id));
     res.status(204).send();
+    this.tags = await variantsService.getTags();
+    this.locales = await variantsService.getLocales();
   }
 
-  async listVariantsByTagOrType(req: express.Request, res: express.Response) {
+  listVariantsByTagOrType = async (req: express.Request, res: express.Response) => {
     const tag = req.params.tag;
 
     let { 
@@ -94,7 +122,7 @@ class VariantsController {
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = await variantsService.getLocales();
+      locales = await this.getLocales();
     }
 
     if (typeof filters === 'string') {

@@ -13,11 +13,31 @@ export const availableFilters: string[] = [
 
 class ScriptsController {
 
+  tags: string[] = [];
+
+  locales: string[] = [];
+
   constructor() {
     log('Created new instance of ScriptsController');
+    this.getTags();
+    this.getLocales();
   }
 
-  async listScripts(req: express.Request, res: express.Response) {
+  async getTags(): Promise<string[]> {
+    if (Array.isArray(this.tags) && this.tags.length === 0) {
+      this.tags = await scriptsService.getTags();
+    }
+    return this.tags;
+  }
+
+  async getLocales(): Promise<string[]> {
+    if (Array.isArray(this.locales) && this.locales.length === 0) {
+      this.locales = await scriptsService.getLocales();
+    }
+    return this.locales;
+  }
+
+  listScripts = async (req: express.Request, res: express.Response) => {
     let { 
       limit = 25, 
       page = 1,
@@ -29,13 +49,13 @@ class ScriptsController {
     if (typeof tags === 'string') {
       tags = tags.split(',');
     } else {
-      tags = await scriptsService.getTags();
+      tags = await this.getTags();
     }
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = await scriptsService.getLocales();
+      locales = await this.getLocales();
     }
 
     if (typeof filters === 'string') {
@@ -58,6 +78,8 @@ class ScriptsController {
   async createScript(req: express.Request, res: express.Response) {
     const id = await scriptsService.create(req.body);
     res.status(201).send({ _id: id});
+    this.tags = await scriptsService.getTags();
+    this.locales = await scriptsService.getLocales();
   }
 
   async getScriptById(req: express.Request, res: express.Response) {
@@ -71,19 +93,25 @@ class ScriptsController {
   async updateScriptById(req: express.Request, res: express.Response) {
     log(await scriptsService.updateById(req.params.id, req.body));
     res.status(204).send();
+    this.tags = await scriptsService.getTags();
+    this.locales = await scriptsService.getLocales();
   }
 
   async replaceScriptById(req: express.Request, res: express.Response) {
     log(await scriptsService.replaceById(req.params.id, req.body));
     res.status(204).send();
+    this.tags = await scriptsService.getTags();
+    this.locales = await scriptsService.getLocales();
   }
 
   async removeScriptById(req: express.Request, res: express.Response) {
     log(await scriptsService.removeById(req.params.id));
     res.status(204).send();
+    this.tags = await scriptsService.getTags();
+    this.locales = await scriptsService.getLocales();
   }
 
-  async listScriptsByTagOrType(req: express.Request, res: express.Response) {
+  listScriptsByTagOrType = async (req: express.Request, res: express.Response) => {
     const tag = req.params.tag;
 
     let { 
@@ -96,7 +124,7 @@ class ScriptsController {
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = await scriptsService.getLocales();
+      locales = await this.getLocales();
     }
 
     if (typeof filters === 'string') {

@@ -1,13 +1,8 @@
 import express from 'express';
 import NumberSystemsService from '../services/numbers.service';
 import debug, { IDebugger } from 'debug';
-import CLDRUTIL from '../../common/util/common.util';
 
 const log: IDebugger = debug('app:numbersystem-controller');
-
-const availableLocales = CLDRUTIL.getAvailableLocales();
-const rootData = CLDRUTIL.getRootLocaleData('localenames', 'localeDisplayNames');
-const availableSystems = Object.keys(rootData.main[CLDRUTIL.rootLocale].localeDisplayNames.types.numbers)
 
 export const availableFilters: string[] = [
   'digits',
@@ -21,11 +16,31 @@ export const availableFilters: string[] = [
 
 class NumberSystemController {
 
+  tags: string[] = [];
+
+  locales: string[] = [];
+
   constructor() {
     log('Created new instance of NumberSystemsController');
+    this.getTags();
+    this.getLocales();
   }
 
-  async listNumberSystems(req: express.Request, res: express.Response) {
+  async getTags(): Promise<string[]> {
+    if (Array.isArray(this.tags) && this.tags.length === 0) {
+      this.tags = await NumberSystemsService.getTags();
+    }
+    return this.tags;
+  }
+
+  async getLocales(): Promise<string[]> {
+    if (Array.isArray(this.locales) && this.locales.length === 0) {
+      this.locales = await NumberSystemsService.getLocales();
+    }
+    return this.locales;
+  }
+
+  listNumberSystems = async (req: express.Request, res: express.Response) => {
     let { 
       limit = 25, 
       page = 1,
@@ -37,13 +52,13 @@ class NumberSystemController {
     if (typeof systems === 'string') {
       systems = systems.split(',');
     } else {
-      systems = availableSystems as string[];
+      systems = await this.getTags();
     }
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = availableLocales as string[];
+      locales = await this.getLocales();
     }
 
     if (typeof filters === 'string') {
@@ -66,6 +81,8 @@ class NumberSystemController {
   async createNumberSystem(req: express.Request, res: express.Response) {
     const id = await NumberSystemsService.create(req.body);
     res.status(201).send({ _id: id});
+    this.tags = await NumberSystemsService.getTags();
+    this.locales = await NumberSystemsService.getLocales();
   }
 
   async getNumberSystemById(req: express.Request, res: express.Response) {
@@ -79,32 +96,38 @@ class NumberSystemController {
   async updateNumberSystemById(req: express.Request, res: express.Response) {
     log(await NumberSystemsService.updateById(req.params.id, req.body));
     res.status(204).send();
+    this.tags = await NumberSystemsService.getTags();
+    this.locales = await NumberSystemsService.getLocales();
   }
 
   async replaceNumberSystemById(req: express.Request, res: express.Response) {
     log(await NumberSystemsService.replaceById(req.params.id, req.body));
     res.status(204).send();
+    this.tags = await NumberSystemsService.getTags();
+    this.locales = await NumberSystemsService.getLocales();
   }
 
   async removeNumberSystemById(req: express.Request, res: express.Response) {
     log(await NumberSystemsService.removeById(req.params.id));
     res.status(204).send();
+    this.tags = await NumberSystemsService.getTags();
+    this.locales = await NumberSystemsService.getLocales();
   }
 
-  async listNumberSystemsByNameOrType(req: express.Request, res: express.Response) {
+  listNumberSystemsByNameOrType = async (req: express.Request, res: express.Response) => {
     const name = req.params.system;
 
     let { 
       limit = 25, 
       page = 1,
-      locales = availableLocales,
-      filters = availableFilters
+      locales,
+      filters
     } = req.query;
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = availableLocales as string[];
+      locales = await this.getLocales();
     }
 
     if (typeof filters === 'string') {
