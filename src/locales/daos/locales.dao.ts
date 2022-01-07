@@ -1,6 +1,7 @@
 import { ILocale } from '../interfaces/locales.interface';
 import Locale from "../models/locales.model";
 import { ICreateDTO, IPutDTO, IPatchDTO } from '../dtos/locales.dtos';
+import { merge } from 'lodash';
 import debug, {IDebugger } from 'debug';
 import languagesModel from '../../languages/models/languages.model';
 import * as bcp47 from 'bcp47';
@@ -16,6 +17,10 @@ import likelySubtagsData from 'cldr-core/supplemental/likelySubtags.json';
 import parentLocalesData from 'cldr-core/supplemental/parentLocales.json';
 
 const log: IDebugger = debug('app:locales-dao');
+
+function onlyUnique(value, index, self) {
+  return self.indexOf(value) === index;
+}
 
 class LocalesDAO {
 
@@ -90,8 +95,15 @@ class LocalesDAO {
     return Locale.findById(id).exec();
   }
 
-  async updateLocaleById(id: string, fields: IPatchDTO | IPutDTO): Promise<void> {
-    Locale.findByIdAndUpdate(id, fields, { new: true }).exec();
+  async updateLocaleById(id: string, fields: IPatchDTO | IPutDTO, mergeFields = false): Promise<ILocale | null> {
+    let input: IPatchDTO | IPutDTO;
+    if (mergeFields === true) {
+      const existing = await Locale.findById(id);
+      input = merge({}, existing, fields);
+    } else {
+      input = fields;
+    }
+    return Locale.findByIdAndUpdate(id, input, { new: true }).exec();
   }
 
   async removeLocaleById(id: string): Promise<void> {
@@ -148,8 +160,15 @@ class LocalesDAO {
     }));
   }
 
-  async getLocaleTags(): Promise<string[]> {
-    return availableLocales.filter(l => (l !== 'root') && (l !== 'und'));
+  async getTags(): Promise<string[]> {
+    return availableLocales;
+  }
+
+  async getLocales(): Promise<string[]> {
+    const results = await Locale.find().select('tag').exec();
+    return  results.map(result => {
+      return result.tag;
+    }).filter(onlyUnique);
   }
 
   private getLikelySubtags(tag) {

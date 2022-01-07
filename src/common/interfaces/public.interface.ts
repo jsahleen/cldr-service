@@ -8,4 +8,6 @@ export interface IPublic {
     limit: number,
     page: number
   ) => Promise<Module[] | null>
+  getTags: () => Promise<string[]>
+  getLocales: () => Promise<string[]>
 }

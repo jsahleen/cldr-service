@@ -24,8 +24,12 @@ class ExtensionsService implements IAdmin, IPublic {
     return extensionsDAO.getExtensionById(id);
   }
 
-  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<void> {
+  async replaceById(id: string, fields: IPutDTO | IPatchDTO): Promise<IExtension | null> {
     return extensionsDAO.updateExtensionById(id, fields);
+  }
+
+  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<IExtension | null> {
+    return extensionsDAO.updateExtensionById(id, fields, true);
   }
 
   async removeById(id: string): Promise<void> {
@@ -36,8 +40,12 @@ class ExtensionsService implements IAdmin, IPublic {
     return extensionsDAO.listExtensionsByKeyOrType(key, locales, filters, limit, page);
   }
 
-  async getExtensionKeys() {
-    return extensionsDAO.getExtensionKeys();
+  async getTags() {
+    return extensionsDAO.getTags();
+  }
+
+  async getLocales() {
+    return extensionsDAO.getLocales();
   }
 
 }

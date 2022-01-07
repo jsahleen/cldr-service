@@ -24,8 +24,12 @@ class CalendarsService implements IAdmin, IPublic {
     return CalendarsDAO.getCalendarById(id);
   }
 
-  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<void> {
+  async replaceById (id: string, fields: IPutDTO | IPatchDTO): Promise<ICalendar | null> {
     return CalendarsDAO.updateCalendarById(id, fields);
+  }
+
+  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<ICalendar | null> {
+    return CalendarsDAO.updateCalendarById(id, fields, true);
   }
 
   async removeById(id: string): Promise<void> {
@@ -36,8 +40,12 @@ class CalendarsService implements IAdmin, IPublic {
     return CalendarsDAO.listCalendarsByTagOrType(calendar, locales, filters, limit, page);
   }
 
-  async getCalendarTags() {
-    return CalendarsDAO.getCalendarTags();
+  async getTags(): Promise<string[]> {
+    return CalendarsDAO.getTags();
+  }
+
+  async getLocales(): Promise<string[]> {
+    return CalendarsDAO.getLocales();
   }
 
 }

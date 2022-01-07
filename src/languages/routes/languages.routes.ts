@@ -50,7 +50,7 @@ export class LanguageRoutes extends CommonRoutesConfig {
       .get(languagesController.getLanguageById)
       .put([
         languagesMiddleware.validatePutBody,
-        languagesController.updateLanguageById
+        languagesController.replaceLanguageById
       ])
       .patch([
         languagesMiddleware.validatePatchBody,

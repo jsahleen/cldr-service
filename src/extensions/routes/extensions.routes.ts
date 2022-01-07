@@ -50,7 +50,7 @@ export class ExtensionsRoutes extends CommonRoutesConfig {
       .get(extensionsController.getExtensionById)
       .put([
         extensionsMiddleware.validatePutBody,
-        extensionsController.updateExtensionById
+        extensionsController.replaceExtensionById
       ])
       .patch([
         extensionsMiddleware.validatePatchBody,

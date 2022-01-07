@@ -50,7 +50,7 @@ export class LocalesRoutes extends CommonRoutesConfig {
       .get(localesController.getLocaleById)
       .put([
         localesMiddleware.validatePutBody,
-        localesController.updateLocaleById
+        localesController.replaceLocaleById
       ])
       .patch([
         localesMiddleware.validatePatchBody,

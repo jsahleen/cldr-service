@@ -51,7 +51,7 @@ class LanguagesMiddleware implements IModuleMiddleware {
   }
 
   async validateNameOrTypeParameter(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
-    const tags = await languagesService.getLanguageTags();
+    const tags = await languagesService.getTags();
     if(!tags.includes(req.params.tag)) {
       res.status(404).send();
     }

@@ -1,12 +1,8 @@
 import express from 'express';
 import localesService from '../services/locales.service';
 import debug, { IDebugger } from 'debug';
-import CLDRUTIL from '../../common/util/common.util';
 
 const log: IDebugger = debug('app:locales-controller');
-
-const availableLocales = CLDRUTIL.getAvailableLocales();
-const availableTags = availableLocales.filter(l => l !== CLDRUTIL.rootLocale);
 
 export const availableFilters: string[] = [
   'tag',
@@ -20,24 +16,44 @@ export const availableFilters: string[] = [
 ];
 
 class LocalesController {
+  
+  tags: string[] = [];
+
+  locales: string[] = [];
 
   constructor() {
     log('Created new instance of LocalesController');
+    this.getTags();
+    this.getLocales();
   }
 
-  async listLocales(req: express.Request, res: express.Response) {
+  async getTags(): Promise<string[]> {
+    if (Array.isArray(this.tags) && this.tags.length === 0) {
+      this.tags = await localesService.getTags();
+    }
+    return this.tags;
+  }
+
+  async getLocales(): Promise<string[]> {
+    if (Array.isArray(this.locales) && this.locales.length === 0) {
+      this.locales = await localesService.getLocales();
+    }
+    return this.locales;
+  }
+
+  listLocales = async (req: express.Request, res: express.Response) => {
     let { 
       limit = 25, 
       page = 1,
-      tags = availableTags,
-      locales = availableLocales,
-      filters = availableFilters
+      tags,
+      locales,
+      filters
     } = req.query;
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = availableLocales as string[];
+      locales = await this.getLocales();
     }
 
     if (typeof filters === 'string') {
@@ -57,6 +73,7 @@ class LocalesController {
       tags = tags.split(',');
     } else {
       const before = locales.length > limit ? limit : 1
+      const availableTags = await this.getTags();
       tags = availableTags.slice(0, before) as string[];
     }
 
@@ -67,6 +84,8 @@ class LocalesController {
   async createLocale(req: express.Request, res: express.Response) {
     const id = await localesService.create(req.body);
     res.status(201).send({ _id: id});
+    this.tags = await localesService.getTags();
+    this.locales = await localesService.getLocales();
   }
 
   async getLocaleById(req: express.Request, res: express.Response) {
@@ -80,27 +99,38 @@ class LocalesController {
   async updateLocaleById(req: express.Request, res: express.Response) {
     log(await localesService.updateById(req.params.id, req.body));
     res.status(204).send();
+    this.tags = await localesService.getTags();
+    this.locales = await localesService.getLocales();
+  }
+
+  async replaceLocaleById(req: express.Request, res: express.Response) {
+    log(await localesService.replaceById(req.params.id, req.body));
+    res.status(204).send();
+    this.tags = await localesService.getTags();
+    this.locales = await localesService.getLocales();
   }
 
   async removeLocaleById(req: express.Request, res: express.Response) {
     log(await localesService.removeById(req.params.id));
     res.status(204).send();
+    this.tags = await localesService.getTags();
+    this.locales = await localesService.getLocales();
   }
 
-  async listLocalesByTagOrType(req: express.Request, res: express.Response) {
+  listLocalesByTagOrType = async (req: express.Request, res: express.Response) => {
     const tag = req.params.tag;
 
     let { 
       limit = 25, 
       page = 1,
-      locales = availableLocales,
-      filters = availableFilters
+      locales,
+      filters
     } = req.query;
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = availableLocales as string[];
+      locales = await this.getLocales();
     }
 
     if (typeof filters === 'string') {

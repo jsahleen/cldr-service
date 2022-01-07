@@ -35,7 +35,7 @@ class UsersController {
   }
 
   async replaceUserById(req: express.Request, res: express.Response) {
-    log(await UsersService.updateById(req.params.id, req.body));
+    log(await UsersService.replaceById(req.params.id, req.body));
     res.status(204).send();
   }
 

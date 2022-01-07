@@ -24,7 +24,11 @@ class VariantsService implements IAdmin, IPublic {
     return variantsDao.getVariantById(id);
   }
 
-  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<void> {
+  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<IVariant | null> {
+    return variantsDao.updateVariantById(id, fields, true);
+  }
+
+  async replaceById(id: string, fields: IPutDTO | IPatchDTO): Promise<IVariant | null> {
     return variantsDao.updateVariantById(id, fields);
   }
 
@@ -36,8 +40,12 @@ class VariantsService implements IAdmin, IPublic {
     return variantsDao.listVariantsByTagOrType(category, locales, filters, limit, page);
   }
 
-  async getVariantTags() {
-    return variantsDao.getVariantTags();
+  async getTags() {
+    return variantsDao.getTags();
+  }
+
+  async getLocales() {
+    return variantsDao.getLocales();
   }
 
 }

@@ -1,6 +1,7 @@
 import { IVariant } from '../interfaces/variants.interface';
 import Variant from "../models/variants.model";
 import { ICreateDTO, IPutDTO, IPatchDTO } from '../dtos/variants.dtos';
+import { merge } from 'lodash';
 import debug, {IDebugger } from 'debug';
 
 const log: IDebugger = debug('app:scripts-dao');
@@ -39,8 +40,15 @@ class VariantsDAO {
     return  Variant.findById(id).exec();
   }
 
-  async updateVariantById(id: string, fields: IPatchDTO | IPutDTO): Promise<void> {
-    Variant.findByIdAndUpdate(id, fields, { new: true }).exec();
+  async updateVariantById(id: string, fields: IPatchDTO | IPutDTO, mergeFields = false): Promise<IVariant | null> {
+    let input: IPatchDTO | IPutDTO;
+    if (mergeFields === true) {
+      const existing = await Variant.findById(id);
+      input = merge({}, existing, fields);
+    } else {
+      input = fields;
+    }
+    return Variant.findByIdAndUpdate(id, input, { new: true }).exec();
   }
 
   async removeVariantById(id: string): Promise<void> {
@@ -67,10 +75,17 @@ class VariantsDAO {
       .exec();    
   }
 
-  async getVariantTags(): Promise<string[]> {
+  async getTags(): Promise<string[]> {
     const results = await Variant.find().select('main.tag').exec();
     return  results.map(result => {
       return result.main.tag;
+    }).filter(onlyUnique);
+  }
+
+  async getLocales(): Promise<string[]> {
+    const results = await Variant.find().select('tag').exec();
+    return  results.map(result => {
+      return result.tag;
     }).filter(onlyUnique);
   }
 

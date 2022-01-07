@@ -1,15 +1,8 @@
 import express from 'express';
 import CalendarsService from '../services/calendars.service';
 import debug, { IDebugger } from 'debug';
-import CLDRUTIL from '../../common/util/common.util';
 
 const log: IDebugger = debug('app:calendars-controller');
-
-const availableLocales = CLDRUTIL.getAvailableLocales();
-const rootData = CLDRUTIL.getRootLocaleData('localenames', 'localeDisplayNames');
-const availableCalendars = Object.keys(rootData.main[CLDRUTIL.rootLocale].localeDisplayNames.types.calendar)
-  .filter(key => key !== 'iso8601');
-availableCalendars.push('generic');
 
 export const availableFilters: string[] = [
   'displayName',
@@ -24,29 +17,49 @@ export const availableFilters: string[] = [
 
 class CalendarsController {
 
+  tags: string[] = [];
+
+  locales: string[] = [];
+
   constructor() {
     log('Created new instance of CalendarsController');
+    this.getLocales();
+    this.getTags();
   }
 
-  async listCalendars(req: express.Request, res: express.Response) {
+  async getTags(): Promise<string[]> {
+    if (Array.isArray(this.tags) && this.tags.length === 0) {
+      this.tags = await CalendarsService.getTags();
+    }
+    return this.tags;
+  }
+
+  async getLocales(): Promise<string[]> {
+    if (Array.isArray(this.locales) && this.locales.length === 0) {
+      this.locales = await CalendarsService.getLocales();
+    }
+    return this.locales;
+  }
+
+   listCalendars = async (req: express.Request, res: express.Response) => {
     let { 
       limit = 25, 
       page = 1,
-      calendars = availableCalendars,
-      locales = availableLocales,
-      filters = availableFilters
+      calendars,
+      locales,
+      filters
     } = req.query;
 
     if (typeof calendars === 'string') {
       calendars = calendars.split(',');
     } else {
-      calendars = availableCalendars;
+      calendars = await this.getTags();
     }
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = availableLocales as string[];
+      locales = await this.getLocales();
     }
 
     if (typeof filters === 'string') {
@@ -68,6 +81,8 @@ class CalendarsController {
 
   async createCalendar(req: express.Request, res: express.Response) {
     const id = await CalendarsService.create(req.body);
+    this.tags = await CalendarsService.getTags();
+    this.locales = await CalendarsService.getLocales();
     res.status(201).send({ _id: id});
   }
 
@@ -79,30 +94,41 @@ class CalendarsController {
     res.status(200).send(calendar);
   }
 
+  async replaceById(req: express.Request, res: express.Response) {
+    log(await CalendarsService.replaceById(req.params.id, req.body));
+    this.tags = await CalendarsService.getTags();
+    this.locales = await CalendarsService.getLocales();
+    res.status(204).send();
+  }
+
   async updateCalendarById(req: express.Request, res: express.Response) {
     log(await CalendarsService.updateById(req.params.id, req.body));
+    this.tags = await CalendarsService.getTags();
+    this.locales = await CalendarsService.getLocales();
     res.status(204).send();
   }
 
   async removeCalendarById(req: express.Request, res: express.Response) {
     log(await CalendarsService.removeById(req.params.id));
+    this.tags = await CalendarsService.getTags();
+    this.locales = await CalendarsService.getLocales();
     res.status(204).send();
   }
 
-  async listCalendarsByNameOrType(req: express.Request, res: express.Response) {
+  listCalendarsByNameOrType = async (req: express.Request, res: express.Response) => {
     const calendar = req.params.calendar;
 
     let { 
       limit = 25, 
       page = 1,
-      locales = availableLocales,
-      filters = availableFilters
+      locales,
+      filters
     } = req.query;
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = availableLocales as string[];
+      locales = await this.getLocales();
     }
 
     if (typeof filters === 'string') {

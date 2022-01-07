@@ -51,7 +51,7 @@ class CalendarsMiddleware implements IModuleMiddleware {
   }
 
   async validateNameOrTypeParameter(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
-    const tags = await calendarsService.getCalendarTags();
+    const tags = await calendarsService.getTags();
     if(!tags.includes(req.params.calendar) && (req.params.calendar !== 'preferred')) {
       res.status(404).send();
     }

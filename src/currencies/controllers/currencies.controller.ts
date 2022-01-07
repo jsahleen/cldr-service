@@ -1,13 +1,8 @@
 import express from 'express';
 import CurrenciesService from '../services/currencies.service';
 import debug, { IDebugger } from 'debug';
-import CLDRUTIL from '../../common/util/common.util';
 
 const log: IDebugger = debug('app:currencies-controller');
-
-const availableLocales = CLDRUTIL.getAvailableLocales();
-const rootData = CLDRUTIL.getRootLocaleData('numbers', 'currencies');
-const availableCodes = Object.keys(rootData.main[CLDRUTIL.rootLocale].numbers.currencies);
 
 export const availableFilters: string[] = [
   'displayName',
@@ -20,29 +15,49 @@ export const availableFilters: string[] = [
 
 class CurrenciesController {
 
+  tags: string[] = [];
+
+  locales: string[] = [];
+
   constructor() {
     log('Created new instance of CurrenciesController');
+    this.getTags();
+    this.getLocales();
   }
 
-  async listCurrencies(req: express.Request, res: express.Response) {
+  async getTags(): Promise<string[]> {
+    if (Array.isArray(this.tags) && this.tags.length === 0) {
+      this.tags = await CurrenciesService.getTags();
+    }
+    return this.tags;
+  }
+
+  async getLocales(): Promise<string[]> {
+    if (Array.isArray(this.locales) && this.locales.length === 0) {
+      this.locales = await CurrenciesService.getLocales();
+    }
+    return this.locales;
+  }
+
+  listCurrencies = async (req: express.Request, res: express.Response) => {
     let { 
       limit = 25, 
       page = 1,
-      codes = availableCodes,
-      locales = availableLocales,
-      filters = availableFilters
+      codes,
+      locales,
+      filters
     } = req.query;
 
     if (typeof codes === 'string') {
       codes = codes.split(',');
     } else {
-      codes = availableCodes as string[];
+      codes = await this.getTags();
     }
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = availableLocales as string[];
+      locales = await this.getLocales();
     }
 
     if (typeof filters === 'string') {
@@ -65,6 +80,8 @@ class CurrenciesController {
   async createCurrency(req: express.Request, res: express.Response) {
     const id = await CurrenciesService.create(req.body);
     res.status(201).send({ _id: id});
+    this.tags = await CurrenciesService.getTags();
+    this.locales = await CurrenciesService.getLocales();
   }
 
   async getCurrencyById(req: express.Request, res: express.Response) {
@@ -75,30 +92,41 @@ class CurrenciesController {
     res.status(200).send(currency);
   }
 
+  async replaceCurrencyById(req: express.Request, res: express.Response) {
+    log(await CurrenciesService.replaceById(req.params.id, req.body));
+    res.status(204).send();
+    this.tags = await CurrenciesService.getTags();
+    this.locales = await CurrenciesService.getLocales();
+  }
+
   async updateCurrencyById(req: express.Request, res: express.Response) {
     log(await CurrenciesService.updateById(req.params.id, req.body));
     res.status(204).send();
+    this.tags = await CurrenciesService.getTags();
+    this.locales = await CurrenciesService.getLocales();
   }
 
   async removeCurrencyById(req: express.Request, res: express.Response) {
     log(await CurrenciesService.removeById(req.params.id));
     res.status(204).send();
+    this.tags = await CurrenciesService.getTags();
+    this.locales = await CurrenciesService.getLocales();
   }
 
-  async listCurrenciesByNameOrType(req: express.Request, res: express.Response) {
+  listCurrenciesByNameOrType = async (req: express.Request, res: express.Response) => {
     const code = req.params.code;
 
     let { 
       limit = 25, 
       page = 1,
-      locales = availableLocales,
-      filters = availableFilters
+      locales,
+      filters
     } = req.query;
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = availableLocales as string[];
+      locales = await this.getLocales();
     }
 
     if (typeof filters === 'string') {

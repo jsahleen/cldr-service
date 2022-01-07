@@ -24,7 +24,11 @@ class ScriptsService implements IAdmin, IPublic {
     return scriptsDAO.getScriptById(id);
   }
 
-  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<void> {
+  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<IScript | null> {
+    return scriptsDAO.updateScriptById(id, fields, true);
+  }
+
+  async replaceById(id: string, fields: IPutDTO | IPatchDTO): Promise<IScript | null> {
     return scriptsDAO.updateScriptById(id, fields);
   }
 
@@ -36,8 +40,12 @@ class ScriptsService implements IAdmin, IPublic {
     return scriptsDAO.listScriptsByTagOrType(category, locales, filters, limit, page);
   }
 
-  async getScriptTags() {
-    return scriptsDAO.getScriptTags();
+  async getTags() {
+    return scriptsDAO.getTags();
+  }
+
+  async getLocales() {
+    return scriptsDAO.getLocales();
   }
 
 }

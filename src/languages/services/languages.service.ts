@@ -24,7 +24,11 @@ class LanguagesService implements IAdmin, IPublic {
     return languagesDAO.getLanguageById(id);
   }
 
-  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<void> {
+  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<ILanguage | null> {
+    return languagesDAO.updateLanguageById(id, fields, true);
+  }
+
+  async replaceById(id: string, fields: IPutDTO | IPatchDTO): Promise<ILanguage | null> {
     return languagesDAO.updateLanguageById(id, fields);
   }
 
@@ -36,8 +40,12 @@ class LanguagesService implements IAdmin, IPublic {
     return languagesDAO.listLanguagesByTagOrFamily(category, locales, filters, limit, page);
   }
 
-  async getLanguageTags() {
-    return languagesDAO.getLanguageTags();
+  async getTags() {
+    return languagesDAO.getTags();
+  }
+
+  async getLocales() {
+    return languagesDAO.getLocales();
   }
 
 }

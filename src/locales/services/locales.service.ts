@@ -25,7 +25,11 @@ class LocalesService implements IAdmin, IPublic {
     return localesDAO.getLocaleById(id);
   }
 
-  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<void> {
+  async updateById(id: string, fields: IPutDTO | IPatchDTO): Promise<ILocale | null> {
+    return localesDAO.updateLocaleById(id, fields, true);
+  }
+
+  async replaceById(id: string, fields: IPutDTO | IPatchDTO): Promise<ILocale | null> {
     return localesDAO.updateLocaleById(id, fields);
   }
 
@@ -37,8 +41,12 @@ class LocalesService implements IAdmin, IPublic {
     return localesDAO.listLocalesByTagOrType(category, locales, filters, limit, page);
   }
 
-  async getLocaleTags() {
-    return localesDAO.getLocaleTags();
+  async getTags() {
+    return localesDAO.getTags();
+  }
+
+  async getLocales() {
+    return localesDAO.getLocales();
   }
 
 }

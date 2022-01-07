@@ -1,13 +1,8 @@
 import express from 'express';
 import languagesService from '../services/languages.service';
 import debug, { IDebugger } from 'debug';
-import CLDRUTIL from '../../common/util/common.util';
 
 const log: IDebugger = debug('app:languages-controller');
-
-const availableLocales = CLDRUTIL.getAvailableLocales();
-const rootData = CLDRUTIL.getRootLocaleData('localenames', 'languages')
-const availableTags = Object.keys(rootData.main[CLDRUTIL.rootLocale].localeDisplayNames.languages);
 
 export const availableFilters: string[] = [
   'displayName',
@@ -20,29 +15,49 @@ export const availableFilters: string[] = [
 
 class LanguagesController {
 
+  tags: string[] = [];
+
+  locales: string[] = [];
+
   constructor() {
     log('Created new instance of LanguagesController');
+    this.getTags();
+    this.getLocales();
   }
 
-  async listLanguages(req: express.Request, res: express.Response) {
+  async getTags(): Promise<string[]> {
+    if (Array.isArray(this.tags) && this.tags.length === 0) {
+      this.tags = await languagesService.getTags();
+    }
+    return this.tags;
+  }
+
+  async getLocales(): Promise<string[]> {
+    if (Array.isArray(this.locales) && this.locales.length === 0) {
+      this.locales = await languagesService.getLocales();
+    }
+    return this.locales;
+  }
+
+  listLanguages = async (req: express.Request, res: express.Response) => {
     let { 
       limit = 25, 
       page = 1,
-      tags = availableTags,
-      locales = availableLocales,
-      filters = availableFilters
+      tags,
+      locales,
+      filters
     } = req.query;
 
     if (typeof tags === 'string') {
       tags = tags.split(',');
     } else {
-      tags = availableTags as string[];
+      tags = await this.getTags();
     }
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = availableLocales as string[];
+      locales = await this.getLocales();
     }
 
     if (typeof filters === 'string') {
@@ -65,6 +80,8 @@ class LanguagesController {
   async createLanguage(req: express.Request, res: express.Response) {
     const id = await languagesService.create(req.body);
     res.status(201).send({ _id: id});
+    this.tags = await languagesService.getTags();
+    this.locales = await languagesService.getLocales();
   }
 
   async getLanguageById(req: express.Request, res: express.Response) {
@@ -78,27 +95,38 @@ class LanguagesController {
   async updateLanguageById(req: express.Request, res: express.Response) {
     log(await languagesService.updateById(req.params.id, req.body));
     res.status(204).send();
+    this.tags = await languagesService.getTags();
+    this.locales = await languagesService.getLocales();
+  }
+
+  async replaceLanguageById(req: express.Request, res: express.Response) {
+    log(await languagesService.replaceById(req.params.id, req.body));
+    res.status(204).send();
+    this.tags = await languagesService.getTags();
+    this.locales = await languagesService.getLocales();
   }
 
   async removeLanguageById(req: express.Request, res: express.Response) {
     log(await languagesService.removeById(req.params.id));
     res.status(204).send();
+    this.tags = await languagesService.getTags();
+    this.locales = await languagesService.getLocales();
   }
 
-  async listLanguagesByTagOrType(req: express.Request, res: express.Response) {
+  listLanguagesByTagOrType = async (req: express.Request, res: express.Response) => {
     const tag = req.params.tag;
 
     let { 
       limit = 25, 
       page = 1,
-      locales = availableLocales,
-      filters = availableFilters
+      locales,
+      filters
     } = req.query;
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = availableLocales as string[];
+      locales = await this.getLocales();
     }
 
     if (typeof filters === 'string') {

@@ -50,7 +50,7 @@ export class CalendarsRoutes extends CommonRoutesConfig {
       .get(calendarsController.getCalendarById)
       .put([
         calendarsMiddleware.validatePutBody,
-        calendarsController.updateCalendarById
+        calendarsController.replaceById
       ])
       .patch([
         calendarsMiddleware.validatePatchBody,

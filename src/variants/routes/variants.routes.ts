@@ -50,7 +50,7 @@ export class VariantsRoutes extends CommonRoutesConfig {
       .get(variantsController.getVariantById)
       .put([
         variantsMiddleware.validatePutBody,
-        variantsController.updateVariantById
+        variantsController.replaceVariantById
       ])
       .patch([
         variantsMiddleware.validatePatchBody,

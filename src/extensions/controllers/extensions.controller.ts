@@ -1,13 +1,8 @@
 import express from 'express';
 import extensionsService from '../services/extensions.service';
 import debug, { IDebugger } from 'debug';
-import CLDRUTIL from '../../common/util/common.util';
 
 const log: IDebugger = debug('app:extensions-controller');
-
-const availableLocales = CLDRUTIL.getAvailableLocales();
-const rootData = CLDRUTIL.getRootLocaleData('localenames', 'localeDisplayNames');
-const availableKeys = Object.keys(rootData.main[CLDRUTIL.rootLocale].localeDisplayNames.keys);
 
 export const availableFilters: string[] = [
   'key',
@@ -17,29 +12,49 @@ export const availableFilters: string[] = [
 
 class ExtensionsController {
 
+  tags: string[] = [];
+
+  locales: string[] = [];
+
   constructor() {
     log('Created new instance of ExtensionsController');
+    this.getTags();
+    this.getLocales();
   }
 
-  async listExtensions(req: express.Request, res: express.Response) {
+  async getTags(): Promise<string[]> {
+    if (Array.isArray(this.tags) && this.tags.length === 0) {
+      this.tags = await extensionsService.getTags();
+    }
+    return this.tags;
+  }
+
+  async getLocales(): Promise<string[]> {
+    if (Array.isArray(this.locales) && this.locales.length === 0) {
+      this.locales = await extensionsService.getLocales();
+    }
+    return this.locales;
+  }
+
+  listExtensions = async (req: express.Request, res: express.Response) => {
     let { 
       limit = 25, 
       page = 1,
-      keys = availableKeys,
-      locales = availableLocales,
-      filters = availableFilters
+      keys,
+      locales,
+      filters
     } = req.query;
 
     if (typeof keys === 'string') {
       keys = keys.split(',');
     } else {
-      keys = availableKeys as string[];
+      keys = await this.getTags();
     }
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = availableLocales as string[];
+      locales = await this.getLocales();
     }
 
     if (typeof filters === 'string') {
@@ -62,6 +77,8 @@ class ExtensionsController {
   async createExtension(req: express.Request, res: express.Response) {
     const id = await extensionsService.create(req.body);
     res.status(201).send({ _id: id});
+    this.tags = await extensionsService.getTags();
+    this.locales = await extensionsService.getLocales();
   }
 
   async getExtensionById(req: express.Request, res: express.Response) {
@@ -72,30 +89,41 @@ class ExtensionsController {
     res.status(200).send(extension);
   }
 
+  async replaceExtensionById(req: express.Request, res: express.Response) {
+    log(await extensionsService.replaceById(req.params.id, req.body));
+    res.status(204).send();
+    this.tags = await extensionsService.getTags();
+    this.locales = await extensionsService.getLocales();
+  }
+
   async updateExtensionById(req: express.Request, res: express.Response) {
     log(await extensionsService.updateById(req.params.id, req.body));
     res.status(204).send();
+    this.tags = await extensionsService.getTags();
+    this.locales = await extensionsService.getLocales();
   }
 
   async removeExtensionById(req: express.Request, res: express.Response) {
     log(await extensionsService.removeById(req.params.id));
     res.status(204).send();
+    this.tags = await extensionsService.getTags();
+    this.locales = await extensionsService.getLocales();
   }
 
-  async listExtensionsByKeyOrType(req: express.Request, res: express.Response) {
+  listExtensionsByKeyOrType = async (req: express.Request, res: express.Response) => {
     const key = req.params.key;
 
     let { 
       limit = 25, 
       page = 1,
-      locales = availableLocales,
-      filters = availableFilters
+      locales,
+      filters
     } = req.query;
 
     if (typeof locales === 'string') {
       locales = locales.split(',');
     } else {
-      locales = availableLocales as string[];
+      locales = await this.getLocales();
     }
 
     if (typeof filters === 'string') {
