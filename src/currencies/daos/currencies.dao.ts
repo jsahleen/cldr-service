@@ -51,8 +51,8 @@ class CurrenciesDAO {
     return Currency.findByIdAndUpdate(id, input, { new: true }).exec();
   }
 
-  async removeCurrencyById(id: string): Promise<void> {
-    Currency.findByIdAndRemove(id);
+  async removeCurrencyById(id: string): Promise<ICurrency | null> {
+    return Currency.findByIdAndRemove(id);
   }
 
   async listCurrenciesByCodeOrType(

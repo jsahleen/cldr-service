@@ -32,7 +32,7 @@ class LanguagesService implements IAdmin, IPublic {
     return languagesDAO.updateLanguageById(id, fields);
   }
 
-  async removeById(id: string): Promise<void> {
+  async removeById(id: string): Promise<ILanguage | null> {
     return languagesDAO.removeLanguageById(id);
   }
 

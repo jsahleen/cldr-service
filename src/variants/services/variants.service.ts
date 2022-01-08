@@ -32,7 +32,7 @@ class VariantsService implements IAdmin, IPublic {
     return variantsDao.updateVariantById(id, fields);
   }
 
-  async removeById(id: string): Promise<void> {
+  async removeById(id: string): Promise<IVariant | null> {
     return variantsDao.removeVariantById(id);
   }
 

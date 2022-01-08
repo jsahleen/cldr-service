@@ -51,8 +51,8 @@ class ExtensionsDAO {
     return Extension.findByIdAndUpdate(id, input, { new: true }).exec();
   }
 
-  async removeExtensionById(id: string): Promise<void> {
-    Extension.findByIdAndRemove(id);
+  async removeExtensionById(id: string): Promise<IExtension | null> {
+    return Extension.findByIdAndRemove(id);
   }
 
   async listExtensionsByKeyOrType(

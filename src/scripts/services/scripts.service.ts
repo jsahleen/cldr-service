@@ -32,7 +32,7 @@ class ScriptsService implements IAdmin, IPublic {
     return scriptsDAO.updateScriptById(id, fields);
   }
 
-  async removeById(id: string): Promise<void> {
+  async removeById(id: string): Promise<IScript | null> {
     return scriptsDAO.removeScriptById(id);
   }
 

@@ -30,14 +30,14 @@ class TerritoriesController {
     this.getLocales();
   }
 
-  async getTags(): Promise<string[]> {
+  private async getTags(): Promise<string[]> {
     if (Array.isArray(this.tags) && this.tags.length === 0) {
       this.tags = await territoriesService.getTags();
     }
     return this.tags;
   }
 
-  async getLocales(): Promise<string[]> {
+  private async getLocales(): Promise<string[]> {
     if (Array.isArray(this.locales) && this.locales.length === 0) {
       this.locales = await territoriesService.getLocales();
     }
@@ -82,14 +82,14 @@ class TerritoriesController {
     res.status(200).send({territories: territories});
   }
 
-  async createTerritory(req: express.Request, res: express.Response) {
+  createTerritory = async (req: express.Request, res: express.Response) => {
     const id = await territoriesService.create(req.body);
     res.status(201).send({ _id: id});
     this.tags = await territoriesService.getTags();
     this.locales = await territoriesService.getLocales();
   }
 
-  async getTerritoryById(req: express.Request, res: express.Response) {
+  getTerritoryById = async (req: express.Request, res: express.Response) => {
     const territory = await territoriesService.getById(req.params.id);
     if (!territory) {
       res.status(404).send();
@@ -97,21 +97,21 @@ class TerritoriesController {
     res.status(200).send(territory);
   }
 
-  async updateTerritoryById(req: express.Request, res: express.Response) {
+  updateTerritoryById = async (req: express.Request, res: express.Response) => {
     log(await territoriesService.updateById(req.params.id, req.body));
     res.status(204).send();
     this.tags = await territoriesService.getTags();
     this.locales = await territoriesService.getLocales();
   }
 
-  async replaceTerritoryById(req: express.Request, res: express.Response) {
+  replaceTerritoryById = async (req: express.Request, res: express.Response) => {
     log(await territoriesService.replaceById(req.params.id, req.body));
     res.status(204).send();
     this.tags = await territoriesService.getTags();
     this.locales = await territoriesService.getLocales();
   }
 
-  async removeTerritoryById(req: express.Request, res: express.Response) {
+  removeTerritoryById = async (req: express.Request, res: express.Response) => {
     log(await territoriesService.removeById(req.params.id));
     res.status(204).send();
     this.tags = await territoriesService.getTags();

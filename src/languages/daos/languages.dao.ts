@@ -51,8 +51,8 @@ class LanguageDAO {
     return Language.findByIdAndUpdate(id, input, { new: true }).exec();
   }
 
-  async removeLanguageById(id: string): Promise<void> {
-    Language.findByIdAndRemove(id);
+  async removeLanguageById(id: string): Promise<ILanguage | null> {
+    return Language.findByIdAndRemove(id);
   }
 
   async listLanguagesByTagOrFamily(

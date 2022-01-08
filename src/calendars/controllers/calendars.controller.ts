@@ -27,21 +27,21 @@ class CalendarsController {
     this.getTags();
   }
 
-  async getTags(): Promise<string[]> {
+  private async getTags(): Promise<string[]> {
     if (Array.isArray(this.tags) && this.tags.length === 0) {
       this.tags = await CalendarsService.getTags();
     }
     return this.tags;
   }
 
-  async getLocales(): Promise<string[]> {
+  private async getLocales(): Promise<string[]> {
     if (Array.isArray(this.locales) && this.locales.length === 0) {
       this.locales = await CalendarsService.getLocales();
     }
     return this.locales;
   }
 
-   listCalendars = async (req: express.Request, res: express.Response) => {
+  listCalendars = async (req: express.Request, res: express.Response) => {
     let { 
       limit = 25, 
       page = 1,
@@ -79,14 +79,14 @@ class CalendarsController {
     res.status(200).send({calendars: results});
   }
 
-  async createCalendar(req: express.Request, res: express.Response) {
+  createCalendar = async (req: express.Request, res: express.Response) => {
     const id = await CalendarsService.create(req.body);
     this.tags = await CalendarsService.getTags();
     this.locales = await CalendarsService.getLocales();
     res.status(201).send({ _id: id});
   }
 
-  async getCalendarById(req: express.Request, res: express.Response) {
+  getCalendarById = async (req: express.Request, res: express.Response) => {
     const calendar = await CalendarsService.getById(req.params.id);
     if (!calendar) {
       res.status(404).send();
@@ -94,21 +94,21 @@ class CalendarsController {
     res.status(200).send(calendar);
   }
 
-  async replaceById(req: express.Request, res: express.Response) {
+  replaceById = async (req: express.Request, res: express.Response) => {
     log(await CalendarsService.replaceById(req.params.id, req.body));
     this.tags = await CalendarsService.getTags();
     this.locales = await CalendarsService.getLocales();
     res.status(204).send();
   }
 
-  async updateCalendarById(req: express.Request, res: express.Response) {
+  updateCalendarById = async (req: express.Request, res: express.Response) => {
     log(await CalendarsService.updateById(req.params.id, req.body));
     this.tags = await CalendarsService.getTags();
     this.locales = await CalendarsService.getLocales();
     res.status(204).send();
   }
 
-  async removeCalendarById(req: express.Request, res: express.Response) {
+  removeCalendarById = async (req: express.Request, res: express.Response) => {
     log(await CalendarsService.removeById(req.params.id));
     this.tags = await CalendarsService.getTags();
     this.locales = await CalendarsService.getLocales();

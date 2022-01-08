@@ -26,14 +26,14 @@ class NumberSystemController {
     this.getLocales();
   }
 
-  async getTags(): Promise<string[]> {
+  private async getTags(): Promise<string[]> {
     if (Array.isArray(this.tags) && this.tags.length === 0) {
       this.tags = await NumberSystemsService.getTags();
     }
     return this.tags;
   }
 
-  async getLocales(): Promise<string[]> {
+  private async getLocales(): Promise<string[]> {
     if (Array.isArray(this.locales) && this.locales.length === 0) {
       this.locales = await NumberSystemsService.getLocales();
     }
@@ -78,14 +78,14 @@ class NumberSystemController {
     res.status(200).send({numberSystems: numberSystems});
   }
 
-  async createNumberSystem(req: express.Request, res: express.Response) {
+  createNumberSystem = async (req: express.Request, res: express.Response) => {
     const id = await NumberSystemsService.create(req.body);
     res.status(201).send({ _id: id});
     this.tags = await NumberSystemsService.getTags();
     this.locales = await NumberSystemsService.getLocales();
   }
 
-  async getNumberSystemById(req: express.Request, res: express.Response) {
+  getNumberSystemById = async (req: express.Request, res: express.Response) => {
     const numberSystem = await NumberSystemsService.getById(req.params.id);
     if (!numberSystem) {
       res.status(404).send();
@@ -93,21 +93,21 @@ class NumberSystemController {
     res.status(200).send(numberSystem);
   }
 
-  async updateNumberSystemById(req: express.Request, res: express.Response) {
+  updateNumberSystemById = async (req: express.Request, res: express.Response) => {
     log(await NumberSystemsService.updateById(req.params.id, req.body));
     res.status(204).send();
     this.tags = await NumberSystemsService.getTags();
     this.locales = await NumberSystemsService.getLocales();
   }
 
-  async replaceNumberSystemById(req: express.Request, res: express.Response) {
+  replaceNumberSystemById = async (req: express.Request, res: express.Response) => {
     log(await NumberSystemsService.replaceById(req.params.id, req.body));
     res.status(204).send();
     this.tags = await NumberSystemsService.getTags();
     this.locales = await NumberSystemsService.getLocales();
   }
 
-  async removeNumberSystemById(req: express.Request, res: express.Response) {
+  removeNumberSystemById = async (req: express.Request, res: express.Response) => {
     log(await NumberSystemsService.removeById(req.params.id));
     res.status(204).send();
     this.tags = await NumberSystemsService.getTags();

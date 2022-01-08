@@ -32,7 +32,7 @@ class TerritoriesService implements IAdmin, IPublic {
     return territoriesDAO.updateTerritoryById(id, fields);
   }
 
-  async removeById(id: string): Promise<void> {
+  async removeById(id: string): Promise<ITerritory | null> {
     return territoriesDAO.removeTerritoryById(id);
   }
 

@@ -106,8 +106,8 @@ class LocalesDAO {
     return Locale.findByIdAndUpdate(id, input, { new: true }).exec();
   }
 
-  async removeLocaleById(id: string): Promise<void> {
-    Locale.findByIdAndRemove(id);
+  async removeLocaleById(id: string): Promise<ILocale | null> {
+    return Locale.findByIdAndRemove(id);
   }
 
   async listLocalesByTagOrType(

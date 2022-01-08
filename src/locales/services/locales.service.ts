@@ -33,7 +33,7 @@ class LocalesService implements IAdmin, IPublic {
     return localesDAO.updateLocaleById(id, fields);
   }
 
-  async removeById(id: string): Promise<void> {
+  async removeById(id: string): Promise<ILocale | null> {
     return localesDAO.removeLocaleById(id);
   }
 

@@ -51,8 +51,8 @@ class ScriptsDAO {
     return Script.findByIdAndUpdate(id, input, { new: true }).exec();
   }
 
-  async removeScriptById(id: string): Promise<void> {
-    Script.findByIdAndRemove(id);
+  async removeScriptById(id: string): Promise<IScript | null> {
+    return Script.findByIdAndRemove(id);
   }
 
   async listScriptsByTagOrType(
