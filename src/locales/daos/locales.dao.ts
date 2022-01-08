@@ -22,6 +22,15 @@ function onlyUnique(value, index, self) {
   return self.indexOf(value) === index;
 }
 
+function getSubFilters(area:string, filters: string[]): string[] {
+  const re = new RegExp(`^${area}.`);
+  return filters.filter(f => {
+    return f.startsWith(`${area}.`);
+  }).map(n => {
+    return n.replace(re, 'main.')
+  }) || [];
+}
+
 class LocalesDAO {
 
   constructor() {
@@ -52,23 +61,44 @@ class LocalesDAO {
         const territoryTag = parsed.langtag.region;
         const variantTags = parsed.langtag.variant;
 
+        const lFilters = getSubFilters('language', filters);
+        const sFilters = getSubFilters('script', filters);
+        const tFilters = getSubFilters('territory', filters);
+        const vFilters = getSubFilters('variants', filters);
+
         if (filters.includes('language') && langTag) {
           const languageDoc = await languagesModel.findOne({$and: [{'main.tag': langTag},{tag: cDoc.tag}]});
+          cDoc.main.language = languageDoc?.main;
+        } else if (lFilters.length > 0 && langTag) {
+          const languageDoc = await languagesModel.findOne({$and: [{'main.tag': langTag},{tag: cDoc.tag}]})
+            .select(lFilters.join(' '));
           cDoc.main.language = languageDoc?.main;
         }
 
         if (filters.includes('script') && scriptTag) {
           const scriptDoc = await scriptsModel.findOne({$and: [{'main.tag': scriptTag},{tag: cDoc.tag}]});
           cDoc.main.script = scriptDoc?.main;
+        } else if (sFilters.length > 0 && scriptTag) {
+          const scriptDoc = await scriptsModel.findOne({$and: [{'main.tag': scriptTag},{tag: cDoc.tag}]})
+            .select(sFilters.join(' '));
+          cDoc.main.script = scriptDoc?.main;
         }
 
         if (filters.includes('territory') && territoryTag) {
           const territoryDoc = await territoriesModel.findOne({$and: [{'main.tag': territoryTag},{tag: cDoc.tag}]});
           cDoc.main.territory = territoryDoc?.main;
+        } else if (sFilters.length > 0 && scriptTag) {
+          const territoryDoc = await territoriesModel.findOne({$and: [{'main.tag': territoryTag},{tag: cDoc.tag}]})
+            .select(tFilters.join(' '));
+          cDoc.main.territory = territoryDoc?.main;
         }
 
         if (filters.includes('variants') && variantTags) {
           const variantDocs = await variantsModel.find({$and: [{'main.tag': {$in: variantTags}},{tag: cDoc.tag}]});
+          cDoc.main.variants = variantDocs?.map(vDoc => vDoc.main);
+        } else if (vFilters.length > 0 && scriptTag) {
+          const variantDocs = await variantsModel.find({$and: [{'main.tag': {$in: variantTags}},{tag: cDoc.tag}]})
+            .select(vFilters.join(' '));
           cDoc.main.variants = variantDocs?.map(vDoc => vDoc.main);
         }
 
@@ -136,23 +166,44 @@ class LocalesDAO {
       const territoryTag = parsed.langtag.region;
       const variantTags = parsed.langtag.variant;
 
+      const lFilters = getSubFilters('language', filters);
+      const sFilters = getSubFilters('script', filters);
+      const tFilters = getSubFilters('territory', filters);
+      const vFilters = getSubFilters('variants', filters);
+
       if (filters.includes('language') && langTag) {
         const languageDoc = await languagesModel.findOne({$and: [{'main.tag': langTag},{tag: doc.tag}]});
+        doc.main.language = languageDoc?.main;
+      } else if (lFilters.length > 0 && langTag) {
+        const languageDoc = await languagesModel.findOne({$and: [{'main.tag': langTag},{tag: doc.tag}]})
+          .select(lFilters.join(' '));
         doc.main.language = languageDoc?.main;
       }
 
       if (filters.includes('script') && scriptTag) {
         const scriptDoc = await scriptsModel.findOne({$and: [{'main.tag': scriptTag},{tag: doc.tag}]});
         doc.main.script = scriptDoc?.main;
+      } else if (sFilters.length > 0 && scriptTag) {
+        const scriptDoc = await scriptsModel.findOne({$and: [{'main.tag': scriptTag},{tag: doc.tag}]})
+          .select(sFilters.join(' '));
+        doc.main.script = scriptDoc?.main;
       }
 
       if (filters.includes('territory') && territoryTag) {
         const territoryDoc = await territoriesModel.findOne({$and: [{'main.tag': territoryTag},{tag: doc.tag}]});
         doc.main.territory = territoryDoc?.main;
+      } else if (sFilters.length > 0 && scriptTag) {
+        const territoryDoc = await territoriesModel.findOne({$and: [{'main.tag': territoryTag},{tag: doc.tag}]})
+          .select(tFilters.join(' '));
+        doc.main.territory = territoryDoc?.main;
       }
 
       if (filters.includes('variants') && variantTags) {
         const variantDocs = await variantsModel.find({$and: [{'main.tag': {$in: variantTags}},{tag: doc.tag}]});
+        doc.main.variants = variantDocs?.map(vDoc => vDoc.main);
+      } else if (vFilters.length > 0 && scriptTag) {
+        const variantDocs = await variantsModel.find({$and: [{'main.tag': {$in: variantTags}},{tag: doc.tag}]})
+          .select(vFilters.join(' '));
         doc.main.variants = variantDocs?.map(vDoc => vDoc.main);
       }
 
