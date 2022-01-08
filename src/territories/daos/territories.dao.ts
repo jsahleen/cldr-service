@@ -6,10 +6,6 @@ import debug, {IDebugger } from 'debug';
 
 const log: IDebugger = debug('app:territories-dao');
 
-function onlyUnique(value, index, self) {
-  return self.indexOf(value) === index;
-}
-
 class TerritoriesDAO {
 
   constructor() {
@@ -76,17 +72,11 @@ class TerritoriesDAO {
   }
 
   async getTags(): Promise<string[]> {
-    const results = await Territory.find().select('main.tag').exec();
-    return  results.map(result => {
-      return result.main.tag;
-    }).filter(onlyUnique);
+    return Territory.distinct('main.tag').exec();
   }
 
   async getLocales(): Promise<string[]> {
-    const results = await Territory.find().select('tag').exec();
-    return  results.map(result => {
-      return result.tag;
-    }).filter(onlyUnique);
+    return Territory.distinct('tag').exec();
   }
 
 } 

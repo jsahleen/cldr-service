@@ -18,11 +18,7 @@ import parentLocalesData from 'cldr-core/supplemental/parentLocales.json';
 
 const log: IDebugger = debug('app:locales-dao');
 
-function onlyUnique(value, index, self) {
-  return self.indexOf(value) === index;
-}
-
-function getSubFilters(area:string, filters: string[]): string[] {
+function getSubFilters(area: string, filters: string[]): string[] {
   const re = new RegExp(`^${area}.`);
   return filters.filter(f => {
     return f.startsWith(`${area}.`);
@@ -52,7 +48,7 @@ class LocalesDAO {
 
     return Promise.all(localeDocs.map(async doc => {
       return Promise.all(tags.map(async tag => {
-        const cDoc = JSON.parse(JSON.stringify(doc)); // makes a copy of the doc
+        const cDoc = doc.toObject(); // makes a copy of the doc
 
         const parsed = bcp47.parse(tag);
 
@@ -87,7 +83,7 @@ class LocalesDAO {
         if (filters.includes('territory') && territoryTag) {
           const territoryDoc = await territoriesModel.findOne({$and: [{'main.tag': territoryTag},{tag: cDoc.tag}]});
           cDoc.main.territory = territoryDoc?.main;
-        } else if (sFilters.length > 0 && scriptTag) {
+        } else if (tFilters.length > 0 && scriptTag) {
           const territoryDoc = await territoriesModel.findOne({$and: [{'main.tag': territoryTag},{tag: cDoc.tag}]})
             .select(tFilters.join(' '));
           cDoc.main.territory = territoryDoc?.main;
@@ -192,7 +188,7 @@ class LocalesDAO {
       if (filters.includes('territory') && territoryTag) {
         const territoryDoc = await territoriesModel.findOne({$and: [{'main.tag': territoryTag},{tag: doc.tag}]});
         doc.main.territory = territoryDoc?.main;
-      } else if (sFilters.length > 0 && scriptTag) {
+      } else if (tFilters.length > 0 && scriptTag) {
         const territoryDoc = await territoriesModel.findOne({$and: [{'main.tag': territoryTag},{tag: doc.tag}]})
           .select(tFilters.join(' '));
         doc.main.territory = territoryDoc?.main;
@@ -216,10 +212,7 @@ class LocalesDAO {
   }
 
   async getLocales(): Promise<string[]> {
-    const results = await Locale.find().select('tag').exec();
-    return  results.map(result => {
-      return result.tag;
-    }).filter(onlyUnique);
+    return Locale.distinct('tag').exec();
   }
 
   private getLikelySubtags(tag) {

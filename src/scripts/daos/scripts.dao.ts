@@ -6,10 +6,6 @@ import debug, {IDebugger } from 'debug';
 
 const log: IDebugger = debug('app:scripts-dao');
 
-function onlyUnique(value, index, self) {
-  return self.indexOf(value) === index;
-}
-
 class ScriptsDAO {
 
   constructor() {
@@ -76,17 +72,11 @@ class ScriptsDAO {
   }
 
   async getTags(): Promise<string[]> {
-    const results = await Script.find().select('main.tag').exec();
-    return  results.map(result => {
-      return result.main.tag;
-    }).filter(onlyUnique);
+    return Script.distinct('main.tag').exec();
   }
 
   async getLocales(): Promise<string[]> {
-    const results = await Script.find().select('tag').exec();
-    return  results.map(result => {
-      return result.tag;
-    }).filter(onlyUnique);
+    return Script.distinct('tag').exec();
   }
 
 } 

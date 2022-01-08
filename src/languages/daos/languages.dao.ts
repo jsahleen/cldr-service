@@ -6,10 +6,6 @@ import debug, {IDebugger } from 'debug';
 
 const log: IDebugger = debug('app:languages-dao');
 
-function onlyUnique(value, index, self) {
-  return self.indexOf(value) === index;
-}
-
 class LanguageDAO {
 
   constructor() {
@@ -76,17 +72,11 @@ class LanguageDAO {
   }
 
   async getTags(): Promise<string[]> {
-    const results = await Language.find().select('main.tag').exec();
-    return  results.map(result => {
-      return result.main.tag;
-    }).filter(onlyUnique);
+    return Language.distinct('main.tag').exec();
   }
 
   async getLocales(): Promise<string[]> {
-    const results = await Language.find().select('tag').exec();
-    return  results.map(result => {
-      return result.tag;
-    }).filter(onlyUnique);
+    return Language.distinct('tag').exec();
   }
 
 } 
