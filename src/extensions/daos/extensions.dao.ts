@@ -6,10 +6,6 @@ import { merge } from 'lodash';
 
 const log: IDebugger = debug('app:scripts-dao');
 
-function onlyUnique(value, index, self) {
-  return self.indexOf(value) === index;
-}
-
 class ExtensionsDAO {
 
   constructor() {
@@ -76,17 +72,11 @@ class ExtensionsDAO {
   }
 
   async getTags(): Promise<string[]> {
-    const results = await Extension.find().select('main.key').exec();
-    return  results.map(result => {
-      return result.main.key;
-    }).filter(onlyUnique);
+    return Extension.distinct('main.key').exec();
   }
 
   async getLocales(): Promise<string[]> {
-    const results = await Extension.find().select('tag').exec();
-    return  results.map(result => {
-      return result.tag;
-    }).filter(onlyUnique);
+    return Extension.distinct('tag').exec();
   }
 
 } 

@@ -6,10 +6,6 @@ import { merge } from 'lodash';
 
 const log: IDebugger = debug('app:calendars-dao');
 
-function onlyUnique(value, index, self) {
-  return self.indexOf(value) === index;
-}
-
 class CalendarsDAO {
 
   constructor() {
@@ -89,17 +85,11 @@ class CalendarsDAO {
   }
 
   async getTags(): Promise<string[]> {
-    const results = await Calendar.find().select('main.tag').exec();
-    return  results.map(result => {
-      return result.main.tag;
-    }).filter(onlyUnique);
+    return Calendar.distinct('main.tag').exec();
   }
 
   async getLocales(): Promise<string[]> {
-    const results = await Calendar.find().select('tag').exec();
-    return  results.map(result => {
-      return result.tag;
-    }).filter(onlyUnique);
+    return Calendar.distinct('tag').exec();
   }
 
 } 

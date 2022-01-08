@@ -72,9 +72,11 @@ class LocalesController {
     if (typeof tags === 'string') {
       tags = tags.split(',');
     } else {
-      const before = locales.length > limit ? limit : 1
-      const availableTags = await this.getTags();
-      tags = availableTags.slice(0, before) as string[];
+      tags = await this.getTags();
+    }
+
+    if (tags.length > limit) {
+      tags = tags.slice(0, limit);
     }
 
     const loc = await localesService.list(tags, locales, filters, limit, page);

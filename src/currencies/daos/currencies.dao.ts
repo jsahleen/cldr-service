@@ -6,10 +6,6 @@ import { merge } from 'lodash';
 
 const log: IDebugger = debug('app:currencies-dao');
 
-function onlyUnique(value, index, self) {
-  return self.indexOf(value) === index;
-}
-
 class CurrenciesDAO {
 
   constructor() {
@@ -98,17 +94,11 @@ class CurrenciesDAO {
   }
 
   async getTags(): Promise<string[]> {
-    const results = await Currency.find().select('main.code').exec();
-    return  results.map(result => {
-      return result.main.code;
-    }).filter(onlyUnique);
+    return Currency.distinct('main.code').exec();
   }
 
   async getLocales(): Promise<string[]> {
-    const results = await Currency.find().select('tag').exec();
-    return  results.map(result => {
-      return result.tag;
-    }).filter(onlyUnique);
+    return Currency.distinct('tag').exec();
   }
 
 } 
