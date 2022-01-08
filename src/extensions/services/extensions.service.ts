@@ -32,7 +32,7 @@ class ExtensionsService implements IAdmin, IPublic {
     return extensionsDAO.updateExtensionById(id, fields, true);
   }
 
-  async removeById(id: string): Promise<void> {
+  async removeById(id: string): Promise<IExtension | null> {
     return extensionsDAO.removeExtensionById(id);
   }
 

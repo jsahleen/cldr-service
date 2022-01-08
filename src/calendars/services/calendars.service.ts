@@ -32,7 +32,7 @@ class CalendarsService implements IAdmin, IPublic {
     return CalendarsDAO.updateCalendarById(id, fields, true);
   }
 
-  async removeById(id: string): Promise<void> {
+  async removeById(id: string): Promise<ICalendar | null> {
     return CalendarsDAO.removeCalendarById(id);
   }
 

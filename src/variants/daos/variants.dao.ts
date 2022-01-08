@@ -51,8 +51,8 @@ class VariantsDAO {
     return Variant.findByIdAndUpdate(id, input, { new: true }).exec();
   }
 
-  async removeVariantById(id: string): Promise<void> {
-    Variant.findByIdAndRemove(id);
+  async removeVariantById(id: string): Promise<IVariant | null> {
+    return Variant.findByIdAndRemove(id);
   }
 
   async listVariantsByTagOrType(

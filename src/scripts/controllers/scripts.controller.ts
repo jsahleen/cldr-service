@@ -23,14 +23,14 @@ class ScriptsController {
     this.getLocales();
   }
 
-  async getTags(): Promise<string[]> {
+  private async getTags(): Promise<string[]> {
     if (Array.isArray(this.tags) && this.tags.length === 0) {
       this.tags = await scriptsService.getTags();
     }
     return this.tags;
   }
 
-  async getLocales(): Promise<string[]> {
+  private async getLocales(): Promise<string[]> {
     if (Array.isArray(this.locales) && this.locales.length === 0) {
       this.locales = await scriptsService.getLocales();
     }
@@ -75,14 +75,14 @@ class ScriptsController {
     res.status(200).send({scripts: scripts});
   }
 
-  async createScript(req: express.Request, res: express.Response) {
+  createScript = async (req: express.Request, res: express.Response) => {
     const id = await scriptsService.create(req.body);
     res.status(201).send({ _id: id});
     this.tags = await scriptsService.getTags();
     this.locales = await scriptsService.getLocales();
   }
 
-  async getScriptById(req: express.Request, res: express.Response) {
+  getScriptById = async (req: express.Request, res: express.Response) => {
     const script = await scriptsService.getById(req.params.id);
     if (!script) {
       res.status(404).send();
@@ -90,21 +90,21 @@ class ScriptsController {
     res.status(200).send(script);
   }
 
-  async updateScriptById(req: express.Request, res: express.Response) {
+  updateScriptById = async (req: express.Request, res: express.Response) => {
     log(await scriptsService.updateById(req.params.id, req.body));
     res.status(204).send();
     this.tags = await scriptsService.getTags();
     this.locales = await scriptsService.getLocales();
   }
 
-  async replaceScriptById(req: express.Request, res: express.Response) {
+  replaceScriptById = async (req: express.Request, res: express.Response) => {
     log(await scriptsService.replaceById(req.params.id, req.body));
     res.status(204).send();
     this.tags = await scriptsService.getTags();
     this.locales = await scriptsService.getLocales();
   }
 
-  async removeScriptById(req: express.Request, res: express.Response) {
+  removeScriptById = async (req: express.Request, res: express.Response) => {
     log(await scriptsService.removeById(req.params.id));
     res.status(204).send();
     this.tags = await scriptsService.getTags();

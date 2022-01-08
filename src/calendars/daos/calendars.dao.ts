@@ -51,8 +51,8 @@ class CalendarsDAO {
     return Calendar.findByIdAndUpdate(id, input, { new: true }).exec();
   }
 
-  async removeCalendarById(id: string): Promise<void> {
-    Calendar.findByIdAndRemove(id);
+  async removeCalendarById(id: string): Promise<ICalendar | null> {
+    return Calendar.findByIdAndRemove(id);
   }
 
   async listCalendarsByTagOrType(

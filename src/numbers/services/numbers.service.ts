@@ -32,7 +32,7 @@ class NumberSystemsService implements IAdmin, IPublic {
     return NumbersSystemsDAO.updateNumberSystemById(id, fields);
   }
 
-  async removeById(id: string): Promise<void> {
+  async removeById(id: string): Promise<INumberSystem | null> {
     return NumbersSystemsDAO.removeNumberSystemById(id);
   }
 

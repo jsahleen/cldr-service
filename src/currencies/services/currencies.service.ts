@@ -32,7 +32,7 @@ class NumberSystemsService implements IAdmin, IPublic {
     return CurrenciesDAO.updateCurrencyById(id, fields, true);
   }
 
-  async removeById(id: string): Promise<void> {
+  async removeById(id: string): Promise<ICurrency | null> {
     return CurrenciesDAO.removeCurrencyById(id);
   }
 

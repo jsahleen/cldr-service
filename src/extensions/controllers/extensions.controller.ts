@@ -22,14 +22,14 @@ class ExtensionsController {
     this.getLocales();
   }
 
-  async getTags(): Promise<string[]> {
+  private async getTags(): Promise<string[]> {
     if (Array.isArray(this.tags) && this.tags.length === 0) {
       this.tags = await extensionsService.getTags();
     }
     return this.tags;
   }
 
-  async getLocales(): Promise<string[]> {
+  private async getLocales(): Promise<string[]> {
     if (Array.isArray(this.locales) && this.locales.length === 0) {
       this.locales = await extensionsService.getLocales();
     }
@@ -74,14 +74,14 @@ class ExtensionsController {
     res.status(200).send({extensions: extensions});
   }
 
-  async createExtension(req: express.Request, res: express.Response) {
+  createExtension = async (req: express.Request, res: express.Response) => {
     const id = await extensionsService.create(req.body);
     res.status(201).send({ _id: id});
     this.tags = await extensionsService.getTags();
     this.locales = await extensionsService.getLocales();
   }
 
-  async getExtensionById(req: express.Request, res: express.Response) {
+  getExtensionById = async (req: express.Request, res: express.Response) => {
     const extension = await extensionsService.getById(req.params.id);
     if (!extension) {
       res.status(404).send();
@@ -89,21 +89,21 @@ class ExtensionsController {
     res.status(200).send(extension);
   }
 
-  async replaceExtensionById(req: express.Request, res: express.Response) {
+  replaceExtensionById = async (req: express.Request, res: express.Response) => {
     log(await extensionsService.replaceById(req.params.id, req.body));
     res.status(204).send();
     this.tags = await extensionsService.getTags();
     this.locales = await extensionsService.getLocales();
   }
 
-  async updateExtensionById(req: express.Request, res: express.Response) {
+  updateExtensionById = async (req: express.Request, res: express.Response) => {
     log(await extensionsService.updateById(req.params.id, req.body));
     res.status(204).send();
     this.tags = await extensionsService.getTags();
     this.locales = await extensionsService.getLocales();
   }
 
-  async removeExtensionById(req: express.Request, res: express.Response) {
+  removeExtensionById = async (req: express.Request, res: express.Response) => {
     log(await extensionsService.removeById(req.params.id));
     res.status(204).send();
     this.tags = await extensionsService.getTags();

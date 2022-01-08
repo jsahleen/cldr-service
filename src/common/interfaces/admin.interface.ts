@@ -6,5 +6,5 @@ export interface IAdmin {
   getById: (id: string) => Promise<Module | null>
   updateById: (id: string, fields) => Promise<Module | null>
   replaceById: (id: string, fields) => Promise<Module | null>
-  removeById: (id: string) => Promise<void>
+  removeById: (id: string) => Promise<Module | null>
 }

@@ -27,14 +27,14 @@ class LocalesController {
     this.getLocales();
   }
 
-  async getTags(): Promise<string[]> {
+  private async getTags(): Promise<string[]> {
     if (Array.isArray(this.tags) && this.tags.length === 0) {
       this.tags = await localesService.getTags();
     }
     return this.tags;
   }
 
-  async getLocales(): Promise<string[]> {
+  private async getLocales(): Promise<string[]> {
     if (Array.isArray(this.locales) && this.locales.length === 0) {
       this.locales = await localesService.getLocales();
     }
@@ -81,14 +81,14 @@ class LocalesController {
     res.status(200).send({locales: loc});
   }
 
-  async createLocale(req: express.Request, res: express.Response) {
+  createLocale = async (req: express.Request, res: express.Response) => {
     const id = await localesService.create(req.body);
     res.status(201).send({ _id: id});
     this.tags = await localesService.getTags();
     this.locales = await localesService.getLocales();
   }
 
-  async getLocaleById(req: express.Request, res: express.Response) {
+  getLocaleById = async (req: express.Request, res: express.Response) => {
     const locale = await localesService.getById(req.params.id);
     if (!locale) {
       res.status(404).send();
@@ -96,21 +96,21 @@ class LocalesController {
     res.status(200).send(locale);
   }
 
-  async updateLocaleById(req: express.Request, res: express.Response) {
+  updateLocaleById = async (req: express.Request, res: express.Response) => {
     log(await localesService.updateById(req.params.id, req.body));
     res.status(204).send();
     this.tags = await localesService.getTags();
     this.locales = await localesService.getLocales();
   }
 
-  async replaceLocaleById(req: express.Request, res: express.Response) {
+  replaceLocaleById = async (req: express.Request, res: express.Response) => {
     log(await localesService.replaceById(req.params.id, req.body));
     res.status(204).send();
     this.tags = await localesService.getTags();
     this.locales = await localesService.getLocales();
   }
 
-  async removeLocaleById(req: express.Request, res: express.Response) {
+  removeLocaleById = async (req: express.Request, res: express.Response) => {
     log(await localesService.removeById(req.params.id));
     res.status(204).send();
     this.tags = await localesService.getTags();

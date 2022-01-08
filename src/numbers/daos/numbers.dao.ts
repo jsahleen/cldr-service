@@ -51,8 +51,8 @@ class NumbersSystemsDAO {
     return NumberSystem.findByIdAndUpdate(id, input, { new: true }).exec();
   }
 
-  async removeNumberSystemById(id: string): Promise<void> {
-    NumberSystem.findByIdAndRemove(id);
+  async removeNumberSystemById(id: string): Promise<INumberSystem | null> {
+    return NumberSystem.findByIdAndRemove(id);
   }
 
   async listNumberSystemsByNameOrType(

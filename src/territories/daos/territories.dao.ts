@@ -51,8 +51,8 @@ class TerritoriesDAO {
     return Territory.findByIdAndUpdate(id, input, { new: true }).exec();
   }
 
-  async removeTerritoryById(id: string): Promise<void> {
-    Territory.findByIdAndRemove(id);
+  async removeTerritoryById(id: string): Promise<ITerritory | null> {
+    return Territory.findByIdAndRemove(id);
   }
 
   async listTerritoriesByTagOrType(
