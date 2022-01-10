@@ -57,6 +57,6 @@
     "debug": "export DEBUG=* && yarn start",
     "seed": "ts-node ./scripts/seed.ts",
     "setup": "./scripts/setup.sh",
-    "example": "node ./examples/node/antartica.mjs"
+    "example": "node ./examples/node/antarctica.mjs"
   }
 }
