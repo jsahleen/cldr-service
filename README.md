@@ -1,6 +1,6 @@
 # cldr-service
 
-Proof of concept implementation for a CLDR web service. Allows dynamic loading of CLDR data across multiple locales, with element and content filtering. The current implementation provides publicly accessible data for number systems, currencies, languages, scripts, territories, variants, extensions and dynamically contructed locales.
+Proof of concept implementation for a CLDR web service. Allows dynamic loading of CLDR data across multiple locales, with element and content filtering. The current implementation provides publicly accessible data for number systems, calendars, currencies, languages, scripts, territories, variants, extensions and dynamically contructed locales.
 
 ## Local Setup
 
