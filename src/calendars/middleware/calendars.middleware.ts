@@ -3,12 +3,7 @@ import {debug, IDebugger} from "debug"
 import { availableFilters } from '../controllers/calendars.controller';
 import { IModuleMiddleware } from '../../common/interfaces/middleware.interface';
 import { body, validationResult } from 'express-validator';
-import CLDRUTIL from '../../common/util/common.util';
 import calendarsService from '../services/calendars.service';
-
-const availableLocales = CLDRUTIL.getAvailableLocales();
-const rootData = CLDRUTIL.getRootLocaleData('localenames', 'localeDisplayNames');
-const availableCalendars = Object.keys(rootData.main[CLDRUTIL.rootLocale].localeDisplayNames.types.calendar);
 
 const log: IDebugger = debug('app:calendars-middleware');
 
@@ -68,19 +63,22 @@ class CalendarsMiddleware implements IModuleMiddleware {
 
   async ensureDocumentDoesNotExist(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
     const localeString = req.query.locales as string | undefined;
-    const locales = localeString?.split(',') || availableLocales;
+    const locales = localeString?.split(',') || await calendarsService.getLocales();
     
     const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;
+
+    const availableCalendars = await calendarsService.getTags();
 
     const calendars = await calendarsService.list(availableCalendars, locales, filters, 1000, 1);
 
     calendars.map(calendar => {
       if (
         calendar.main.tag === req.body.main.tag &&
-        calendar.identity === req.body.identity
+        calendar.tag === req.body.tag
       ) {
-        res.status(409).send({ error: 'Record exists.'});
+        const id = calendar._id;
+        res.status(409).send({ error: `Record exists. Use PUT to replace or PATCH to modify. ID: ${id}`});
       }
     });
     

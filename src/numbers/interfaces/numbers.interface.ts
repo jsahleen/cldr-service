@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { ModuleTypes } from "../../common/enums/module.enum";
 import { IIdentity } from "../../common/interfaces/identity.interface";
 import { IModule } from "../../common/interfaces/module.interface";
@@ -94,6 +95,7 @@ export interface INSData {
 }
 
 export interface INumberSystem extends IModule<INSData> {
+  _id?: Types.ObjectId
   tag: string
   identity: IIdentity
   moduleType: ModuleTypes.NUMBERS

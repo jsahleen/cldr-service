@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { ModuleTypes } from "../../common/enums/module.enum";
 import { IIdentity } from "../../common/interfaces/identity.interface";
 import { IModule } from "../../common/interfaces/module.interface";
@@ -33,6 +34,7 @@ export interface ICurrencyData {
 }
 
 export interface ICurrency extends IModule<ICurrencyData> {
+  _id?: Types.ObjectId
   tag: string
   moduleType: ModuleTypes.CURRENCIES
   identity: IIdentity

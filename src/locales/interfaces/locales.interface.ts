@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { ModuleTypes } from "../../common/enums/module.enum";
 import { IIdentity } from "../../common/interfaces/identity.interface";
 import { IModule } from "../../common/interfaces/module.interface";
@@ -35,6 +36,7 @@ export interface ILocaleData {
 }
 
 export interface ILocale extends IModule<ILocaleData> {
+  _id?: Types.ObjectId
   tag: string
   moduleType: ModuleTypes.LOCALES
   identity: IIdentity

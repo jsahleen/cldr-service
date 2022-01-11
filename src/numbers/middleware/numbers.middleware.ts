@@ -4,11 +4,6 @@ import {debug, IDebugger} from "debug"
 import { availableFilters } from '../controllers/numbers.controller';
 import { IModuleMiddleware } from '../../common/interfaces/middleware.interface';
 import { body, validationResult } from 'express-validator';
-import CLDRUTIL from '../../common/util/common.util';
-
-const availableLocales = CLDRUTIL.getAvailableLocales();
-const rootData = CLDRUTIL.getRootLocaleData('localenames', 'localeDisplayNames');
-const availableSystems = Object.keys(rootData.main[CLDRUTIL.rootLocale].localeDisplayNames.types.numbers)
 
 const log: IDebugger = debug('app:users-controller');
 
@@ -71,19 +66,21 @@ class NumberSystemsMiddleware implements IModuleMiddleware {
 
   async ensureDocumentDoesNotExist(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
     const localeString = req.query.locales as string | undefined;
-    const locales = localeString?.split(',') || availableLocales;
+    const locales = localeString?.split(',') || await numbersService.getLocales();
     
     const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;
 
+    const availableSystems = await numbersService.getTags();
     const numberSystems = await numbersService.list(availableSystems, locales, filters, 1000, 1);
 
     numberSystems.map(system => {
       if (
         system.main.name === req.body.main.name &&
-        system.identity === req.body.identity
+        system.tag === req.body.tag
       ) {
-        res.status(409).send({ error: 'Record exists. Use put or patch to modify'});
+        const id = system._id;
+        res.status(409).send({ error: `Record exists. Use PUT to replace or PATCH to modify. ID: ${id}.`});
       }
     });
     

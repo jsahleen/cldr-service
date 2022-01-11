@@ -4,11 +4,6 @@ import territoriesService from '../services/territories.service';
 import { availableFilters } from '../controllers/territories.controller';
 import { IModuleMiddleware } from '../../common/interfaces/middleware.interface';
 import { body, validationResult } from 'express-validator';
-import CLDRUTIL from '../../common/util/common.util';
-
-const availableLocales = CLDRUTIL.getAvailableLocales();
-const rootData = CLDRUTIL.getRootLocaleData('localenames', 'territories')
-const availableTags = Object.keys(rootData.main[CLDRUTIL.rootLocale].localeDisplayNames.territories);
 
 const log: IDebugger = debug('app:territories-middleware');
 
@@ -68,19 +63,22 @@ class TerritoriesMiddleware implements IModuleMiddleware {
 
   async ensureDocumentDoesNotExist(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
     const localeString = req.query.locales as string | undefined;
-    const locales = localeString?.split(',') || availableLocales;
+    const locales = localeString?.split(',') || await territoriesService.getLocales();
     
     const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;
 
-    const scripts = await territoriesService.list(availableTags, locales, filters, 1000, 1);
+    const availableTags = await territoriesService.getTags();
 
-    scripts.map(script => {
+    const territories = await territoriesService.list(availableTags, locales, filters, 1000, 1);
+
+    territories.map(territory => {
       if (
-        script.main.tag === req.body.main.tag &&
-        script.identity === req.body.identity
+        territory.main.tag === req.body.main.tag &&
+        territory.tag === req.body.tag
       ) {
-        res.status(409).send({ error: 'Record exists.'});
+        const id = territory._id;
+        res.status(409).send({ error: `Record exists. Use PUT to replace or PATCH to modify. ID: ${id}`});
       }
     });
     

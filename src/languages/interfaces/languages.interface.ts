@@ -2,6 +2,7 @@ import { ModuleTypes } from "../../common/enums/module.enum";
 import { IIdentity } from "../../common/interfaces/identity.interface";
 import { IModule } from "../../common/interfaces/module.interface";
 import { IPluralKeys } from "../../common/interfaces/pluralkeys.interface";
+import { Types } from "mongoose";
 
 export interface ILanguageScript {
   tag: string
@@ -68,6 +69,7 @@ export interface ILanguageData {
 }
 
 export interface ILanguage extends IModule<ILanguageData> {
+  _id?: Types.ObjectId
   tag: string
   moduleType: ModuleTypes.LANGUAGES
   identity: IIdentity

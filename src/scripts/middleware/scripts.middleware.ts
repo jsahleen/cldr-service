@@ -4,11 +4,6 @@ import scriptsService from '../services/scripts.service';
 import { availableFilters } from '../controllers/scripts.controller';
 import { IModuleMiddleware } from '../../common/interfaces/middleware.interface';
 import { body, validationResult } from 'express-validator';
-import CLDRUTIL from '../../common/util/common.util';
-
-const availableLocales = CLDRUTIL.getAvailableLocales();
-const rootData = CLDRUTIL.getRootLocaleData('localenames', 'scripts');
-const availableTags = Object.keys(rootData.main[CLDRUTIL.rootLocale].localeDisplayNames.scripts);
 
 const log: IDebugger = debug('app:scripts-middleware');
 
@@ -68,19 +63,22 @@ class ScriptsMiddleware implements IModuleMiddleware {
 
   async ensureDocumentDoesNotExist(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
     const localeString = req.query.locales as string | undefined;
-    const locales = localeString?.split(',') || availableLocales;
+    const locales = localeString?.split(',') || await scriptsService.getLocales();
     
     const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;
+
+    const availableTags = await scriptsService.getTags();
 
     const scripts = await scriptsService.list(availableTags, locales, filters, 1000, 1);
 
     scripts.map(script => {
       if (
         script.main.tag === req.body.main.tag &&
-        script.identity === req.body.identity
+        script.tag === req.body.tag
       ) {
-        res.status(409).send({ error: 'Record exists.'});
+        const id = script._id;
+        res.status(409).send({ error: `Record exists. Use PUT to replace or PATCH to modify. ID: ${id}`});
       }
     });
     

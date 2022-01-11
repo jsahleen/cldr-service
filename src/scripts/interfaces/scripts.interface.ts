@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { ModuleTypes } from "../../common/enums/module.enum";
 import { IIdentity } from "../../common/interfaces/identity.interface";
 import { IModule } from "../../common/interfaces/module.interface";
@@ -36,6 +37,7 @@ export interface IScriptData {
 }
 
 export interface IScript extends IModule<IScriptData> {
+  _id?: Types.ObjectId
   tag: string
   moduleType: ModuleTypes.SCRIPTS
   identity: IIdentity
