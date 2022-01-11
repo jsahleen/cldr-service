@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { ModuleTypes } from "../../common/enums/module.enum";
 import { IIdentity } from "../../common/interfaces/identity.interface";
 import { IModule } from "../../common/interfaces/module.interface";
@@ -36,6 +37,7 @@ export interface ITerritoryData {
 }
 
 export interface ITerritory extends IModule<ITerritoryData> {
+  _id?: Types.ObjectId
   tag: string
   moduleType: ModuleTypes.TERRITORIES
   identity: IIdentity

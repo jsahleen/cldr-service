@@ -4,10 +4,6 @@ import localesService from '../services/locales.service';
 import { availableFilters } from '../controllers/locales.controller';
 import { IModuleMiddleware } from '../../common/interfaces/middleware.interface';
 import { body, validationResult } from 'express-validator';
-import CLDRUTIL from '../../common/util/common.util';
-
-const availableLocales = CLDRUTIL.getAvailableLocales();
-const availableTags = availableLocales.filter(tag => tag !== CLDRUTIL.rootLocale);
 
 const log: IDebugger = debug('app:locales-middleware');
 
@@ -68,20 +64,21 @@ class LocalesMiddleware implements IModuleMiddleware {
   async ensureDocumentDoesNotExist(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
     const tagsString = req.query.tags as string | undefined;
     const localeString = req.query.locales as string | undefined;
-    const tags = tagsString?.split(',') || availableTags;
-    const locales = localeString?.split(',') || availableLocales;
+    const tags = tagsString?.split(',') || await localesService.getTags();
+    const locales = localeString?.split(',') || await localesService.getLocales();
     
     const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;
 
-    const scripts = await localesService.list(tags, locales, filters, 1000, 1);
+    const localeRecords = await localesService.list(tags, locales, filters, 1000, 1);
 
-    scripts.map(script => {
+    localeRecords.map(record => {
       if (
-        script.main.tag === req.body.main.tag &&
-        script.identity === req.body.identity
+        record.main.tag === req.body.main.tag &&
+        record.tag === req.body.tag
       ) {
-        res.status(409).send({ error: 'Record exists.'});
+        const id = record._id;
+        res.status(409).send({ error: `Record exists. Use PUT to replace or PATCH to modify. ID: ${id}`});
       }
     });
     

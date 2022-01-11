@@ -4,11 +4,6 @@ import extensionsService from '../services/extensions.service';
 import { availableFilters } from '../controllers/extensions.controller';
 import { IModuleMiddleware } from '../../common/interfaces/middleware.interface';
 import { body, validationResult } from 'express-validator';
-import CLDRUTIL from '../../common/util/common.util';
-
-const availableLocales = CLDRUTIL.getAvailableLocales();
-const rootData = CLDRUTIL.getRootLocaleData('localenames', 'localeDisplayNames');
-const availableKeys = Object.keys(rootData.main[CLDRUTIL.rootLocale].localeDisplayNames.keys);
 
 const log: IDebugger = debug('app:extensions-middleware');
 
@@ -68,19 +63,22 @@ class ExtensionsMiddleware implements IModuleMiddleware {
 
   async ensureDocumentDoesNotExist(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
     const localeString = req.query.locales as string | undefined;
-    const locales = localeString?.split(',') || availableLocales;
+    const locales = localeString?.split(',') || await extensionsService.getLocales();
     
     const filtersString = req.query.filters as string | undefined;
     const filters = filtersString?.split(',') || availableFilters;
+
+    const availableKeys = await extensionsService.getTags();
 
     const extensions = await extensionsService.list(availableKeys, locales, filters, 1000, 1);
 
     extensions.map(extension => {
       if (
         extension.main.key === req.body.main.tag &&
-        extension.identity === req.body.identity
+        extension.tag === req.body.tag
       ) {
-        res.status(409).send({ error: 'Record exists.'});
+        const id = extension._id;
+        res.status(409).send({ error: `Record exists. Use PUT to replace or PATCH to modify. ID: ${id}`});
       }
     });
     
