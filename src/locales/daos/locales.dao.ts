@@ -92,7 +92,7 @@ class LocalesDAO {
         if (filters.includes('variants') && variantTags) {
           const variantDocs = await variantsModel.find({$and: [{'main.tag': {$in: variantTags}},{tag: cDoc.tag}]});
           cDoc.main.variants = variantDocs?.map(vDoc => vDoc.main);
-        } else if (vFilters.length > 0 && scriptTag) {
+        } else if (vFilters.length > 0 && variantTags) {
           const variantDocs = await variantsModel.find({$and: [{'main.tag': {$in: variantTags}},{tag: cDoc.tag}]})
             .select(vFilters.join(' '));
           cDoc.main.variants = variantDocs?.map(vDoc => vDoc.main);
