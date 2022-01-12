@@ -188,7 +188,7 @@ class LocalesDAO {
       if (filters.includes('territory') && territoryTag) {
         const territoryDoc = await territoriesModel.findOne({$and: [{'main.tag': territoryTag},{tag: doc.tag}]});
         doc.main.territory = territoryDoc?.main;
-      } else if (tFilters.length > 0 && scriptTag) {
+      } else if (tFilters.length > 0 && territoryTag) {
         const territoryDoc = await territoriesModel.findOne({$and: [{'main.tag': territoryTag},{tag: doc.tag}]})
           .select(tFilters.join(' '));
         doc.main.territory = territoryDoc?.main;
@@ -197,7 +197,7 @@ class LocalesDAO {
       if (filters.includes('variants') && variantTags) {
         const variantDocs = await variantsModel.find({$and: [{'main.tag': {$in: variantTags}},{tag: doc.tag}]});
         doc.main.variants = variantDocs?.map(vDoc => vDoc.main);
-      } else if (vFilters.length > 0 && scriptTag) {
+      } else if (vFilters.length > 0 && variantTags) {
         const variantDocs = await variantsModel.find({$and: [{'main.tag': {$in: variantTags}},{tag: doc.tag}]})
           .select(vFilters.join(' '));
         doc.main.variants = variantDocs?.map(vDoc => vDoc.main);
