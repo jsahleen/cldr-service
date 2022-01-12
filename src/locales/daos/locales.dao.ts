@@ -83,7 +83,7 @@ class LocalesDAO {
         if (filters.includes('territory') && territoryTag) {
           const territoryDoc = await territoriesModel.findOne({$and: [{'main.tag': territoryTag},{tag: cDoc.tag}]});
           cDoc.main.territory = territoryDoc?.main;
-        } else if (tFilters.length > 0 && scriptTag) {
+        } else if (tFilters.length > 0 && territoryTag) {
           const territoryDoc = await territoriesModel.findOne({$and: [{'main.tag': territoryTag},{tag: cDoc.tag}]})
             .select(tFilters.join(' '));
           cDoc.main.territory = territoryDoc?.main;
