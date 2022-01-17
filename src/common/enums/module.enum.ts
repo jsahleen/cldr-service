@@ -7,5 +7,6 @@ export enum ModuleTypes {
   VARIANTS = 'variants',
   EXTENSIONS = 'extensions',
   LOCALES = 'locales',
-  CALENDARS = 'calendars'
+  CALENDARS = 'calendars',
+  TIME = 'time'
 }

@@ -7,7 +7,8 @@ import { IScript } from "../../scripts/interfaces/scripts.interface";
 import { ITerritory } from "../../territories/interfaces/territories.interface";
 import { IVariant } from "../../variants/interfaces/variants.interface";
 import { ICalendar } from "../../calendars/interfaces/calendars.interface";
+import { IRelativeTime } from "../../time/interfaces/time.interface";
 
 export type Module = INumberSystem | ICurrency | ILanguage |
                      IScript | ITerritory | IVariant | IExtension | 
-                     ILocale | ICalendar;
+                     ILocale | ICalendar | IRelativeTime;
