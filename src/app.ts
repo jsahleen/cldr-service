@@ -22,6 +22,7 @@ import { VariantsRoutes} from './variants/routes/variants.routes'
 import { ExtensionsRoutes} from './extensions/routes/extensions.routes'
 import { LocalesRoutes} from './locales/routes/locales.routes'
 import { CalendarsRoutes } from './calendars/routes/calendars.routes';
+import { RelativeTimeRoutes } from './time/routes/time.routes'
 
 // App configuration
 const app: express.Application = express();
@@ -62,6 +63,7 @@ routes.push(new VariantsRoutes(app));
 routes.push(new ExtensionsRoutes(app));
 routes.push(new LocalesRoutes(app));
 routes.push(new CalendarsRoutes(app));
+routes.push(new RelativeTimeRoutes(app));
 
 // Server startup code
 const runningMessage = `Server running at http://localhost:${port}`;
