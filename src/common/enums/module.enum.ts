@@ -8,5 +8,6 @@ export enum ModuleTypes {
   EXTENSIONS = 'extensions',
   LOCALES = 'locales',
   CALENDARS = 'calendars',
-  TIME = 'time'
+  TIME = 'time',
+  ZONES = 'zone'
 }
