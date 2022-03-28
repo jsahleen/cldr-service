@@ -1,6 +1,6 @@
 # cldr-service
 
-Proof of concept implementation for a CLDR web service. Allows dynamic loading of CLDR data across multiple locales, with element and content filtering. The current implementation provides publicly accessible data for number systems, calendars, currencies, languages, scripts, territories, variants, extensions, calendars, relative time formats and dynamically contructed locales.
+Proof of concept implementation for a CLDR web service. Allows dynamic loading of CLDR data across multiple locales, with element and content filtering. The current implementation provides publicly accessible data for number systems, currencies, languages, scripts, territories, variants, extensions, calendars, relative time formats, time zones and dynamically contructed locales.
 
 ## Local Setup
 
@@ -178,5 +178,16 @@ The following endpoints are currently implemented. The service runs on port `300
     * PUT admin/relative-time/:id
     * PATCH admin/relative-time/:id
     * DELETE admin/relative-time/:id
+
+* ZONES
+
+    * GET public/zones?locales={locales}&zones={zones}&filters={filters}&page={page}&limit={limit}
+    * GET public/zones/:format?locales={locales}&filters={filters}&page={page}&limit={limit}
+    * GET admin/zones?locales={locales}&zones={zones}&filters={filters}&page={page}&limit={limit}
+    * POST admin/zones
+    * GET admin/zones/:id
+    * PUT admin/zones/:id
+    * PATCH admin/zones/:id
+    * DELETE admin/zones/:id
 
 For the all query parameters except `page` and `limit`, the expected value is a comma-separated list of elements (e.g., `?locales=en,fr,de`). The locales, tags, systems and codes parameters support the corresponding lists of elements in cldr-json. Locales are limited to modern locales. Filters can be any set of paths inside the `main` element of a data module. Only paths specified in filters are returned. By default, all paths are returned. For number systems, there are additional systems keywords `default` and `native` that can be passed. For currencies, there is an additional keyword `current`. For calendars, there is an additional keyword `preferred`. The formats for `relative-time` are `standard`, `short` and `narrow`. Data returned is taken from `cldr-core`, `cldr-numbers-modern`, `cldr-localenames-modern`, `cldr-dates` and the `cldr-cal-*` packages.
