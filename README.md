@@ -182,7 +182,7 @@ The following endpoints are currently implemented. The service runs on port `300
 * ZONES
 
     * GET public/zones?locales={locales}&zones={zones}&filters={filters}&page={page}&limit={limit}
-    * GET public/zones/:format?locales={locales}&filters={filters}&page={page}&limit={limit}
+    * GET public/zones/:zone?locales={locales}&filters={filters}&page={page}&limit={limit}
     * GET admin/zones?locales={locales}&zones={zones}&filters={filters}&page={page}&limit={limit}
     * POST admin/zones
     * GET admin/zones/:id
