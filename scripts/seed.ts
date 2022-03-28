@@ -9,6 +9,7 @@ import ExtensionsGenerator from "../src/extensions/generators/extensions.generat
 import LocalesGenerator from "../src/locales/generators/locales.generator";
 import CalendarsGenerator from "../src/calendars/generators/calendars.generator";
 import RelativeTimeGenerator from "../src/time/generators/time.generator";
+import ZonesGenerator from '../src/zones/generators/zones.generator';
 import debug, { IDebugger} from 'debug';
 
 const log: IDebugger = debug('app:seed');
@@ -26,6 +27,8 @@ async function seed(module) {
   const loc = new LocalesGenerator();
   const cal = new CalendarsGenerator();
   const rt = new RelativeTimeGenerator();
+  const z = new ZonesGenerator();
+
   switch (module) {
     case 'users':
       r.push(await u.generate()); 
@@ -70,8 +73,12 @@ async function seed(module) {
     case 'relative-time':
       r.push(await rt.generate()); 
       break;
-    
-      default:
+      
+    case 'zones':
+      r.push(await z.generate()); 
+      break;
+        
+    default:
       r.push(await u.generate()); 
       r.push(await n.generate());
       r.push(await c.generate());
@@ -83,6 +90,7 @@ async function seed(module) {
       r.push(await loc.generate());
       r.push(await cal.generate());
       r.push(await rt.generate());
+      r.push(await z.generate());
       break;
   }
   return r.join('\n');
