@@ -19,8 +19,9 @@ class NumberSystemsMiddleware implements IModuleMiddleware {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(400).json({ errors: errors.array() });
+    } else {
+      next();
     }
-    next();
   }
 
   async validatePutBody(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
@@ -30,8 +31,9 @@ class NumberSystemsMiddleware implements IModuleMiddleware {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(400).json({ errors: errors.array() });
+    } else {
+      next();
     }
-    next();
   }
 
   async validatePatchBody(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
@@ -41,8 +43,9 @@ class NumberSystemsMiddleware implements IModuleMiddleware {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(400).json({ errors: errors.array() });
+    } else {
+      next();
     }
-    next();
   }
 
   async validateNameOrTypeParameter(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
@@ -52,16 +55,18 @@ class NumberSystemsMiddleware implements IModuleMiddleware {
       (req.params.system !== 'default' && req.params.system !== 'native')
     ) {
       res.status(404).send({ error: 'Not found.'});
+    } else {
+      next();
     }
-    next();
   }
 
   async ensureDocumentExists(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
     const system = await numbersService.getById(req.params.id);
     if(!system) {
       res.status(404).send({ error: 'Not found.'});
+    } else {
+      next();
     }
-    next();
   }
 
   async ensureDocumentDoesNotExist(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
@@ -74,17 +79,21 @@ class NumberSystemsMiddleware implements IModuleMiddleware {
     const availableSystems = await numbersService.getTags();
     const numberSystems = await numbersService.list(availableSystems, locales, filters, 1000, 1);
 
+    let failed = false;
     numberSystems.map(system => {
       if (
         system.main.name === req.body.main.name &&
         system.tag === req.body.tag
       ) {
         const id = system._id;
+        failed = true;
         res.status(409).send({ error: `Record exists. Use PUT to replace or PATCH to modify. ID: ${id}.`});
       }
     });
     
-    next();
+    if (!failed) {
+      next();
+    }
   }
 }
 
