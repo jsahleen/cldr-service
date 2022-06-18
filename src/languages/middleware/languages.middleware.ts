@@ -19,8 +19,9 @@ class LanguagesMiddleware implements IModuleMiddleware {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(400).json({ errors: errors.array() });
+    } else {
+      next();
     }
-    next();
   }
 
   async validatePutBody(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
@@ -30,8 +31,9 @@ class LanguagesMiddleware implements IModuleMiddleware {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(400).json({ errors: errors.array() });
+    } else {
+      next();
     }
-    next();
   }
 
   async validatePatchBody(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
@@ -41,24 +43,27 @@ class LanguagesMiddleware implements IModuleMiddleware {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       res.status(400).json({ errors: errors.array() });
+    } else {
+      next();
     }
-    next();
   }
 
   async validateNameOrTypeParameter(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
     const tags = await languagesService.getTags();
     if(!tags.includes(req.params.tag)) {
       res.status(404).send();
+    } else {
+      next();
     }
-    next();
   }
 
   async ensureDocumentExists(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
     const language = await languagesService.getById(req.params.tag);
     if(!language) {
       res.status(404).send();
+    } else {
+      next();
     }
-    next();
   }
 
   async ensureDocumentDoesNotExist(req: express.Request, res: express.Response, next: express.NextFunction): Promise<void> {
@@ -72,17 +77,21 @@ class LanguagesMiddleware implements IModuleMiddleware {
 
     const languages = await languagesService.list(availableTags, locales, filters, 1000, 1);
 
+    let failed = false;
     languages.map(language => {
       if (
         language.main.tag === req.body.main.tag &&
         language.tag === req.body.tag
       ) {
         const id = language._id;
+        failed = true
         res.status(409).send({ error: `Record exists. Use PUT to replace or PATCH to modify. ID: ${id}`});
       }
     });
     
-    next();
+    if (!failed) {
+      next();
+    }
   }
 }
 
