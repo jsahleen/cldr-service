@@ -20,7 +20,7 @@ class UsersDAO {
   async addUser(data: ICreateDTO): Promise<string> {
     const user = new User(data);
     await user.save();
-    return user._id;
+    return user._id.toString();
   }
 
   async getUserById(id: string): Promise<IUser | null> {

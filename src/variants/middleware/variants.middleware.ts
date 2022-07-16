@@ -83,7 +83,7 @@ class VariantsMiddleware implements IModuleMiddleware {
         variant.main.tag === req.body.main.tag &&
         variant.tag === req.body.tag
       ) {
-        const id = variant._id;
+        const id =  variant._id?.toString();
         failed = true;
         res.status(409).send({ error: `Record exists. Use PUT to replace or PATCH to modify. ID: ${id}`});
       }

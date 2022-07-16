@@ -62,7 +62,7 @@ export default class ZonesGenerator implements IGenerate {
   private async insert(localeData: IZone[]): Promise<string[]> {
     const insertions = await Zone.insertMany(localeData);
     return insertions.map(record => {
-      return record._id;
+      return record._id.toString();
     });
   }
 

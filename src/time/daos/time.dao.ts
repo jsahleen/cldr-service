@@ -40,7 +40,7 @@ class RelativeTimeDAO {
   async createRelativeTimeFormats(fields: ICreateDTO): Promise<string> {
     const relativeTimeFormats = new RelativeTime(fields);
     const system = await relativeTimeFormats.save();
-    return system._id;
+    return system._id.toString();
   } 
 
   async getRelativeTimeFormatsById(id: string): Promise<IRelativeTime | null> {

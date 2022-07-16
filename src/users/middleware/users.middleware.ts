@@ -21,7 +21,7 @@ class UsersMiddleware {
     res: express.Response,
     next: express.NextFunction
   ) {
-    if (res.locals.user._id === req.params.id) {
+    if (res.locals.user._id.toString() === req.params.id) {
       next();
     } else {
       res.status(400).send({ error: `Invalid email` });

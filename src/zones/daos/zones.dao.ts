@@ -30,7 +30,7 @@ class ZoneDAO {
   async createZone(fields: ICreateDTO): Promise<string> {
     const zone = new Zone(fields);
     const system = await zone.save();
-    return system._id;
+    return system._id.toString();
   } 
 
   async getZoneById(id: string): Promise<IZone | null> {

@@ -55,7 +55,7 @@ export default class CurrencyGenerator implements IGenerate {
   private async insert(localeData: ICurrency[]): Promise<string[]> {
     const insertions = await Currency.insertMany(localeData);
     return insertions.map(record => {
-      return record._id;
+      return record._id.toString();
     });
   }
 

@@ -82,7 +82,7 @@ class RelativeTimeMiddleware implements IModuleMiddleware {
     let failed = false;
     relativeTimeFormats.map(formats => {
       if (formats.tag === req.body.tag) {
-        const id = formats._id;
+        const id =  formats._id?.toString();
         failed = true;
         res.status(409).send({ error: `Record exists. Use PUT to replace or PATCH to modify. ID: ${id}`});
       }

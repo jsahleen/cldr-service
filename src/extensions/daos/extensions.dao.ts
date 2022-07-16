@@ -29,7 +29,7 @@ class ExtensionsDAO {
   async createExtension(fields: ICreateDTO): Promise<string> {
     const extension = new Extension(fields);
     const ext = await extension.save();
-    return ext._id;
+    return ext._id.toString();
   } 
 
   async getExtensionById(id: string): Promise<IExtension | null> {

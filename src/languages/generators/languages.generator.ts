@@ -57,7 +57,7 @@ export default class LanguagesGenerator implements IGenerate {
   private async insert(localeData: ILanguage[]): Promise<string[]> {
     const insertions = await Language.insertMany(localeData);
     return insertions.map(record => {
-      return record._id;
+      return record._id.toString();
     });
   }
 

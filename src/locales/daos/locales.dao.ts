@@ -114,7 +114,7 @@ class LocalesDAO {
   async createLocale(fields: ICreateDTO): Promise<string> {
     const locale = new Locale(fields);
     const loc = await locale.save();
-    return loc._id;
+    return loc._id.toString();
   } 
 
   async getLocaleById(id: string): Promise<ILocale | null> {

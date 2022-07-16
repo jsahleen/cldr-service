@@ -52,7 +52,7 @@ export default class ExtensionsGenerator implements IGenerate {
   private async insert(localeData: IExtension[]): Promise<string[]> {
     const insertions = await Extension.insertMany(localeData);
     return insertions.map(record => {
-      return record._id;
+      return record._id.toString();
     });
   }
 

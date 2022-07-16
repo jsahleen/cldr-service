@@ -29,7 +29,7 @@ class NumbersSystemsDAO {
   async createNumberSystem(fields: ICreateDTO): Promise<string> {
     const ns = new NumberSystem(fields);
     const system = await ns.save();
-    return system._id;
+    return system._id.toString();
   } 
 
   async getNumberSystemById(id: string): Promise<INumberSystem | null> {

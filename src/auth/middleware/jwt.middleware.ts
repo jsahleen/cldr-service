@@ -44,7 +44,7 @@ class JwtMiddleware {
       .digest('base64');
     if (hash === req.body.refreshToken) {
       req.body = {
-        _id: user?._id,
+        _id: user?._id.toString(),
         email: user?.email,
         permissionsFlag: user?.permissionsFlag,
       };

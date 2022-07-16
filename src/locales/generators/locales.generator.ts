@@ -53,7 +53,7 @@ export default class LocalesGenerator implements IGenerate {
   private async insert(localeData: ILocale[]): Promise<string[]> {
     const insertions = await Locale.insertMany(localeData);
     return insertions.map(record => {
-      return record._id;
+      return record._id.toString();
     });
   }
 

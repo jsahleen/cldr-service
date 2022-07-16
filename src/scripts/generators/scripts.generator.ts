@@ -55,7 +55,7 @@ export default class ScriptsGenerator implements IGenerate {
   private async insert(localeData: IScript[]): Promise<string[]> {
     const insertions = await Script.insertMany(localeData);
     return insertions.map(record => {
-      return record._id;
+      return record._id.toString();
     });
   }
 

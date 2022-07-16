@@ -91,7 +91,7 @@ class ZonesMiddleware implements IModuleMiddleware {
     let failed = false;
     zones.map(zone => {
       if (zone.tag === req.body.tag && zone.main.identifier === req.body.main.identifier) {
-        const id = zone._id;
+        const id =  zone._id?.toString();
         failed = true;
         res.status(409).send({ error: `Record exists. Use PUT to replace or PATCH to modify. ID: ${id}`});
       }
