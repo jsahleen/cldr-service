@@ -83,7 +83,7 @@ class TerritoriesMiddleware implements IModuleMiddleware {
         territory.main.tag === req.body.main.tag &&
         territory.tag === req.body.tag
       ) {
-        const id = territory._id;
+        const id =  territory._id?.toString();
         failed = true;
         res.status(409).send({ error: `Record exists. Use PUT to replace or PATCH to modify. ID: ${id}`});
       }

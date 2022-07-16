@@ -83,7 +83,7 @@ class LanguagesMiddleware implements IModuleMiddleware {
         language.main.tag === req.body.main.tag &&
         language.tag === req.body.tag
       ) {
-        const id = language._id;
+        const id =  language._id?.toString();
         failed = true
         res.status(409).send({ error: `Record exists. Use PUT to replace or PATCH to modify. ID: ${id}`});
       }

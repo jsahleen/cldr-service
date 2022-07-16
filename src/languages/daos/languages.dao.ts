@@ -29,7 +29,7 @@ class LanguageDAO {
   async createLanguage(fields: ICreateDTO): Promise<string> {
     const language = new Language(fields);
     const lang = await language.save();
-    return lang._id;
+    return lang._id.toString();
   } 
 
   async getLanguageById(id: string): Promise<ILanguage | null> {

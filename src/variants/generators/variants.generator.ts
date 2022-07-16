@@ -52,7 +52,7 @@ export default class VariantsGenerator implements IGenerate {
   private async insert(localeData: IVariant[]): Promise<string[]> {
     const insertions = await Variant.insertMany(localeData);
     return insertions.map(record => {
-      return record._id;
+      return record._id.toString();
     });
   }
 

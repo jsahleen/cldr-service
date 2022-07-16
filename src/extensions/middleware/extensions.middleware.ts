@@ -83,7 +83,7 @@ class ExtensionsMiddleware implements IModuleMiddleware {
         extension.main.key === req.body.main.tag &&
         extension.tag === req.body.tag
       ) {
-        const id = extension._id;
+        const id =  extension._id?.toString();
         failed = true;
         res.status(409).send({ error: `Record exists. Use PUT to replace or PATCH to modify. ID: ${id}`});
       }

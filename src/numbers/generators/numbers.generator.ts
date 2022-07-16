@@ -64,7 +64,7 @@ export default class NumberSystemGenerator implements IGenerate {
   private async insert(localeData: INumberSystem[]): Promise<string[]> {
     const insertions = await NumberSystem.insertMany(localeData);
     return insertions.map(record => {
-      return record._id;
+      return record._id.toString();
     });
   }
 

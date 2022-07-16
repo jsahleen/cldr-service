@@ -53,7 +53,7 @@ export default class RelativeTimeGenerator implements IGenerate {
   private async insert(localeData: IRelativeTime[]): Promise<string[]> {
     const insertions = await RelativeTime.insertMany(localeData);
     return insertions.map(record => {
-      return record._id;
+      return record._id.toString();
     });
   }
 

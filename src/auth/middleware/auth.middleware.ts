@@ -17,7 +17,7 @@ class AuthMiddleware {
       const passwordHash = user.password;
       if (await argon2.verify(passwordHash, req.body.password)) {
         req.body = {
-          _id: user._id,
+          _id: user._id.toString(),
           email: user.email,
           permissionsFlag: user.permissionsFlag,
         };

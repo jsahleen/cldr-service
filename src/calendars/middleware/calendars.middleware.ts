@@ -80,10 +80,10 @@ class CalendarsMiddleware implements IModuleMiddleware {
     let failed = false;
     calendars.map(calendar => {
       if (
-        calendar.main.tag === req.body.main.tag &&
+        calendar && calendar.main.tag === req.body.main.tag &&
         calendar.tag === req.body.tag
       ) {
-        const id = calendar._id;
+        const id = calendar._id?.toString();
         failed = true;
         res.status(409).send({ error: `Record exists. Use PUT to replace or PATCH to modify. ID: ${id}`});
       } 

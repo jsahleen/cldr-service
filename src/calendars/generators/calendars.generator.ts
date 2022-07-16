@@ -61,7 +61,7 @@ export default class CalendarGenerator implements IGenerate {
   private async insert(localeData: ICalendar[]): Promise<string[]> {
     const insertions = await Calendar.insertMany(localeData);
     return insertions.map(record => {
-      return record._id;
+      return record._id.toString();
     });
   }
 

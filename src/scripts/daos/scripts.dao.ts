@@ -29,7 +29,7 @@ class ScriptsDAO {
   async createScript(fields: ICreateDTO): Promise<string> {
     const script = new Script(fields);
     const scr = await script.save();
-    return scr._id;
+    return scr._id.toString();
   } 
 
   async getScriptById(id: string): Promise<IScript | null> {

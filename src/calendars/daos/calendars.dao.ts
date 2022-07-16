@@ -29,7 +29,7 @@ class CalendarsDAO {
   async createCalendar(fields: ICreateDTO): Promise<string> {
     const calendar = new Calendar(fields);
     const system = await calendar.save();
-    return system._id;
+    return system._id.toString();
   } 
 
   async getCalendarById(id: string): Promise<ICalendar | null> {

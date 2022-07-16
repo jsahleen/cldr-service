@@ -60,7 +60,7 @@ export default class TerritoriesGenerator implements IGenerate {
   private async insert(localeData: ITerritory[]): Promise<string[]> {
     const insertions = await Territory.insertMany(localeData);
     return insertions.map(record => {
-      return record._id;
+      return record._id.toString();
     });
   }
 

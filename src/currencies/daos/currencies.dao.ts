@@ -29,7 +29,7 @@ class CurrenciesDAO {
   async createCurrency(fields: ICreateDTO): Promise<string> {
     const currency = new Currency(fields);
     const system = await currency.save();
-    return system._id;
+    return system._id.toString();
   } 
 
   async getCurrencyById(id: string): Promise<ICurrency | null> {
