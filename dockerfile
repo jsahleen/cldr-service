@@ -10,6 +10,7 @@ COPY ./.npmrc /usr/src/app/
 COPY ./package.json /usr/src/app/
 COPY ./tsconfig.json /usr/src/app/
 COPY ./yarn.lock /usr/src/app/
+COPY ./README.md /usr/src/app/
 
 RUN yarn install
 

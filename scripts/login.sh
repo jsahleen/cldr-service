@@ -4,7 +4,7 @@ read email
 echo "User password:"
 read -s password
 
-export JWT=$(curl -H -X POST 'localhost:3000/auth' \
+export JWT=$(curl -H -X POST 'cldr-service:8090/auth' \
 --header 'Content-Type: application/json' \
 --data-raw '{
     "email":"'$email'",

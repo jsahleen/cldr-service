@@ -49,7 +49,7 @@ CLDR_PORT=3000
 
 (If you want to change the CLDR version and tier you need to clone the repository and pass `CLDR_VERSION` and `CLDR_TIER` as arguments to `docker build`.)
 
-To run the service using SSL, create a `cert` directory at the same level as your `.env` file and put your cert file and key in this directory. The `cert` directory is loaded as a volume in the `docker-compose` file. Make sure you specify the required `CLDR_SSL_PORT`, `CLDR_CERT_PATH` and `CERT_KEY_PATH` variable in you `.env` file. The paths for `CLDR_CERT_PATH` and `CLDR_KEY_PATH` should start with `..` because it is relative to the `built` directory when compiled.
+To run the service using SSL, create a `cert` directory at the same level as your `.env` file and put your cert file and key in this directory. The `cert` directory is loaded as a volume in the `docker-compose` file. Make sure you specify the required `CLDR_SSL_PORT`, `CLDR_CERT_PATH` and `CERT_KEY_PATH` variable in your `.env` file. The paths for `CLDR_CERT_PATH` and `CLDR_KEY_PATH` should start with `..` because it is relative to the `built` directory when compiled.
 
 Ports for secure and insecure http connections can now be specified in the `.env` file.
 
