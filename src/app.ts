@@ -1,8 +1,12 @@
 // Import app elements
 import express from 'express';
 import * as http from 'http';
+import * as https from 'https';
 import * as winston from 'winston';
 import * as expressWinston from 'express-winston';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
+
 import cors from 'cors';
 import helmet from 'helmet';
 import debug from 'debug';
@@ -18,24 +22,46 @@ import { CurrencyRoutes } from './currencies/routes/currencies.routes';
 import { LanguageRoutes } from './languages/routes/languages.routes';
 import { ScriptsRoutes } from './scripts/routes/scripts.routes';
 import { TerritoriesRoutes } from './territories/routes/territories.routes';
-import { VariantsRoutes} from './variants/routes/variants.routes'
-import { ExtensionsRoutes} from './extensions/routes/extensions.routes'
-import { LocalesRoutes} from './locales/routes/locales.routes'
+import { VariantsRoutes } from './variants/routes/variants.routes'
+import { ExtensionsRoutes } from './extensions/routes/extensions.routes'
+import { LocalesRoutes } from './locales/routes/locales.routes'
 import { CalendarsRoutes } from './calendars/routes/calendars.routes';
 import { RelativeTimeRoutes } from './time/routes/time.routes';
 import { ZonesRoutes } from './zones/routes/zones.routes'
 
 // App configuration
 const app: express.Application = express();
-const server: http.Server = http.createServer(app);
-const port = 3000;
+
+const log: debug.IDebugger = debug('app');
+
+const certPath = process.env.CLDR_CERT_PATH || '../cert/cldr-service.pem';
+const keyPath = process.env.CLDR_KEY_PATH || '../cert/cldr-service-key.pem';
+
+let cert: string | null = null;
+let key: string | null = null;
+
+try {
+  cert = readFileSync(resolve(__dirname, certPath), 'utf-8');
+} catch(e) {
+  log(e)
+} 
+try {
+  key = readFileSync(resolve(__dirname, keyPath), 'utf-8');
+} catch(e) {
+  log(e)
+}
+
+const credentials = (key && cert) ? {key: key, cert: cert}: {};
+
+const server: http.Server | https.Server = (key && cert) ? https.createServer(credentials, app) : http.createServer(app);
+const port = (key && cert) ? (process.env.CLDR_SSL_PORT || 8000) : (process.env.CLDR_PORT || 3000);
+const protocol = (key && cert) ? 'https' : 'http';
 
 app.use(cors());
 app.use(helmet());
 app.use(express.json());
 
 // Logging
-const log: debug.IDebugger = debug('app');
 const loggerOptions: expressWinston.LoggerOptions = {
   transports: [new winston.transports.Console()],
   format: winston.format.combine(
@@ -68,7 +94,7 @@ routes.push(new RelativeTimeRoutes(app));
 routes.push(new ZonesRoutes(app));
 
 // Server startup code
-const runningMessage = `Server running at http://localhost:${port}`;
+const runningMessage = `Server running at ${protocol}://localhost:${port}`;
 const p = server.listen(port, () => {
   routes.forEach((route: CommonRoutesConfig) => {
       log(`Routes configured for ${route.getName()}`);
