@@ -12,8 +12,11 @@ services:
     image: jsahleen/cldr-service
     restart: always
     ports:
-      - "3000:3000"
+      - "${CLDR_PORT}:${CLDR_PORT}"
+      - "${CLDR_SSL_PORT}:${CLDR_SSL_PORT}"
     depends_on:
       - cldr-db
+    volumes:
+      - ./cert:/usr/src/app/cert:ro
     env_file:
       - .env

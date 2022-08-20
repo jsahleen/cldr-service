@@ -25,9 +25,12 @@ services:
     image: jsahleen/cldr-service
     restart: always
     ports:
-      - "3000:3000"
+      - "${CLDR_PORT}:${CLDR_PORT}"
+      - "${CLDR_SSL_PORT}:${CLDR_SSL_PORT}"
     depends_on:
       - cldr-db
+    volumes:
+      - ./cert:/usr/src/app/cert:ro
     env_file:
       - .env
 ```
@@ -36,10 +39,19 @@ services:
 
 ```properties
 CLDR_ROOT_USER_EMAIL="root@example.com"
-CLDR_ROOT_USER_PASSWORD="P@$sW0rD"
+CLDR_ROOT_USER_PASSWORD="HFZ#cldr13579"
 CLDR_JWT_SECRET="b2upnzpr/XkBCpP"
+CLDR_CERT_PATH="../cert/cldr-service.pem"
+CLDR_KEY_PATH="../cert/cldr-service-key.pem"
+CLDR_SSL_PORT=8090
+CLDR_PORT=3000
 ```
+
 (If you want to change the CLDR version and tier you need to clone the repository and pass `CLDR_VERSION` and `CLDR_TIER` as arguments to `docker build`.)
+
+To run the service using SSL, create a `cert` directory at the same level as your `.env` file and put your cert file and key in this directory. The `cert` directory is loaded as a volume in the `docker-compose` file. Make sure you specify the required `CLDR_SSL_PORT`, `CLDR_CERT_PATH` and `CERT_KEY_PATH` variable in you `.env` file. The paths for `CLDR_CERT_PATH` and `CLDR_KEY_PATH` should start with `..` because it is relative to the `built` directory when compiled.
+
+Ports for secure and insecure http connections can now be specified in the `.env` file.
 
 4. Run `docker compose up -d` to start the service. 
 
@@ -53,7 +65,7 @@ Seeding the database will take some time, but it only needs to be done once. If 
 
 ## USAGE
 
-The following endpoints are currently implemented. The service runs on port `3000`:
+The following endpoints are currently implemented:
 
 * AUTH
 

@@ -54,9 +54,13 @@
     "lint": "eslint src",
     "build": "rm -rf ./built && tsc",
     "start": "yarn build && node ./built/app.js",
-    "debug": "export DEBUG=* && yarn start",
+    "db:up": "docker compose run --rm -d -p 27017:27017 cldr-db",
+    "db:down": "docker compose stop cldr-db",
+    "dev": "export DEV=* && yarn start",
+    "debug": "export DEBUG=* && yarn dev",
     "seed": "ts-node ./scripts/seed.ts",
     "setup": "./scripts/setup.sh",
-    "example": "node ./examples/node/antarctica.mjs"
+    "example": "node ./examples/node/antarctica.mjs",
+    "generate:cert": "./scripts/generate_cert.sh"
   }
 }
