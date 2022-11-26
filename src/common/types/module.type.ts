@@ -9,7 +9,9 @@ import { IVariant } from "../../variants/interfaces/variants.interface";
 import { ICalendar } from "../../calendars/interfaces/calendars.interface";
 import { IRelativeTime } from "../../time/interfaces/time.interface";
 import { IZone } from "../../zones/interfaces/zones.interface";
+import { IUnit } from '../../units/interfaces/units.interface';
 
 export type Module = INumberSystem | ICurrency | ILanguage |
                      IScript | ITerritory | IVariant | IExtension | 
-                     ILocale | ICalendar | IRelativeTime | IZone;
+                     ILocale | ICalendar | IRelativeTime | IZone |
+                     IUnit;

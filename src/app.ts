@@ -28,6 +28,7 @@ import { LocalesRoutes } from './locales/routes/locales.routes'
 import { CalendarsRoutes } from './calendars/routes/calendars.routes';
 import { RelativeTimeRoutes } from './time/routes/time.routes';
 import { ZonesRoutes } from './zones/routes/zones.routes'
+import { UnitsRoutes } from './units/routes/units.routes'
 
 // App configuration
 const app: express.Application = express();
@@ -92,6 +93,7 @@ routes.push(new LocalesRoutes(app));
 routes.push(new CalendarsRoutes(app));
 routes.push(new RelativeTimeRoutes(app));
 routes.push(new ZonesRoutes(app));
+routes.push(new UnitsRoutes(app));
 
 // Server startup code
 const runningMessage = `Server running at ${protocol}://localhost:${port}`;
