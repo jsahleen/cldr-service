@@ -1,6 +1,6 @@
 # cldr-service
 
-Proof of concept implementation for a CLDR web service. Allows dynamic loading of CLDR data across multiple locales, with element and content filtering. The current implementation provides publicly accessible data for number systems, currencies, languages, scripts, territories, variants, extensions, calendars, relative time formats, time zones and dynamically contructed locales.
+Proof of concept implementation for a CLDR web service. Allows dynamic loading of CLDR data across multiple locales, with element and content filtering. The current implementation provides publicly accessible data for number systems, currencies, units, languages, scripts, territories, variants, extensions, calendars, relative time formats, time zones and dynamically contructed locales.
 
 ## Local Setup
 
@@ -39,7 +39,7 @@ services:
 
 ```properties
 CLDR_ROOT_USER_EMAIL="root@example.com"
-CLDR_ROOT_USER_PASSWORD="HFZ#cldr13579"
+CLDR_ROOT_USER_PASSWORD="Pa$$w0rd123"
 CLDR_JWT_SECRET="b2upnzpr/XkBCpP"
 CLDR_CERT_PATH="../cert/cldr-service.pem"
 CLDR_KEY_PATH="../cert/cldr-service-key.pem"
@@ -102,6 +102,17 @@ The following endpoints are currently implemented:
     * PUT admin/currencies/:id
     * PATCH admin/currencies/:id
     * DELETE admin/currencies/:id
+
+* UNITS
+
+    * GET public/units?locales={locales}&tags={tags}&filters={filters}&page={page}&limit={limit}
+    * GET public/units/:tag?locales={locales}&filters={filters}&page={page}&limit={limit}
+    * GET admin/units?locales={locales}&tags={tags}&filters={filters}&page={page}&limit={limit}
+    * POST admin/units
+    * GET admin/units/:id
+    * PUT admin/units/:id
+    * PATCH admin/units/:id
+    * DELETE admin/units/:id
 
 * LANGUAGES
 
